@@ -1,0 +1,23 @@
+---
+title: "Lesson 1: Getting Started"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/certara_university.jpg
+  - img/certara_circle.jpg
+vignette: >
+  %\VignetteIndexEntry{Lesson 1: Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+In the following lesson you will learn how to:
+
+* Install R
+* Install RStudio (IDE)
+* Install RsNLME
+  * NLME Engine
+  * R Packages
+* Run test model
+
+R Packages Used: `Certara.RsNLME`
+

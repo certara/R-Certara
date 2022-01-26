@@ -1,0 +1,26 @@
+---
+title: "News"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/pirana.png
+vignette: >
+  %\VignetteIndexEntry{News}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Pirana v21.11.1 <img src='img/pirana.png' align="right" height="100" align="left" style = "padding-right: 20px" />
+
+* #### [Release Notes](https://onlinehelp.certara.com/rsnlme/1.1/index.html#t=RsNLME_User_Guide%2FRsNLMEReleaseNotes%2FRsNLMEReleaseNotes.htm%23XREF_56808__RsNLME_1_1_Release_Notes6831)
+
+---
+
+<br/><br/>
+<br/><br/>
+
+
+## RsNLME v1.1.0 <img src='img/RsNLME.png' align="right" height="150" align="left" style = "padding-right: 20px" />
+
+* #### [Release Notes](https://onlinehelp.certara.com/pirana/21.11.1/index.html#t=Pirana_User_Guide%2FPiranaReleaseNotes%2FPiranaReleaseNotes.htm%23XREF_56958__Pirana_21_11_1_Release_Notes5608)
+
+---

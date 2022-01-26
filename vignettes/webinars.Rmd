@@ -1,0 +1,27 @@
+---
+title: "Webinars"
+output: rmarkdown::html_vignette
+resource_files:
+vignette: >
+  %\VignetteIndexEntry{Webinars}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## RsNLME Overview
+
+<iframe width="840" height="472" src="https://www.youtube.com/embed/L_1p2qjcAcI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+---
+
+## Certara University Express Webinar: Part 1: Introduction to RsNLME (R speaks NLME)
+
+<iframe width="840" height="472" src="https://www.youtube.com/embed/Rqi47-Kqke8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+---
+
+## Certara University Express Webinar: Part 2: Introduction to RsNLME and overview of expanded workflow
+
+<iframe width="840" height="472" src="https://www.youtube.com/embed/JlbnCmKgcrc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+---

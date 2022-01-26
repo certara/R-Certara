@@ -1,0 +1,13 @@
+pandoc: 2.11.4
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  lessons: lessons.html
+  lesson_1: lesson_1.html
+  news: news.html
+  packages: packages.html
+  resources: resources.html
+  rsnlme_tutorial: rsnlme_tutorial.html
+  webinars: webinars.html
+last_built: 2022-01-26T16:13Z
+

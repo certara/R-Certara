@@ -1,0 +1,35 @@
+Package: Certara.R
+Title: Easily install and load R packages and Shiny applications developed by Certara
+Version: 1.0.0
+Authors@R: c(
+      person("James", "Craig", email = "james.craig@certara.com", role = c("aut", "cre")),
+      person("Certara USA, Inc.", role = c("cph","fnd"))
+      )
+Description: Certara's suite of R packages known as 'RsNLME' facilitate pharmacometric
+    workflow in R. Learn more about 'RsNLME' at <https://certara.github.io/R-RsNLME/>
+Depends: R (>= 4.0)
+License: LGPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
+Suggests:
+    knitr,
+    rmarkdown
+Imports:
+    Certara.shinyAce.NLME,
+    Certara.shinymeta.NLME,
+    colourpicker,
+    data.table,
+    dplyr,
+    DT,
+    ggplot2,
+    plotly,
+    shiny,
+    shinyalert,
+    shinycssloaders,
+    shinyjs,
+    shinyWidgets,
+    shinymaterial,
+    shinyjqui,
+    sortable,
+    tidyvpc

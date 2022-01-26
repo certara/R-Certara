@@ -1,0 +1,47 @@
+---
+title: "Certara R School"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/certara_university.jpg
+  - img/certara_circle.jpg
+vignette: >
+  %\VignetteIndexEntry{Certara R School}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Certara R School is a series of guided lessons for those getting started with R in Pharmacometrics.
+
+---
+
+## Lesson 1: Getting Started
+
+In the following lesson you will learn how to:
+
+* Install R
+* Install RStudio (IDE)
+* Install RsNLME
+  * NLME Engine
+  * R Packages
+* Run test model
+
+R Packages Used: `Certara.RsNLME`
+
+Click [here](lesson_1.html) to access.
+
+---
+
+## Lesson 2: Dataset Basics
+
+In the following lesson you will learn how to:
+
+* Install R
+* Install RStudio (IDE)
+* Install RsNLME
+  * NLME Engine
+  * R Packages
+* Run test model
+
+R Packages Used: `Certara.RsNLME`
+
+*Coming Soon!*

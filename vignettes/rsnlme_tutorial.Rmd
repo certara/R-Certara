@@ -1,0 +1,13 @@
+---
+title: "Tutorials"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorials}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+<iframe
+  src="https://pharmacometrics.shinyapps.io/rsnlmecommandlinetutorialfinal/"
+  style="width:140%; height:1000px;" frameBorder="0"></iframe>

@@ -1,0 +1,17 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.travis\.yml$
+^data-raw$
+.git
+^cran-comments\.md$
+^\..*\.swp$
+^.*\.R\.tmp\.R$
+^_config.yml$
+^doc$
+^Meta$
+^LICENSE\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^_pkgdown\.yml$
+

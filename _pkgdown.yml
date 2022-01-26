@@ -1,0 +1,34 @@
+template:
+  params:
+    bootswatch: united
+
+reference:
+  - title: Installation
+  - subtitle: Functions to easily install packages developed by Certara
+    desc: Use these functions to install R packages from Certara's package repository
+    contents:
+    - install_certara_packages
+
+navbar:
+  structure:
+    left:  [home, reference, articles, webinars, tutorials, resources, news]
+    navbar:
+  components:
+    home: ~
+    articles:
+      text: Certara R School
+      href: articles/lessons.html
+    webinars:
+      text: Webinars
+      href: articles/webinars.html
+    tutorials:
+      text: Tutorials
+      menu:
+      - text: RsNLME
+        href: articles/rsnlme_tutorial.html
+    resources:
+      text: Resources
+      href: articles/resources.html
+    news:
+      text: News
+      href: articles/news.html
