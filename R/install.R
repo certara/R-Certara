@@ -28,7 +28,7 @@ certara_packages <- function(include_self= FALSE, include_github = TRUE, include
   }
 
   if(include_github){
-    pkgs <- c(pkgs, names(certara_github_repos()))
+    pkgs <- c(pkgs, names(certara_github_packages()))
   }
 
   if(include_JFROG_deps){
