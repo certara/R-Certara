@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install Certara R Packages — install_certara_packages • Certara.R</title>
+<title>Check if Certara packages are installed — check_installed_packages • Certara.R</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Install Certara R Packages — install_certara_packages" />
-<meta property="og:description" content="A user friendly wrapper to easily install R packages and Shiny applications developed by Certara" />
+<meta property="og:title" content="Check if Certara packages are installed — check_installed_packages" />
+<meta property="og:description" content="Check if Certara packages are installed" />
 
 
 
@@ -121,38 +121,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Install Certara R Packages</h1>
+    <h1>Check if Certara packages are installed</h1>
     
-    <div class="hidden name"><code>install_certara_packages.Rd</code></div>
+    <div class="hidden name"><code>check_installed_packages.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A user friendly wrapper to easily install R packages and Shiny applications developed by Certara</p>
+    <p>Check if Certara packages are installed</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_certara_packages</span><span class='op'>(</span>
-  CRAN_repo <span class='op'>=</span> <span class='st'>"https://cloud.r-project.org"</span>,
-  clean_install <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  quiet <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>check_installed_packages</span><span class='op'>(</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>clean_install</th>
-      <td><p>Logical; Set to <code>TRUE</code> to remove existing Certara packages prior to installing</p></td>
-    </tr>
-    <tr>
-      <th>quiet</th>
-      <td><p>Logical; Set to <code>TRUE</code> to suppress installation messages and reduce console output</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>TRUE</code> if all packages successfully install</p>
+    <p>Named logical vector indicating whether Certara package is installed</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>check_installed_packages</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;               Certara.RsNLME           Certara.Xpose.NLME 
+#&gt;                         TRUE                         TRUE 
+#&gt; Certara.RsNLME.ModelExecutor         Certara.ModelResults 
+#&gt;                         TRUE                         TRUE 
+#&gt;           Certara.VPCResults  Certara.RsNLME.ModelBuilder 
+#&gt;                         TRUE                         TRUE 
+#&gt;                Certara.NLME8        Certara.shinyAce.NLME 
+#&gt;                         TRUE                         TRUE 
+#&gt;       Certara.shinymeta.NLME                      tidyvpc 
+#&gt;                         TRUE                         TRUE 
+#&gt;                   ggquickeda        Certara.shinyAce.NLME 
+#&gt;                         TRUE                         TRUE 
+#&gt;       Certara.shinymeta.NLME 
+#&gt;                         TRUE </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

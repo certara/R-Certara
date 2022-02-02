@@ -14,22 +14,30 @@ LazyData: true
 RoxygenNote: 7.1.2
 Suggests:
     knitr,
-    rmarkdown
 Imports:
-    Certara.shinyAce.NLME,
-    Certara.shinymeta.NLME,
-    colourpicker,
+    assertthat,
+    batchtools  (>= 0.9.9),
     data.table,
     dplyr,
     DT,
+    ggforce,
     ggplot2,
+    graphics,
+    htmltools,
+    jsonlite,
+    magrittr,
+    methods,
     plotly,
+    remotes,
+    reshape,
+    rlang,
+    rmarkdown,
     shiny,
-    shinyalert,
-    shinycssloaders,
     shinyjs,
     shinyWidgets,
     shinymaterial,
     shinyjqui,
     sortable,
-    tidyvpc
+    ssh,
+    utils,
+    xml2

@@ -10,6 +10,7 @@ resource_files:
   - img/VPCResults.png
   - img/XposeNLME.png
   - img/CertaraR.png
+  - img/ggquickeda.png
 vignette: >
   %\VignetteIndexEntry{Certara R Packages}
   %\VignetteEngine{knitr::rmarkdown}
@@ -20,7 +21,6 @@ vignette: >
 ```{r, warning = FALSE, echo = FALSE, message = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7.5, fig.height = 5, fig.align = "center")
 options(datatable.print.nrows = 8)
-library(tidyvpc)
 library(ggplot2)
 library(magrittr)
 library(data.table)

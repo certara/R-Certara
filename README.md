@@ -3,15 +3,18 @@
 
 ---
 
-`Certara.R` provides a collection of packages and Shiny applications designed for Pharmacometric workflows in R.  All Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio.
+`Certara.R` provides a collection of packages and Shiny applications designed for Pharmacometric workflows in R. Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio.
 
-### Installation and Running information
+### Installation and Running Information
 
 ``` r
-# Example (not yet on CRAN)
-install.packages("Certara.R")
+remotes::install_github("certara/R-Certara")
 
-Certara.R::install_certara_packages()
+library(Certara.R)
+
+install_certara_packages()
+
+check_certara_package_versions()
 ```
 
 
@@ -81,3 +84,48 @@ Using piping from 'magrittr', the intuitive syntax gives users a flexible and po
 
 ---
 
+<br/><br/>
+
+### ggquickeda <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+
+[`ggquickeda`](https://github.com/smouksassi/ggquickeda) is an R Shiny app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`.
+
+It enables you to quickly explore your data and to detect trends on the fly. Create scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of one or multiple variable(s) by column(s) splits and an optional overall column.
+
+In addition, `ggquickeda` also provides the km, kmband and kmticks geoms/stats to facilitate the plotting of Kaplan-Meier Survival curves.
+
+For a quick overview using an older version of the app head to this [YouTube Tutorial](https://www.youtube.com/watch?v=1rBBmJUIZhs).
+
+---
+
+<br/><br/>
+
+### ggcertara <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+
+[`ggcertara`](https://github.com/certara/ggcertara) is an R package to provide used to provide a standardized look for plots employed by pharmacometricians. It provides a `ggplot2` theme, color palette, and a collection of plotting functions for basic goodness-of-fit diagnostic plots.
+
+See the following [vignette](https://certara.github.io/ggcertara/vignettes/ggcertara-gof.html) for an overview of the package.
+
+---
+
+<br/><br/>
+
+### table1c <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+
+[`table1c`](https://github.com/certara/table1c) is an R package for generating tables of descriptive statistics in HTML. It is a light wrapper around the table1 package with some customizations for the convenience of Certara IDD.
+
+See the following [vignette](https://certara.github.io/table1c/vignettes/table1c-howto.html) for an overview of the package.
+
+---
+
+<br/><br/>
+
+### coveffectsplot <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+
+[`coveffectsplot`](https://github.com/smouksassi/coveffectsplot) is an R package that provide the function forest_plot and an accompanying Shiny application that facilitates the production of forest plots to visualize covariate effects as commonly used in pharmacometrics population PK/PD report
+
+Learn more about the package [here](https://github.com/smouksassi/coveffectsplot).
+
+---
+
+<br/><br/>
