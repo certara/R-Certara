@@ -100,7 +100,7 @@ For a quick overview using an older version of the app head to this [YouTube Tut
 
 <br/><br/>
 
-### ggcertara <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+### ggcertara
 
 [`ggcertara`](https://github.com/certara/ggcertara) is an R package to provide used to provide a standardized look for plots employed by pharmacometricians. It provides a `ggplot2` theme, color palette, and a collection of plotting functions for basic goodness-of-fit diagnostic plots.
 
@@ -110,7 +110,7 @@ See the following [vignette](https://certara.github.io/ggcertara/vignettes/ggcer
 
 <br/><br/>
 
-### table1c <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+### table1c
 
 [`table1c`](https://github.com/certara/table1c) is an R package for generating tables of descriptive statistics in HTML. It is a light wrapper around the table1 package with some customizations for the convenience of Certara IDD.
 
@@ -120,7 +120,7 @@ See the following [vignette](https://certara.github.io/table1c/vignettes/table1c
 
 <br/><br/>
 
-### coveffectsplot <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+### coveffectsplot
 
 [`coveffectsplot`](https://github.com/smouksassi/coveffectsplot) is an R package that provide the function forest_plot and an accompanying Shiny application that facilitates the production of forest plots to visualize covariate effects as commonly used in pharmacometrics population PK/PD report
 
