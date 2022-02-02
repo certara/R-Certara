@@ -8,10 +8,13 @@
 ### Installation and Running Information
 
 ``` r
-# Example (not yet on CRAN)
-install.packages("Certara.R")
+remotes::install_github("certara/R-Certara")
 
-Certara.R::install_certara_packages()
+library(Certara.R)
+
+install_certara_packages()
+
+check_certara_package_versions()
 ```
 
 
