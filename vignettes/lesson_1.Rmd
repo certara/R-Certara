@@ -18,6 +18,8 @@ In the following lesson you will learn how to:
   * NLME Engine
   * R Packages
 * Run test model
+* Optional - Install Pirana
 
 R Packages Used: `Certara.RsNLME`
 
+<iframe width="840" height="472" src="https://certara-training.s3.amazonaws.com/Certara+University/PKPD+Free+Learning/028-TU+RsNLME+Tutorials/RsNLME+Installation/Videos/RSNLME+1.1+installation.mp4"></iframe>
