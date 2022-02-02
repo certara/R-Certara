@@ -4,7 +4,11 @@
 \alias{certara_packages}
 \title{List all packages developed by Certara}
 \usage{
-certara_packages(include_self = FALSE, include_JFROG_deps = FALSE)
+certara_packages(
+  include_self = FALSE,
+  include_github = TRUE,
+  include_JFROG_deps = FALSE
+)
 }
 \arguments{
 \item{include_self}{Logical; Set to \code{TRUE} to include \code{Certara.R}}

@@ -4,14 +4,14 @@
 \alias{check_certara_package_versions}
 \title{Check if Certara packages are installed}
 \usage{
-check_certara_package_versions()
+check_certara_package_versions(pkgs)
 }
 \value{
-Named logical vector indicating whether Certara package is installed
+Named character vector indicating package version, \code{NA} is returned if Certara package is not installed
 }
 \description{
 Check if Certara packages are installed
 }
 \examples{
-check_installed_certara_packages()
+check_certara_package_versions()
 }
