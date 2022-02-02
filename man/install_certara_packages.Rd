@@ -4,11 +4,22 @@
 \alias{install_certara_packages}
 \title{Install Certara R Packages}
 \usage{
-install_certara_packages()
+install_certara_packages(
+  CRAN_repo = "https://cloud.r-project.org",
+  clean_install = FALSE,
+  quiet = FALSE
+)
+}
+\arguments{
+\item{CRAN_repo}{Character;  The URL of a CRAN mirror which defaults to \code{"https://cloud.r-project.org"}}
+
+\item{clean_install}{Logical; Set to \code{TRUE} to remove existing Certara packages prior to installing}
+
+\item{quiet}{Logical; Set to \code{TRUE} to suppress installation messages and reduce console output}
 }
 \value{
 \code{TRUE} if all packages successfully install
 }
 \description{
-A user friendly wrapper to easily install R packages developed Certara and hosted on Certara's CRAN repo
+A user friendly wrapper to easily install R packages and Shiny applications developed by Certara
 }
