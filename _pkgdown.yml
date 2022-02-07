@@ -4,10 +4,16 @@ template:
 
 reference:
   - title: Installation
-  - subtitle: Functions to easily install packages developed by Certara
-    desc: Use these functions to install R packages from Certara's package repository
+    desc: Use these functions to easily install/uninstall R packages developed by Certara
     contents:
     - install_certara_packages
+    - remove_certara_packages
+    - certara_packages
+  - title: Check Packages
+    desc: Use these functions to validate installation of R packages developed by Certara
+    contents:
+    - check_installed_certara_packages
+    - check_certara_package_versions
 
 navbar:
   structure:

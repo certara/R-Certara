@@ -6,6 +6,9 @@
 \usage{
 check_installed_certara_packages(pkgs)
 }
+\arguments{
+\item{pkgs}{Character or character vector of package names. If missing, defaults to \code{certara_packages()}}
+}
 \value{
 Named logical vector indicating whether Certara package is installed
 }
@@ -13,5 +16,7 @@ Named logical vector indicating whether Certara package is installed
 Check if Certara packages are installed
 }
 \examples{
+\dontrun{
 check_installed_certara_packages()
+}
 }

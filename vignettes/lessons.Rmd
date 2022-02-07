@@ -10,38 +10,29 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Certara R School is a series of guided lessons for those getting started with R in Pharmacometrics.
+Certara R School is a series of guided webinars, exercises, and interactive tutorials for the application of R in Pharmacometrics. 
+
+Why R? R is the primary programming language in the Pharmacometrician's toolkit and offers unparalleled efficiency, flexibility, and reproducibility compared to working inside a GUI alone.  Learning R can be challenging at first, but Certara is here to help!
+
+The following lessons will demonstrate how to begin using R in your Pharmacometric workflow. We will cover everything from installation/environment setup to creating interactive dashboards to communicate your analysis – let’s get started! 
+
 
 ---
 
-## Lesson 1: Getting Started
+## Lesson 1: Getting Started with RsNLME
 
-In the following lesson you will learn how to:
-
-* Install R
-* Install RStudio (IDE)
-* Install RsNLME
+* [Install R](https://cran.r-project.org/)
+* [Install RStudio (IDE)](https://www.rstudio.com/products/rstudio/download/#download)
+* [Install RsNLME](https://certara.github.io/R-RsNLME/articles/installation.html#installation-of-r-packages-1)
   * NLME Engine
   * R Packages
-* Run test model
-
-R Packages Used: `Certara.RsNLME`
+  * Setup License
+* [Run test example](https://certara.github.io/R-RsNLME/articles/installation.html#run-test-example-1)
 
 Click [here](lesson_1.html) to access.
 
 ---
 
 ## Lesson 2: Dataset Basics
-
-In the following lesson you will learn how to:
-
-* Install R
-* Install RStudio (IDE)
-* Install RsNLME
-  * NLME Engine
-  * R Packages
-* Run test model
-
-R Packages Used: `Certara.RsNLME`
 
 *Coming Soon!*

@@ -2,16 +2,21 @@
 % Please edit documentation in R/install.R
 \name{check_certara_package_versions}
 \alias{check_certara_package_versions}
-\title{Check if Certara packages are installed}
+\title{Check Certara package versions}
 \usage{
 check_certara_package_versions(pkgs)
+}
+\arguments{
+\item{pkgs}{Character or character vector of package names. If missing, defaults to \code{certara_packages()}}
 }
 \value{
 Named character vector indicating package version, \code{NA} is returned if Certara package is not installed
 }
 \description{
-Check if Certara packages are installed
+Check Certara package versions
 }
 \examples{
+\dontrun{
 check_certara_package_versions()
+}
 }

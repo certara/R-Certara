@@ -16,31 +16,21 @@ vignette: >
 
 In addition, customized training courses or videos on modeling and simulation can be developed for companies to facilitate your learning and development goals. Our programs are designed for novice and advanced users in the area of pharmacokinetic (PK) and pharmacodynamics (PD) and are taught using Certara software including the industry-standard software Phoenix WinNonlin™.
 
----
-
 <br/><br/>
-<br/><br/>
-
-## PMx R-Optimization Tools <img src='img/certara_circle.jpg' align="right" height="150" />
-
-[PMx Optimization (PMxO)](https://certara.github.io/PMxRtools/) - Our mission is to develop robust, well documented R packages, scripts and/or tools to enable greater efficiency, effectiveness, and standardization in PMx analysis and reporting while maintaining flexibility for the users.
-
-The Certara R tools are open source and available on [GitHub](https://github.com/certara/PMxRtools). For feedback, suggestions and/or questions please reach out to idd-pmxo-rtools-feedback@certara.com
 
 ---
 
 <br/><br/>
-<br/><br/>
 
-## R/Pharma <img src='	https://rinpharma.com/media/logo_hu7da996d8ce7178f65929875a2132de7e_457633_300x300_fit_lanczos_2.png' align="left" height="150"  style = "padding-right: 20px" />
+## R/Pharma <img src='	https://rinpharma.com/media/logo_hu7da996d8ce7178f65929875a2132de7e_457633_300x300_fit_lanczos_2.png' align="right" height="150"/>
 
 [R/Pharma](https://rinpharma.com/) is an organization focused on the use of R in the development of pharmaceuticals. Visit their [website](https://rinpharma.com/publication/) to discover recent webinars and publications about the usage of R in drug development.
 
+<br/><br/>
+
 ---
 
 <br/><br/>
-<br/><br/>
-
 
 ## RStudio Community <img src='https://community.rstudio.com/uploads/default/original/3X/f/3/f3dee137ae4175a718cafe9ddea2a950e080150b.png' align="left" height="75" style = "padding-right: 20px" />
 
@@ -48,9 +38,10 @@ The [RStudio Community](https://community.rstudio.com/) is a discussion board fo
 
 See [here](https://www.tidyverse.org/help/) for more on creating a reprex.
 
+<br/><br/>
+
 ---
 
-<br/><br/>
 <br/><br/>
 
 ## Stack Overflow <img src='https://miro.medium.com/max/2400/0*UEtwA2ask7vQYW06.png' align="right" height="150" />
@@ -59,3 +50,4 @@ See [here](https://www.tidyverse.org/help/) for more on creating a reprex.
 
 [Stack Overflow](https://stackoverflow.com/) is an important resource for seeking answers to questions about R - in particular we’d recommend making sure your question is tagged as "R" or "RsNLME".
 
+<br/><br/>

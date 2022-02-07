@@ -1,4 +1,6 @@
 ^.*\.Rproj$
+^.*\.Rdata$
+^.*\.Rhistory$
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^data-raw$
@@ -14,4 +16,6 @@
 ^docs$
 ^pkgdown$
 ^_pkgdown\.yml$
+^vignettes$
+
 

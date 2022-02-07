@@ -1,9 +1,9 @@
-#' @export
 JFROG_repo <- "https://certara.jfrog.io/artifactory/certara-cran-release-public/"
 
 #' List all packages developed by Certara
 #'
 #' @param include_self Logical; Set to \code{TRUE} to include \code{Certara.R}
+#' @param include_github Logical; Set to \code{TRUE} to include packages only available on GitHub
 #' @param include_JFROG_deps Logical; Set to \code{TRUE} to include Certara package dependencies on Jfrog
 #' @return Character vector of package names
 #' @examples
@@ -54,7 +54,7 @@ certara_github_packages <- function() {
 
 
 
-#' Install Certara R Packages
+#' Install Certara packages
 #'
 #' A user friendly wrapper to easily install R packages and Shiny applications developed by Certara
 #'
@@ -63,6 +63,10 @@ certara_github_packages <- function() {
 #' @param quiet Logical; Set to \code{TRUE} to suppress installation messages and reduce console output
 #'
 #' @return \code{TRUE} if all packages successfully install
+#' @examples
+#' \dontrun{
+#' install_certara_packages()
+#' }
 #' @export
 #'
 install_certara_packages <- function(CRAN_repo = "https://cloud.r-project.org",
@@ -124,7 +128,7 @@ install_cran_remote <- function(pkgs_display, answer, repos, quiet){
       return(FALSE)
     }
 
-    install.packages(pkgs_to_install, repos = repos, method = "libcurl", quiet = quiet)
+    utils::install.packages(pkgs_to_install, repos = repos, method = "libcurl", quiet = quiet)
 
     pkgs_installed <- check_installed_certara_packages(certara_packages(include_github = FALSE))
 
@@ -177,11 +181,15 @@ install_github_remote <- function(pkgs_display, answer, quiet){
   }
 }
 
-#' Remove Certara R Packages
+#' Remove Certara packages
 #'
 #' A user friendly wrapper to easily remove R packages developed by Certara
 #'
 #' @return \code{TRUE} if all packages successfully removed
+#' @examples
+#' \dontrun{
+#' remove_certara_packages()
+#' }
 #' @export
 #'
 remove_certara_packages <- function(){
@@ -202,7 +210,7 @@ remove_certara_packages <- function(){
   installed.Certara.pkgs <- find_packages(pkgs)
 
   if(length(installed.Certara.pkgs) > 0) {
-    remove.packages(installed.Certara.pkgs)
+    utils::remove.packages(installed.Certara.pkgs)
     pkgs_not_removed <- find_packages(pkgs)
     if(length(pkgs_not_removed) > 0){
       warning("Cannot remove the following package(s):\n", paste(pkgs_not_removed, collapse = "\n"))
@@ -217,11 +225,13 @@ remove_certara_packages <- function(){
 
 #' Check if Certara packages are installed
 #'
+#' @param pkgs Character or character vector of package names. If missing, defaults to \code{certara_packages()}
 #' @return Named logical vector indicating whether Certara package is installed
 #' @examples
+#' \dontrun{
 #' check_installed_certara_packages()
+#' }
 #' @export
-
 check_installed_certara_packages <- function(pkgs){
 
   if(missing(pkgs)){
@@ -239,11 +249,14 @@ check_installed_certara_packages <- function(pkgs){
   return(pkgs_logical)
 }
 
-#' Check if Certara packages are installed
+#' Check Certara package versions
 #'
+#' @param pkgs Character or character vector of package names. If missing, defaults to \code{certara_packages()}
 #' @return Named character vector indicating package version, \code{NA} is returned if Certara package is not installed
 #' @examples
+#' \dontrun{
 #' check_certara_package_versions()
+#' }
 #' @export
 
 check_certara_package_versions <- function(pkgs){
@@ -256,7 +269,7 @@ check_certara_package_versions <- function(pkgs){
     if(system.file(package = x) == ""){
       return(NA)
     } else {
-      return(as.character(packageVersion(x)))
+      return(as.character(utils::packageVersion(x)))
     })
 
   return(pkgs_version)

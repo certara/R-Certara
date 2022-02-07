@@ -12,14 +12,16 @@ vignette: >
 
 In the following lesson you will learn how to:
 
-* Install R
-* Install RStudio (IDE)
-* Install RsNLME
+* [Install R](https://cran.r-project.org/)
+* [Install RStudio (IDE)](https://www.rstudio.com/products/rstudio/download/#download)
+* [Install RsNLME](https://certara.github.io/R-RsNLME/articles/installation.html#installation-of-r-packages-1)
   * NLME Engine
   * R Packages
-* Run test model
-* Optional - Install Pirana
+  * Setup License
+* [Run test example](https://certara.github.io/R-RsNLME/articles/installation.html#run-test-example-1)
 
 R Packages Used: `Certara.RsNLME`
+
+----
 
 <iframe width="840" height="472" src="https://certara-training.s3.amazonaws.com/Certara+University/PKPD+Free+Learning/028-TU+RsNLME+Tutorials/RsNLME+Installation/Videos/RSNLME+1.1+installation.mp4"></iframe>

@@ -2,7 +2,7 @@
 % Please edit documentation in R/install.R
 \name{remove_certara_packages}
 \alias{remove_certara_packages}
-\title{Remove Certara R Packages}
+\title{Remove Certara packages}
 \usage{
 remove_certara_packages()
 }
@@ -11,4 +11,9 @@ remove_certara_packages()
 }
 \description{
 A user friendly wrapper to easily remove R packages developed by Certara
+}
+\examples{
+\dontrun{
+remove_certara_packages()
+}
 }

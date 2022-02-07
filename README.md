@@ -24,7 +24,7 @@ check_certara_package_versions()
 
 ---
 
-<br/><br/>
+<br/>
 
 ### RsNLME.ModelBuilder <img src='vignettes/img/ModelBuilder.png' align="left" height="150" style = "padding-right: 10px" />
 
@@ -32,9 +32,11 @@ check_certara_package_versions()
 
 Use the GUI to select from various model building options and observe the PML update in real time. Additionally, users may generate the corresponding RsNLME code to learn reproduce the model object from R.
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### RsNLME.ModelExecutor <img src='vignettes/img/ModelExecutor.png' align="right" height="150" />
 
@@ -42,9 +44,11 @@ Use the GUI to select from various model building options and observe the PML up
 
 Use the GUI to add additional output tables, specify engine parameters, select various run types, and more!
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### ModelResults <img src='vignettes/img/ModelResults.png' align="left" height="150" style = "padding-right: 10px"/>
 
@@ -52,17 +56,21 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 
 Users are not limited by the GUI however, Certara.ModelResults will generate the underlying `flextable` and `xpose`/`ggplot2` code (`.R` and/or `.Rmd`) for you inside the Shiny application, which you can then use to recreate your plot and table objects in R, ensuring reproducibility and trace-ability of model diagnostics for reporting output.
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### XposeNLME <img src='vignettes/img/XposeNLME.png' align="right" height="150"/>
 
 [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) is an R package used to creates `xpose` databases (`xpose_data`) for PML/NLME results. Additionally, [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) offers various covariate model diagnostic functions, not available in the `xpose` package.
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### VPCResults <img src='vignettes/img/VPCResults.png' align="left" height="150" style = "padding-right: 10px"/>
 
@@ -72,9 +80,11 @@ Use the GUI to select from various binning or binless methods and specify option
 
 Users are not limited by the GUI however, [`Certara.VPCResults`](https://certara.github.io/R-VPCResults/index.html) will generate the underlying `tidyvpc` and `ggplot2` code (`.R` and/or `.Rmd`) for you inside the Shiny application, which you can then use to recreate your plot and table objects in R, ensuring reproducibility of VPC’s for reporting output.
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### tidyvpc <img src='vignettes/img/tidyvpc.png' align="right" height="150" />
 
@@ -82,9 +92,11 @@ The [`tidyvpc`](https://certara.github.io/tidyvpc/index.html) package is used to
 
 Using piping from 'magrittr', the intuitive syntax gives users a flexible and powerful method to generate VPCs using both traditional binning and a new binless approach Jamsen et al. (2018) [doi:10.1002/psp4.12319](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6202468/) with Additive Quantile Regression (AQR) and Locally Estimated Scatterplot Smoothing (LOESS) prediction correction. 
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### ggquickeda <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
 
@@ -96,9 +108,11 @@ In addition, `ggquickeda` also provides the km, kmband and kmticks geoms/stats t
 
 For a quick overview using an older version of the app head to this [YouTube Tutorial](https://www.youtube.com/watch?v=1rBBmJUIZhs).
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### ggcertara
 
@@ -106,9 +120,11 @@ For a quick overview using an older version of the app head to this [YouTube Tut
 
 See the following [vignette](https://certara.github.io/ggcertara/vignettes/ggcertara-gof.html) for an overview of the package.
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### table1c
 
@@ -116,9 +132,11 @@ See the following [vignette](https://certara.github.io/ggcertara/vignettes/ggcer
 
 See the following [vignette](https://certara.github.io/table1c/vignettes/table1c-howto.html) for an overview of the package.
 
+<br/>
+
 ---
 
-<br/><br/>
+<br/>
 
 ### coveffectsplot
 
@@ -126,6 +144,4 @@ See the following [vignette](https://certara.github.io/table1c/vignettes/table1c
 
 Learn more about the package [here](https://github.com/smouksassi/coveffectsplot).
 
----
-
-<br/><br/>
+<br/>

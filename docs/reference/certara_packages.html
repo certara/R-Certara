@@ -105,6 +105,12 @@
 <li>
   <a href="../articles/news.html">News</a>
 </li>
+<li>
+  <a href="https://github.com/certara/R-Certara/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -122,7 +128,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>List all packages developed by Certara</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/certara/R-Certara/blob/master/R/install.R'><code>R/install.R</code></a></small>
     <div class="hidden name"><code>certara_packages.Rd</code></div>
     </div>
 
@@ -130,14 +136,26 @@
     <p>List all packages developed by Certara</p>
     </div>
 
-    <pre class="usage"><span class='fu'>certara_packages</span><span class='op'>(</span>include_self <span class='op'>=</span> <span class='cn'>FALSE</span>, include_JFROG_deps <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>certara_packages</span><span class='op'>(</span>
+  include_self <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include_github <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  include_JFROG_deps <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>include_self</th>
-      <td><p>Include <code>Certara.R</code> in the list?</p></td>
+      <td><p>Logical; Set to <code>TRUE</code> to include <code>Certara.R</code></p></td>
+    </tr>
+    <tr>
+      <th>include_github</th>
+      <td><p>Logical; Set to <code>TRUE</code> to include packages only available on GitHub</p></td>
+    </tr>
+    <tr>
+      <th>include_JFROG_deps</th>
+      <td><p>Logical; Set to <code>TRUE</code> to include Certara package dependencies on Jfrog</p></td>
     </tr>
     </table>
 
@@ -147,10 +165,12 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>certara_packages</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "Certara.RsNLME"               "Certara.Xpose.NLME"          
-#&gt; [3] "Certara.RsNLME.ModelExecutor" "Certara.ModelResults"        
-#&gt; [5] "Certara.VPCResults"           "Certara.RsNLME.ModelBuilder" 
-#&gt; [7] "tidyvpc"                      "ggquickeda"                  </div></pre>
+</div><div class='output co'>#&gt;  [1] "Certara.RsNLME"               "Certara.Xpose.NLME"          
+#&gt;  [3] "Certara.RsNLME.ModelExecutor" "Certara.ModelResults"        
+#&gt;  [5] "Certara.VPCResults"           "Certara.RsNLME.ModelBuilder" 
+#&gt;  [7] "tidyvpc"                      "ggquickeda"                  
+#&gt;  [9] "coveffectsplot"               "table1c"                     
+#&gt; [11] "ggcertara"                   </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

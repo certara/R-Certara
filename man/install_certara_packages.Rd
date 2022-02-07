@@ -2,7 +2,7 @@
 % Please edit documentation in R/install.R
 \name{install_certara_packages}
 \alias{install_certara_packages}
-\title{Install Certara R Packages}
+\title{Install Certara packages}
 \usage{
 install_certara_packages(
   CRAN_repo = "https://cloud.r-project.org",
@@ -22,4 +22,9 @@ install_certara_packages(
 }
 \description{
 A user friendly wrapper to easily install R packages and Shiny applications developed by Certara
+}
+\examples{
+\dontrun{
+install_certara_packages()
+}
 }

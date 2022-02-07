@@ -13,6 +13,8 @@ certara_packages(
 \arguments{
 \item{include_self}{Logical; Set to \code{TRUE} to include \code{Certara.R}}
 
+\item{include_github}{Logical; Set to \code{TRUE} to include packages only available on GitHub}
+
 \item{include_JFROG_deps}{Logical; Set to \code{TRUE} to include Certara package dependencies on Jfrog}
 }
 \value{
