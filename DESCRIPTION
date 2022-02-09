@@ -8,7 +8,7 @@ Authors@R: c(
 Description: Certara.R contains various wrapper functions to install
     pharmacometric packages and Shiny applications developed by Certara
     PMX and Integrated Drug Development (iDD). The functions ensure the
-    successful installation of packages from non-standard repositories 
+    successful installation of packages from non-standard repositories
     such as GitHub and JFROG.
 URL: https://github.com/certara/R-Certara
 BugReports: https://github.com/certara/R-Certara/issues
