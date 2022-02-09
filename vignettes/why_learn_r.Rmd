@@ -1,0 +1,21 @@
+---
+title: "Why Learn R?"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/certara_university.jpg
+  - img/certara_circle.jpg
+vignette: >
+  %\VignetteIndexEntry{Why Learn R?}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+<img src='https://www.r-project.org/logo/Rlogo.png' align="right" height="150"/>
+
+Why should I learn R for pharmacometrics work?  Drug development is filled with uncertainty.  The best plans are routinely invalidated by the newest piece of data.  Analysts need tools that are fit-for-purpose, but also flexible enough to excel in this domain of uncertainty.
+
+R is such a tool and its popularity continues to grow across several disciplines in drug development.  In skilled hands, R and its massive library of support packages provides a means to achieve levels of efficiency, quality, and reproducibility that are difficult if not impossible to achieve with less flexible tools.
+
+R can be difficult to learn.  Certara’s goal is to help users learn R by providing a rich set of tools, packages, and learning resources that ease the learning curve for R in pharmacometrics. 
+
+---
