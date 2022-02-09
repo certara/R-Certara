@@ -1,13 +1,15 @@
 Package: Certara.R
-Title: Easily install and load R packages and Shiny applications developed by Certara
+Title: Easily Install Pharmacometric Packages and Shiny Applications Developed by Certara
 Version: 1.0.0
 Authors@R: c(
       person("James", "Craig", email = "james.craig@certara.com", role = c("aut", "cre")),
       person("Certara USA, Inc.", role = c("cph","fnd"))
       )
-Description: Certara.R contains various wrapper functions to easily install R packages
-    developed by Certara PMX and IDD. The functions ensure the successful installation of
-    packages from non-standard repositories such as GitHub and JFROG.
+Description: Certara.R contains various wrapper functions to install
+    pharmacometric packages and Shiny applications developed by Certara
+    PMX and Integrated Drug Development (iDD). The functions ensure the
+    successful installation of packages from non-standard repositories 
+    such as GitHub and JFROG.
 URL: https://github.com/certara/R-Certara
 BugReports: https://github.com/certara/R-Certara/issues
 Depends: R (>= 4.0)
