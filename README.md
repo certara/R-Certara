@@ -32,7 +32,7 @@ check_certara_package_versions()
 
 [`Certara.RsNLME.ModelBuilder`](https://certara.github.io/R-RsNLME-model-builder/index.html) is an R package and Shiny application used to build an RsNLME model.
 
-Use the GUI to select from various model building options and observe the PML update in real time. Additionally, users may generate the corresponding RsNLME code to learn reproduce the model object from R.
+Use the GUI to select from various model building options and observe the PML update in real time. Additionally, users may generate the corresponding RsNLME code to reproduce the model object from R.
 
 <br/>
 
