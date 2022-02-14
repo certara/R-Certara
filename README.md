@@ -3,6 +3,8 @@
 
 ---
 
+[![](https://www.r-pkg.org/badges/version/Certara.R?color=green)](https://cran.r-project.org/package=Certara.R)
+
 `Certara.R` provides a collection of packages and Shiny applications designed for Pharmacometric workflows in R. Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio.
 
 [Why should I learn R?](https://certara.github.io/R-Certara/articles/why_learn_r.html)
@@ -10,7 +12,7 @@
 ### Installation and Running Information
 
 ``` r
-remotes::install_github("certara/R-Certara")
+install.packages("Certara.R")
 
 library(Certara.R)
 
