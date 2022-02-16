@@ -22,7 +22,7 @@ check_certara_package_versions()
 ```
 
 
-### RsNLME <img src='vignettes/img/RsNLME.png' align="right" height="150" />
+### RsNLME <a href = "https://certara.github.io/R-RsNLME/index.html"><img src='vignettes/img/RsNLME.png' align="right" height="150" /></a>
 
 [`Certara.RsNLME`](https://certara.github.io/R-RsNLME/index.html) uses [tidyverse](https://www.tidyverse.org/) syntax to build Non-Linear-Mixed-Effects (NLME) models in R. Create and execute NLME models using built-in R functions, or execute models with [PML](https://www.certara.com/training/pml-school/) code used in [Phoenix PK/PD Platform](https://www.certara.com/software/phoenix-pkpd/).
 
@@ -30,7 +30,7 @@ check_certara_package_versions()
 
 <br/>
 
-### RsNLME.ModelBuilder <img src='vignettes/img/ModelBuilder.png' align="left" height="150" style = "padding-right: 10px" />
+### RsNLME.ModelBuilder <a href = "https://certara.github.io/R-RsNLME-model-builder/index.html"><img src='vignettes/img/ModelBuilder.png' align="left" height="150" style = "padding-right: 10px" /></a>
 
 [`Certara.RsNLME.ModelBuilder`](https://certara.github.io/R-RsNLME-model-builder/index.html) is an R package and Shiny application used to build an RsNLME model.
 
@@ -42,7 +42,7 @@ Use the GUI to select from various model building options and observe the PML up
 
 <br/>
 
-### RsNLME.ModelExecutor <img src='vignettes/img/ModelExecutor.png' align="right" height="150" />
+### RsNLME.ModelExecutor <a href = "https://certara.github.io/R-RsNLME-model-executor/index.html"><img src='vignettes/img/ModelExecutor.png' align="right" height="150" /></a>
 
 [`Certara.RsNLME.ModelExecutor`](https://certara.github.io/R-RsNLME-model-executor/index.html) is an R package and Shiny application used to execute an RsNLME model.
 
@@ -54,7 +54,7 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 
 <br/>
 
-### ModelResults <img src='vignettes/img/ModelResults.png' align="left" height="150" style = "padding-right: 10px"/>
+### ModelResults <a href = "https://certara.github.io/R-model-results/index.html"><img src='vignettes/img/ModelResults.png' align="left" height="150" style = "padding-right: 10px"/></a>
 
 [`Certara.ModelResults`](https://certara.github.io/R-model-results/index.html) is an R package and Shiny GUI used to generate, customize, and report model diagnostic plots and tables from NLME or NONMEM runs.
 
@@ -66,7 +66,7 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 
 <br/>
 
-### XposeNLME <img src='vignettes/img/XposeNLME.png' align="right" height="150"/>
+### XposeNLME <a href = "https://certara.github.io/R-Xpose-NLME/index.html"><img src='vignettes/img/XposeNLME.png' align="right" height="150"/></a>
 
 [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) is an R package used to creates `xpose` databases (`xpose_data`) for PML/NLME results. Additionally, [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) offers various covariate model diagnostic functions, not available in the `xpose` package.
 
@@ -76,7 +76,7 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 
 <br/>
 
-### VPCResults <img src='vignettes/img/VPCResults.png' align="left" height="150" style = "padding-right: 10px"/>
+### VPCResults <a href = "https://certara.github.io/R-VPCResults/index.html"><img src='vignettes/img/VPCResults.png' align="left" height="150" style = "padding-right: 10px"/></a>
 
 [`Certara.VPCResults`](https://certara.github.io/R-VPCResults/index.html) is an R package and Shiny application used to parameterize and plot a Visual Predictive Check (VPC).
 
@@ -90,7 +90,7 @@ Users are not limited by the GUI however, [`Certara.VPCResults`](https://certara
 
 <br/>
 
-### tidyvpc <img src='vignettes/img/tidyvpc.png' align="right" height="150" />
+### tidyvpc <a href = "https://certara.github.io/tidyvpc/index.html"><img src='vignettes/img/tidyvpc.png' align="right" height="150" /></a>
 
 The [`tidyvpc`](https://certara.github.io/tidyvpc/index.html) package is used to perform a Visual Predictive Check (VPC), while accounting for stratification, censoring, and prediction correction. 
 
@@ -102,7 +102,7 @@ Using piping from 'magrittr', the intuitive syntax gives users a flexible and po
 
 <br/>
 
-### ggquickeda <img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" />
+### ggquickeda <a href = "https://github.com/smouksassi/ggquickeda"><img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "padding-right: 10px" /></a>
 
 [`ggquickeda`](https://github.com/smouksassi/ggquickeda) is an R Shiny app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`.
 

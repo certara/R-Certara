@@ -16,7 +16,6 @@ Why R? R is the primary programming language in the Pharmacometrician's toolkit 
 
 The following lessons will demonstrate how to begin using R in your Pharmacometric workflow. We will cover everything from installation/environment setup to creating interactive dashboards to communicate your analysis – let’s get started! 
 
-
 ---
 
 ## Lesson 1: Getting Started with RsNLME
@@ -29,10 +28,10 @@ The following lessons will demonstrate how to begin using R in your Pharmacometr
   * Setup License
 * [Run test example](https://certara.github.io/R-RsNLME/articles/installation.html#run-test-example-1)
 
-Click [here](lesson_1.html) to access.
+Live Webinar Date: 4/28/2022
+
+*Registration information available soon.*
+
+Click [here](lesson_1.html) to preview
 
 ---
-
-## Lesson 2: Dataset Basics
-
-*Coming Soon!*

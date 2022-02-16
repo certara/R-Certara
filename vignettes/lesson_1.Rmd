@@ -1,16 +1,18 @@
 ---
-title: "Lesson 1: Getting Started"
+title: "Lesson 1: Getting Started with RsNLME"
 output: rmarkdown::html_vignette
 resource_files:
   - img/certara_university.jpg
   - img/certara_circle.jpg
 vignette: >
-  %\VignetteIndexEntry{Lesson 1: Getting Started}
+  %\VignetteIndexEntry{Lesson 1: Getting Started with RsNLME}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
-In the following lesson you will learn how to:
+### Live Webinar Date: 4/28/2022
+
+In the webinar you will learn how to:
 
 * [Install R](https://cran.r-project.org/)
 * [Install RStudio (IDE)](https://www.rstudio.com/products/rstudio/download/#download)
@@ -23,5 +25,7 @@ In the following lesson you will learn how to:
 R Packages Used: `Certara.RsNLME`
 
 ----
+
+### Lesson 1: Preview
 
 <iframe width="840" height="472" src="https://certara-training.s3.amazonaws.com/Certara+University/PKPD+Free+Learning/028-TU+RsNLME+Tutorials/RsNLME+Installation/Videos/RSNLME+1.1+installation.mp4"></iframe>
