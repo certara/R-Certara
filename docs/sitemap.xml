@@ -10,9 +10,6 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/lessons.html</loc>
-  </url>
-  <url>
     <loc>/articles/lesson_1.html</loc>
   </url>
   <url>
@@ -50,12 +47,6 @@
   </url>
   <url>
     <loc>/reference/check_installed_certara_packages.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_installed_packages.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_package_versions.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
