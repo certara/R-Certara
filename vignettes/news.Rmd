@@ -9,9 +9,23 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-## Pirana v21.11.1 <img src='img/pirana.png' align="right" height="100" align="left" style = "padding-right: 20px" />
+<br/><br/>
 
-* #### [Release Notes](https://onlinehelp.certara.com/rsnlme/1.1/index.html#t=RsNLME_User_Guide%2FRsNLMEReleaseNotes%2FRsNLMEReleaseNotes.htm%23XREF_56808__RsNLME_1_1_Release_Notes6831)
+## tidyvpc v1.3.0 <img src='img/tidyvpc.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" />
+
+* Date: 2022/03/11
+* [Release Notes](https://certara.github.io/tidyvpc/index.html)
+
+---
+
+<br/><br/>
+<br/><br/>
+
+## Pirana v21.11.1 <img src='img/pirana.png' height="100" align="right"  style = "float:right; height: 100px; padding: 5px; margin-top:10px;" />
+
+
+* Date: 2021/11/01
+* [Release Notes](https://onlinehelp.certara.com/pirana/21.11.1/index.html#t=Pirana_User_Guide%2FPiranaReleaseNotes%2FPiranaReleaseNotes.htm%23XREF_56958__Pirana_21_11_1_Release_Notes5608)
 
 ---
 
@@ -19,8 +33,10 @@ vignette: >
 <br/><br/>
 
 
-## RsNLME v1.1.0 <img src='img/RsNLME.png' align="right" height="150" align="left" style = "padding-right: 20px" />
+## RsNLME v1.1.0 <img src='img/RsNLME.png' height="150"  align="right"  style = "float:right; height: 150px; padding: 5px;" />
 
-* #### [Release Notes](https://onlinehelp.certara.com/pirana/21.11.1/index.html#t=Pirana_User_Guide%2FPiranaReleaseNotes%2FPiranaReleaseNotes.htm%23XREF_56958__Pirana_21_11_1_Release_Notes5608)
+* Date: 2021/11/01
+* [Release Notes](https://onlinehelp.certara.com/rsnlme/1.1/index.html#t=RsNLME_User_Guide%2FRsNLMEReleaseNotes%2FRsNLMEReleaseNotes.htm%23XREF_56808__RsNLME_1_1_Release_Notes6831)
+
 
 ---

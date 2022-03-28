@@ -17,13 +17,16 @@ reference:
 
 navbar:
   structure:
-    left:  [home, reference, articles, webinars, tutorials, resources, news]
+    left:  [home, reference, pml, articles, webinars, tutorials, resources, news]
     navbar:
   components:
     home: ~
+    pml:
+      text: PML Library
+      href: articles/pml_library.html
     articles:
       text: Certara R School
-      href: articles/lessons.html
+      href: articles/Certara_R_School.html
     webinars:
       text: Webinars
       href: articles/webinars.html

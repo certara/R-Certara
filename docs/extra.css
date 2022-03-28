@@ -1,0 +1,26 @@
+small.dont-index {
+  visibility: hidden;
+}
+.contents h1 {
+    padding-top: 60px;
+    margin-top: -40px;
+    visibility: hidden;
+}
+
+.contents .page-header {
+    margin-top: calc(-180px + 1em);
+}
+
+.col-md-9 {
+    width: 80%;
+}
+.col-md-3 {
+    width: 20%;
+}
+
+h2#installation {
+  padding-top: 95px;
+}
+/*div.container.template-article {
+  width: 110%;
+}*/

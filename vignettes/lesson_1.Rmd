@@ -10,7 +10,14 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-### Live Webinar Date: 4/28/2022
+### Live Webinar Date: 4/28/2022 @10am EST
+
+----
+
+#### [Register for Upcoming Webinar](https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ)
+
+----
+
 
 In the webinar you will learn how to:
 

@@ -1,0 +1,82 @@
+---
+title: "Certara R School"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/certara_university.jpg
+  - img/certara_circle.jpg
+  - img/Certara_R_School.png
+vignette: >
+  %\VignetteIndexEntry{Certara R School}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+<img src='img/Certara_R_School.png' align="center" height="150"/>
+
+# Certara R School
+
+Certara R School is a series of guided webinars, exercises, and interactive tutorials for the application of R in Pharmacometrics. 
+
+Why R? R is the primary programming language in the Pharmacometrician's toolkit and offers unparalleled efficiency, flexibility, and reproducibility compared to working inside a GUI alone.  Learning R can be challenging at first, but Certara is here to help!
+
+The following lessons will demonstrate how to begin using R in your Pharmacometric workflow. We will cover everything from installation/environment setup to creating interactive dashboards to communicate your analysis – let’s get started!
+
+---
+
+#### [Register for Upcoming Webinar](https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ)
+
+---
+
+## [Lesson 1: Getting Started with RsNLME](lesson_1.html)
+
+* Upcoming Webinar Date: 4/28/2022 @10am EST
+
+---
+
+## Lesson 2: R Basics for Pharmacometrics
+
+* Upcoming Webinar Date: TBD
+
+---
+
+## Lesson 4: Modeling with RsNLME
+
+* Upcoming Webinar Date: TBD
+
+---
+
+## Lesson 5: Model Refinement
+
+* Upcoming Webinar Date: TBD
+
+---
+
+## Lesson 6: Evaluate Model Diagnostics
+
+* Upcoming Webinar Date: TBD
+
+---
+
+## Lesson 7: Model Simulation and VPC
+
+* Upcoming Webinar Date: TBD
+
+---
+
+## Lesson 8: Best Practices for Reproducibility in R
+
+* Upcoming Webinar Date: TBD
+
+---
+
+## Lesson 9: Publishing Results with RMarkdown
+
+* Upcoming Webinar Date: TBD
+
+---
+
+## Lesson 10: Working with PML
+
+* Upcoming Webinar Date: TBD
+
+---
