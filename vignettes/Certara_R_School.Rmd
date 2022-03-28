@@ -11,9 +11,9 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-<img src='img/Certara_R_School.png' align="center" height="150"/>
+<img src='img/Certara_R_School.png' align="center" height="175" style = "width:100%;"/>
 
-# Certara R School
+<br></br>
 
 Certara R School is a series of guided webinars, exercises, and interactive tutorials for the application of R in Pharmacometrics. 
 
@@ -24,6 +24,8 @@ The following lessons will demonstrate how to begin using R in your Pharmacometr
 ---
 
 #### [Register for Upcoming Webinar](https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ)
+
+<br></br>
 
 ---
 

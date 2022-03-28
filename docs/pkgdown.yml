@@ -1,5 +1,5 @@
 pandoc: 2.14.0.3
-pkgdown: 2.0.2
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   Certara_R_School: Certara_R_School.html
@@ -11,5 +11,5 @@ articles:
   rsnlme_tutorial: rsnlme_tutorial.html
   webinars: webinars.html
   why_learn_r: why_learn_r.html
-last_built: 2022-03-28T17:32Z
+last_built: 2022-03-28T18:18Z
 
