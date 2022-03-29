@@ -14,7 +14,7 @@ vignette: >
 
 ----
 
-#### [Register for Upcoming Webinar](https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ)
+<h4><a href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Upcoming Webinar</a></h4>
 
 <br></br>
 
