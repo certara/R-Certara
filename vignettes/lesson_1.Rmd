@@ -12,13 +12,13 @@ vignette: >
 
 ### Live Webinar Date: 4/28/2022 @10am EST
 
-----
+---
 
-<h4><a href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Upcoming Webinar</a></h4>
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Upcoming Webinar</a>
+</center>
 
-<br></br>
-
-----
+---
 
 
 In the webinar you will learn how to:
@@ -37,4 +37,6 @@ R Packages Used: `Certara.RsNLME`
 
 ### Lesson 1: Preview
 
+<center>
 <iframe width="840" height="472" src="https://certara-training.s3.amazonaws.com/Certara+University/PKPD+Free+Learning/028-TU+RsNLME+Tutorials/RsNLME+Installation/Videos/RSNLME+1.1+installation.mp4"></iframe>
+</center>

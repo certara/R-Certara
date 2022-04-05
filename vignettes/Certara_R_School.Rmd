@@ -23,62 +23,68 @@ The following lessons will demonstrate how to begin using R in your Pharmacometr
 
 ---
 
-<h4><a href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Upcoming Webinar</a></h4>
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Upcoming Webinar</a>
+</center>
 
-<br></br>
+---
+
+## [Lesson 0: Introduction to Certara.R School](lesson_0.html)
+
+* Webinar Date: *Pre-recorded*
 
 ---
 
 ## [Lesson 1: Getting Started with RsNLME](lesson_1.html)
 
-* Upcoming Webinar Date: 4/28/2022 @10am EST
+* Webinar Date: *4/28/2022 @10am EST*
 
 ---
 
 ## Lesson 2: R Basics for Pharmacometrics
 
-* Upcoming Webinar Date: TBD
+* Webinar Date: *TBD*
 
 ---
 
 ## Lesson 4: Modeling with RsNLME
 
-* Upcoming Webinar Date: TBD
+* Webinar Date: *TBD*
 
 ---
 
 ## Lesson 5: Model Refinement
 
-* Upcoming Webinar Date: TBD
+* Webinar Date: *TBD*
 
 ---
 
 ## Lesson 6: Evaluate Model Diagnostics
 
-* Upcoming Webinar Date: TBD
+* Webinar Date: *TBD*
 
 ---
 
 ## Lesson 7: Model Simulation and VPC
 
-* Upcoming Webinar Date: TBD
+* Webinar Date: *TBD*
 
 ---
 
 ## Lesson 8: Best Practices for Reproducibility in R
 
-* Upcoming Webinar Date: TBD
+* Upcoming Webinar Date: *TBD*
 
 ---
 
 ## Lesson 9: Publishing Results with RMarkdown
 
-* Upcoming Webinar Date: TBD
+* Upcoming Webinar Date: *TBD*
 
 ---
 
 ## Lesson 10: Working with PML
 
-* Upcoming Webinar Date: TBD
+* Upcoming Webinar Date: *TBD*
 
 ---

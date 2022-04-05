@@ -1,0 +1,37 @@
+---
+title: "Lesson 0: Introduction to Certara.R School"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/certara_university.jpg
+  - img/certara_circle.jpg
+vignette: >
+  %\VignetteIndexEntry{Lesson 0: Introduction to Certara.R School}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 0: Introduction to Certara.R School
+
+----
+
+The following webinar will cover:
+
+* Why are we doing this?
+* What will you learn?
+* What can you expect from us?
+* Where to start?
+
+----
+
+<center>
+<iframe width="840" height="472" src="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+0/CertaraRSchoo_Lesson0.mp4"></iframe>
+</center>
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Upcoming Webinar</a>
+</center>
+
+---
+
