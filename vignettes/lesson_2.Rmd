@@ -1,0 +1,34 @@
+---
+title: "Lesson 2: R Basics for PMx"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/certara_university.jpg
+  - img/certara_circle.jpg
+vignette: >
+  %\VignetteIndexEntry{Lesson 2: R Basics for PMx}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+### Live Webinar Date: 5/25/2022 @10am EST
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_7dxvlrtfQ1SOv_pJn8kOZg" target="_blank">Register for Upcoming Webinar</a>
+</center>
+
+---
+
+
+In the webinar you will learn:
+
+* Basic R commands
+* PK data overview
+    * Importing/exporting different file types e.g., `csv`, `xls`, `txt`
+    * [`RsNLME`](https://certara.github.io/R-RsNLME/) data structure
+* Data manipulation with [`dplyr`](https://dplyr.tidyverse.org/)
+* Exploratory Data Analysis (EDA) with [`ggplot2`](https://ggplot2.tidyverse.org/)
+* Descriptive statistics and table generation with [`gtsummary`](https://www.danieldsjoberg.com/gtsummary/) and [`flextable`](https://davidgohel.github.io/flextable/)
+* Best practices for writing R template scripts
+

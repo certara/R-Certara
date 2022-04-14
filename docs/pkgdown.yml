@@ -5,6 +5,7 @@ articles:
   Certara_R_School: Certara_R_School.html
   lesson_0: lesson_0.html
   lesson_1: lesson_1.html
+  lesson_2: lesson_2.html
   news: news.html
   packages: packages.html
   pml_library: pml_library.html
@@ -12,5 +13,5 @@ articles:
   rsnlme_tutorial: rsnlme_tutorial.html
   webinars: webinars.html
   why_learn_r: why_learn_r.html
-last_built: 2022-04-05T20:54Z
+last_built: 2022-04-14T17:17Z
 
