@@ -10,16 +10,19 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-### Live Webinar Date: 4/28/2022 @10am EST
+## Lesson 1: Getting Started with RsNLME
 
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Lesson 1 Webinar</a>
 </center>
 
 ---
 
+### Live Webinar Date: 4/28/2022 @10am EST
+
+----
 
 In the webinar you will learn how to:
 

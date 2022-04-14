@@ -10,16 +10,20 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-### Live Webinar Date: 5/25/2022 @10am EST
+## Lesson 2: R Basics for PMx
 
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_7dxvlrtfQ1SOv_pJn8kOZg" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_7dxvlrtfQ1SOv_pJn8kOZg" target="_blank">Register for Lesson 2 Webinar</a>
 </center>
 
 ---
 
+
+### Live Webinar Date: 5/25/2022 @10am EST
+
+----
 
 In the webinar you will learn:
 
