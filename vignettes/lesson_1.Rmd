@@ -15,31 +15,42 @@ vignette: >
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_6AsyPfjGRMGLpCw1RIboTQ" target="_blank">Register for Lesson 1 Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/rec/play/XxU4QjsEijEXip6e4pyMbGoM3dqhTx4F-mHrO7pqaxt0RKZF6LR5h4UIH_brg6XCj7hqnsTs101-wba6.PIgabJyv1YN0XdUU?startTime=1651154353000&_x_zm_rtaid=0psuG8eAQViHfkY_X5zwlA.1651167154263.d55d73769c1e1a010c9784657360db67&_x_zm_rhtaid=533" target="_blank">Watch Lesson 1 Recording</a>
 </center>
 
 ---
 
-### Live Webinar Date: 4/28/2022 @10am EST
+### Webinar Date: 4/28/2022 @10am EST
+
+<a href="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+1/Certara.R+School+Lesson1+Materials.zip" download>Download Lesson 1 Materials</a>, which include the PowerPoint presentation, R script, and data shown during Lesson 1.
 
 ----
 
-In the webinar you will learn how to:
+In the webinar you will learn how:
 
-* [Install R](https://cran.r-project.org/)
-* [Install RStudio (IDE)](https://www.rstudio.com/products/rstudio/download/#download)
-* [Install RsNLME](https://certara.github.io/R-RsNLME/articles/installation.html#installation-of-r-packages-1)
+* What is R and RStudio?
+* Installation information for R and RStudio
+* Useful tips and tricks in RStudio
+* [How to Install Certara R Packages](https://certara.github.io/R-Certara/#installation-and-running-information)
+  * RsNLME and other Certara.R packages
   * NLME Engine
-  * R Packages
   * Setup License
-* [Run test example](https://certara.github.io/R-RsNLME/articles/installation.html#run-test-example-1)
+* [Run RsNLME model](https://certara.github.io/R-RsNLME/articles/installation.html#run-test-example-1)
 
-R Packages Used: `Certara.RsNLME`
+R Packages Used: `Certara.RsNLME`, `readr` 
 
 ----
 
-### Lesson 1: Preview
+### Lesson 1: Extended RsNLME Installation Video
 
 <center>
 <iframe width="840" height="472" src="https://certara-training.s3.amazonaws.com/Certara+University/PKPD+Free+Learning/028-TU+RsNLME+Tutorials/RsNLME+Installation/Videos/RSNLME+1.1+installation.mp4"></iframe>
 </center>
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_7dxvlrtfQ1SOv_pJn8kOZg" target="_blank">Register for Upcoming Webinar</a>
+</center>
+
+---
