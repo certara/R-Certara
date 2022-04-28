@@ -26,7 +26,7 @@ vignette: >
 
 ----
 
-In the webinar you will learn how:
+In the webinar you will learn:
 
 * What is R and RStudio?
 * Installation information for R and RStudio
