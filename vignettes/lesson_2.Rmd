@@ -20,19 +20,24 @@ vignette: >
 
 ---
 
+Certara.R School Lesson 2 will demonstrate common R functionality needed to perform pharmacometric workflows. For example, how to import and merge data, create new columns, generate descriptive summary statistics and perform  Exploratory Data Analysis (EDA). In addition, best practices for data structure of datasets to work with RsNLME will be discussed.
+
 
 ### Live Webinar Date: 5/25/2022 @10am EST
 
 ----
 
-In the webinar you will learn:
+In the webinar we will cover the following topics:
 
-* Basic R commands
 * PK data overview
-    * Importing/exporting different file types e.g., `csv`, `xls`, `txt`
+    * Recap importing/exporting different file types e.g., `csv`, `xls`, `txt`
     * [`RsNLME`](https://certara.github.io/R-RsNLME/) data structure
-* Data manipulation with [`dplyr`](https://dplyr.tidyverse.org/)
-* Exploratory Data Analysis (EDA) with [`ggplot2`](https://ggplot2.tidyverse.org/)
-* Descriptive statistics and table generation with [`gtsummary`](https://www.danieldsjoberg.com/gtsummary/) and [`flextable`](https://davidgohel.github.io/flextable/)
-* Best practices for writing R template scripts
-
+* Create RsNLME dataset from SDTM:
+  - Data manipulation with [`dplyr`](https://dplyr.tidyverse.org/)
+* Descriptive Statistics
+  - Mean concentration by time
+  - Demography summary
+* Introduction to Exploratory Data Analysis (EDA) with [`ggplot2`](https://ggplot2.tidyverse.org/)
+  - Concentration time by subject
+  - Mean concentration-time by dose group
+* Best practices for writing and documenting R scripts

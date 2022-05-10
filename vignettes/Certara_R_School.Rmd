@@ -60,9 +60,9 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 3: Exploratory Data Analysis with ggquickeda
+## [Lesson 3: Exploratory Data Analysis](lesson_3.html)
 
-* Webinar Date: *TBD*
+* Webinar Date: *6/22/2022 @10am EST*
 
 ---
 

@@ -1,0 +1,34 @@
+---
+title: "Lesson 3: Exploratory Data Analysis"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/certara_university.jpg
+  - img/certara_circle.jpg
+vignette: >
+  %\VignetteIndexEntry{Lesson 3: Exploratory Data Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 3: Exploratory Data Analysis (EDA)
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_jKSzJxD5SKGjqXM5WbRkHw" target="_blank">Register for Lesson 3 Webinar</a>
+</center>
+
+---
+
+Certara.R School Lesson 3 will demonstrate in depth applications of Exploratory Data Analysis (EDA) in R using the [`ggquickeda`](https://github.com/smouksassi/ggquickeda) package. Exploratory Data Analysis is a critical step in the pharmacometric workflow, allowing you to understand your data and communicate information effectively. The presenter of this lesson will be Dr.Samer Mouksassi, who is the author of the [`ggquickeda`](https://github.com/smouksassi/ggquickeda) R package.
+
+
+### Live Webinar Date: 6/22/2022 @10am EST
+
+----
+
+In the webinar we will cover the following topics:
+
+* Examine the value and scope of exploratory data analysis methods
+* How to communicate information effectively using visual methods in R
+* Demo Exploratory Data Analysis (EDA) with [`ggquickeda`](https://github.com/smouksassi/ggquickeda)
