@@ -102,11 +102,9 @@ identical(pkdose$PCRFTDTC,pkdose$EXSTDTC) # it does, we can use either for time 
 
 # * 2.6 Calculate relative times from datetime ----
 # we use the lubridate package from the tidyverse
-# The %--% operator is shortand syntax for the interval() function
-# For details enter: ?lubridate::`%--%
 
 pkdose <- pkdose %>%
-  mutate(TIME=as.duration(ymd_hm(EXSTDTC) %--% ymd_hm(PCDTC))/dhours(1)) %>%
+  mutate(TIME=as.duration(interval(start = ymd_hm(EXSTDTC), end = ymd_hm(PCDTC)))/dhours(1)) %>%
   select(USUBJID,PCSTRESN,EXDOSE,TIME) %>%
   rename(CONC=PCSTRESN,DOSEGRP=EXDOSE)
 
@@ -120,7 +118,11 @@ finaldat <- pkdose %>% left_join(demo,by="USUBJID") %>%
 # 3. Descriptive Statistics Tables ----
 
 # * 3.1 Demographic summary table using gt ----
+# the distinct function provides all unique rows of specified variables - in this case 1 row per individual.
+# Note that a dataset with time varying covariates would require a different approach
+# to isolate the unique rows to use for a demography summary table
 dm_table <- finaldat %>%
+  distinct(ID,AGE,SEX,RACE,WT) %>%
   select(AGE,SEX,RACE,WT) %>%
   tbl_summary(statistic = all_continuous() ~ "{mean} ({min} - {max})") %>%
   add_n() %>%
@@ -134,19 +136,19 @@ dm_table <- finaldat %>%
 
 mean_conc_dosegrp_time_tbl <- finaldat %>%
   select(TIME, CONC, DOSEGRP) %>%
-  filter(TIME > 0) %>%
+  #filter(TIME > 0) %>%  #Generally would include in table if PK collected pre-dose
   group_by(DOSEGRP, TIME) %>%
-  summarise(CONC_mean = round(mean(CONC), 2),
-            CONC_min = round(min(CONC), 2),
-            CONC_max = round(max(CONC), 2)) %>%
+  summarise(CONC_mean = signif(mean(CONC), 3),
+            CONC_min = signif(min(CONC), 3),
+            CONC_max = signif(max(CONC), 3)) %>%
   mutate(CONC_combined_stat = paste0(CONC_mean, " (", CONC_min, "-", CONC_max, ")")) %>%
   select(DOSEGRP, TIME, CONC_combined_stat) %>%
   pivot_wider(names_from = "DOSEGRP", values_from = "CONC_combined_stat") %>%
-  flextable() %>%
-  set_header_labels(`5000` = "5,000/mg",
-                    `10000` = "10,000/mg",
-                    `20000` = "20,000/mg"
-  ) %>%
+  flextable(cwidth = 1.5) %>%
+  set_header_labels(`TIME` = "Time (hr)",
+                    `5000` = paste0("5000  ","\U03BC","g"),
+                    `10000` = paste0("10000 ","\U03BC","g"),
+                    `20000` = paste0("20000 ","\U03BC","g")) %>%
   add_header_row(colwidths = c(1,3), values = c("", "Dose Group")) %>%
   set_caption("Mean Concentration by Dose Group and Time", ) %>%
   align(align = "center", part = "all") %>%
@@ -163,9 +165,11 @@ webshot::install_phantomjs()
 # * * 3.3.1 Word ----
 save_as_docx(dm_table, mean_conc_dosegrp_time_tbl, path = "tables.docx")
 # * * 3.3.2 PDF ----
-save_as_image(dm_table, mean_conc_dosegrp_time_tbl, path = "tables.pdf", zoom = 1)
+save_as_image(dm_table, path = "dmtable.pdf")
+save_as_image(mean_conc_dosegrp_time_tbl, path = "mean_conctable.pdf")
 # * * 3.3.3 PNG ----
-save_as_image(dm_table, mean_conc_dosegrp_time_tbl, path = "tables.png")
+save_as_image(dm_table, path = "dmtable.png")
+save_as_image(mean_conc_dosegrp_time_tbl, path = "mean_conctable.png")
 # * * 3.3.4 HTML ----
 save_as_html(dm_table, mean_conc_dosegrp_time_tbl,  path = "tables.html")
 # * * 3.3.5 PowerPoint ----
@@ -178,18 +182,15 @@ save_as_pptx(dm_table, mean_conc_dosegrp_time_tbl,  path = "tables.pptx")
 # * 4.1 Time-Concentration by Subject ----
 p1 <- finaldat %>%
   mutate(ID = as.factor(ID)) %>%
-  ggplot(aes(TIME,CONC,group=ID, color=ID)) +
+  ggplot(aes(TIME,CONC,group=ID)) +
   geom_line() +
   geom_point()
 
-# * * 4.1.1 Interactive Visualization ----
+
 
 if(!require(plotly)){
   install.packages("plotly")
 }
-
-plotly::ggplotly(p1)
-
 
 # * 4.2 Time-Concentration by Subject Faceted by Dose Group ----
 p2 <- p1 + facet_wrap(~DOSEGRP)
@@ -208,3 +209,9 @@ p6 <- p1 + facet_wrap(~cut(WT,3))  #group into 3 equal "cuts" of WT
 
 # * 4.6 Time-Concentration by Subject Faceted by Age Quantiles ----
 p7 <- p1 + facet_wrap(~cut(AGE,quantile(AGE),include.lowest=TRUE)) #group into quartile "cuts"
+
+p8 <- p7 + aes(color=ID)
+
+# * * 4.1.1 Interactive Visualization ----
+plotly::ggplotly(p8)
+
