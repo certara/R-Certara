@@ -207,11 +207,10 @@ p5 <- p1 + facet_wrap(DOSEGRP~RACE) #facet synonymous with lattice
 # * 4.6 Time-Concentration by Subject Faceted by Equal WT Intervals ----
 p6 <- p1 + facet_wrap(~cut(WT,3))  #group into 3 equal "cuts" of WT
 
-# * 4.6 Time-Concentration by Subject Faceted by Age Quantiles ----
+# * 4.7 Time-Concentration by Subject Faceted by Age Quantiles ----
 p7 <- p1 + facet_wrap(~cut(AGE,quantile(AGE),include.lowest=TRUE)) #group into quartile "cuts"
 
+# * 4.8 Interactive Visualization ----
 p8 <- p7 + aes(color=ID)
-
-# * * 4.1.1 Interactive Visualization ----
 plotly::ggplotly(p8)
 
