@@ -9,7 +9,7 @@ library(haven) #Useful for import of SAS files
 library(dplyr) #Most popular package for wrangling data in R
 library(tidyr) #useful data manipulation and reshaping functions that work with dplyr
 library(gtsummary) #useful for quick data summary tables
-library(flextable) # useful table packge supporting critical file output types
+library(flextable) # useful table package supporting critical file output types
 library(lubridate) #useful for working with date-times
 library(ggplot2) #useful plotting package
 
@@ -26,6 +26,13 @@ vs<-read_xpt("VS.xpt")
 glimpse(dm)
 # Check unique values of RACE for recoding
 table(dm$RACE)
+# Quick check of range, gross distribution of continuous variables
+table(dm$AGE)
+# Print the object
+dm
+print(dm)
+# Click on the object in the Global Environment panel to display in a tab
+View(dm)
 
 
 # 2. Dataset preparation ----
@@ -63,6 +70,7 @@ wtdat %>%
 
 # * * * 2.1.2.1 Data Correction ----
 #NOTE: On review of vs summary we note that subject 137 does not have a WEEK 1 value for WT
+#wtdat %>% filter(is.na(WT))
 #We need to substitute the SCREENING value for this subject
 
 wtdat <- vs %>%
@@ -212,5 +220,6 @@ p7 <- p1 + facet_wrap(~cut(AGE,quantile(AGE),include.lowest=TRUE)) #group into q
 
 # * 4.8 Interactive Visualization ----
 p8 <- p7 + aes(color=ID)
+
 plotly::ggplotly(p8)
 
