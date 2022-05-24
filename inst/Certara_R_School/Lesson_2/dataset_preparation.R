@@ -8,9 +8,9 @@
 library(haven) #Useful for import of SAS files
 library(dplyr) #Most popular package for wrangling data in R
 library(tidyr) #useful data manipulation and reshaping functions that work with dplyr
+library(lubridate) #useful for working with date-times
 library(gtsummary) #useful for quick data summary tables
 library(flextable) # useful table package supporting critical file output types
-library(lubridate) #useful for working with date-times
 library(ggplot2) #useful plotting package
 
 # 1: Import Data ----
@@ -22,25 +22,25 @@ vs<-read_xpt("VS.xpt")
 
 # * 1.2 Inspect data ----
 # * * 1.2.1 Covariate Data Overview ----
+# Print the object
+dm
+print(dm)
+# Click on the object in the Global Environment panel to display in a tab
+View(dm)
 # Use the glimpse function from dplyr to inspect the data, including column type
 glimpse(dm)
 # Check unique values of RACE for recoding
 table(dm$RACE)
 # Quick check of range, gross distribution of continuous variables
 table(dm$AGE)
-# Print the object
-dm
-print(dm)
-# Click on the object in the Global Environment panel to display in a tab
-View(dm)
-
+summary(dm$AGE)
 
 # 2. Dataset preparation ----
 # * 2.1 Demographic data ----
 # * * 2.1.1 DM ----
 #Prepare dataframe with desired covariates from dm and vs
 demo <- dm %>%
-  select(USUBJID,SUBJID,AGE,SEX,RACE,ETHNIC) %>%  #Select desired columns
+  select(USUBJID,SUBJID,AGE,SEX,RACE) %>%  #Select desired columns
   mutate(RACEOR=RACE) %>% #Create race original column (RACEOR)
   mutate(RACE=ifelse(RACEOR=="BLACK OR AFRICAN AMERICAN","BLACK",RACE)) %>% #Recode RACE variable
   mutate(RACE=ifelse(RACEOR=="NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER","OTHER",RACE)) %>%
@@ -169,6 +169,7 @@ if(!require(webshot)){
   install.packages("webshot")
 }
 webshot::install_phantomjs()
+library(webshot2)
 
 # * * 3.3.1 Word ----
 save_as_docx(dm_table, mean_conc_dosegrp_time_tbl, path = "tables.docx")
@@ -223,3 +224,6 @@ p8 <- p7 + aes(color=ID)
 
 plotly::ggplotly(p8)
 
+#ggquickeda next lesson!
+library(ggquickeda)
+run_ggquickeda(finaldat)
