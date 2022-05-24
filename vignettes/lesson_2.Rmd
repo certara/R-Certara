@@ -25,6 +25,8 @@ Certara.R School Lesson 2 will demonstrate common R functionality needed to perf
 
 ### Live Webinar Date: 5/25/2022 @10am EST
 
+<a href="https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_2" target="_blank"> Click here</a> to access `dataset_preparation.R` and download SDTM datasets used in Lesson 2.
+
 ----
 
 In the webinar we will cover the following topics:
