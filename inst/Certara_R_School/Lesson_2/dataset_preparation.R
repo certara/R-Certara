@@ -172,8 +172,8 @@ if(!require(webshot2)){
 # * * 3.3.1 Word ----
 save_as_docx(dm_table, mean_conc_dosegrp_time_tbl, path = "tables.docx")
 # * * 3.3.2 PDF ----
-save_as_image(dm_table, path = "dmtable.pdf")
-save_as_image(mean_conc_dosegrp_time_tbl, path = "mean_conctable.pdf")
+save_as_image(dm_table, path = "dmtable.pdf", webshot = "webshot2")
+save_as_image(mean_conc_dosegrp_time_tbl, path = "mean_conctable.pdf", webshot = "webshot2")
 # * * 3.3.3 PNG ----
 save_as_image(dm_table, path = "dmtable.png")
 save_as_image(mean_conc_dosegrp_time_tbl, path = "mean_conctable.png")
