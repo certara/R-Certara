@@ -165,7 +165,7 @@ mean_conc_dosegrp_time_tbl <- finaldat %>%
 
 # * 3.3 Save Tables ----
 # To save table as pdf or image, webshot2 is required, see ?save_as_image
-if(!require(webshot2)){
+if(!require(webshot2, quietly = TRUE)){
   install.packages("webshot2")
 }
 
@@ -214,7 +214,7 @@ p7 <- p1 + facet_wrap(~cut(AGE,quantile(AGE),include.lowest=TRUE)) #group into q
 p8 <- p7 + aes(color=ID)
 
 
-if(!require(plotly)){
+if(!require(plotly, quietly = TRUE)){
   install.packages("plotly")
 }
 
@@ -222,5 +222,8 @@ plotly::ggplotly(p8)
 
 
 #ggquickeda next lesson!
-library(ggquickeda)
-run_ggquickeda(finaldat)
+if(!require(ggquickeda, quietly = TRUE)){
+  install.packages("ggquickeda")
+}
+
+ggquickeda::run_ggquickeda(finaldat)
