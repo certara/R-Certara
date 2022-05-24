@@ -164,12 +164,10 @@ mean_conc_dosegrp_time_tbl <- finaldat %>%
 
 
 # * 3.3 Save Tables ----
-# To save table as pdf or image, webshot and phantom_js are required
-if(!require(webshot)){
-  install.packages("webshot")
+# To save table as pdf or image, webshot2 is required, see ?save_as_image
+if(!require(webshot2)){
+  install.packages("webshot2")
 }
-webshot::install_phantomjs()
-library(webshot2)
 
 # * * 3.3.1 Word ----
 save_as_docx(dm_table, mean_conc_dosegrp_time_tbl, path = "tables.docx")
@@ -185,7 +183,6 @@ save_as_html(dm_table, mean_conc_dosegrp_time_tbl,  path = "tables.html")
 save_as_pptx(dm_table, mean_conc_dosegrp_time_tbl,  path = "tables.pptx")
 
 
-
 # 4. Exploratory Data Analysis ----
 
 # * 4.1 Time-Concentration by Subject ----
@@ -194,12 +191,6 @@ p1 <- finaldat %>%
   ggplot(aes(TIME,CONC,group=ID)) +
   geom_line() +
   geom_point()
-
-
-
-if(!require(plotly)){
-  install.packages("plotly")
-}
 
 # * 4.2 Time-Concentration by Subject Faceted by Dose Group ----
 p2 <- p1 + facet_wrap(~DOSEGRP)
@@ -222,7 +213,13 @@ p7 <- p1 + facet_wrap(~cut(AGE,quantile(AGE),include.lowest=TRUE)) #group into q
 # * 4.8 Interactive Visualization ----
 p8 <- p7 + aes(color=ID)
 
+
+if(!require(plotly)){
+  install.packages("plotly")
+}
+
 plotly::ggplotly(p8)
+
 
 #ggquickeda next lesson!
 library(ggquickeda)
