@@ -15,7 +15,7 @@ vignette: >
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_7dxvlrtfQ1SOv_pJn8kOZg" target="_blank">Register for Lesson 2 Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/rec/play/sEQPJ7fm8igZxLWXN1sdmt4NvxbdjXY80yaBss1yD_Z2FWpYRQpFF1MPP6KGT6epDSdRTAe-ioJHV8PJ.1VNwSfpVC1PI9bgB?continueMode=true&_x_zm_rtaid=JmDvpGG5SNC180yCXV5iWw.1654008474920.59c70952bf6f2a87a5d4d3af90b75b3d&_x_zm_rhtaid=487" target="_blank">Watch Lesson 2 Recording (Part 1)</a>
 </center>
 
 ---
