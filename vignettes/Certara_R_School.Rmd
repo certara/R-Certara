@@ -15,7 +15,7 @@ vignette: >
 
 <br></br>
 
-Certara R School is a series of guided webinars, exercises, and interactive tutorials for the application of R in Pharmacometrics. 
+<a href="https://vimeo.com/showcase/certararschool" target="_blank">Certara.R School</a> is a series of guided webinars, exercises, and interactive tutorials for the application of R in Pharmacometrics. 
 
 Why R? R is the primary programming language in the Pharmacometrician's toolkit and offers unparalleled efficiency, flexibility, and reproducibility compared to working inside a GUI alone.  Learning R can be challenging at first, but Certara is here to help!
 

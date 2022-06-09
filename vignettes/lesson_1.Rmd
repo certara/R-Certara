@@ -20,8 +20,6 @@ vignette: >
 
 ---
 
-### Webinar Date: 4/28/2022 @10am EST
-
 <a href="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+1/Certara.R+School+Lesson1+Materials.zip" download>Download Lesson 1 Materials</a>, which include the PowerPoint presentation, R script, and data shown during Lesson 1.
 
 ----
