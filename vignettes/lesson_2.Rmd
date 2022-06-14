@@ -48,3 +48,11 @@ In the webinar we will cover the following topics:
   - Concentration time by subject
   - Mean concentration-time by dose group
 * Best practices for writing and documenting R scripts
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_jKSzJxD5SKGjqXM5WbRkHw" target="_blank">Register for Upcoming Webinar</a>
+</center>
+
+---

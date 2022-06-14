@@ -30,7 +30,7 @@ The following webinar will cover:
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_7dxvlrtfQ1SOv_pJn8kOZg" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_jKSzJxD5SKGjqXM5WbRkHw" target="_blank">Register for Upcoming Webinar</a>
 </center>
 
 ---
