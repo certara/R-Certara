@@ -11,6 +11,7 @@ resource_files:
   - img/XposeNLME.png
   - img/CertaraR.png
   - img/ggquickeda.png
+  - img/coveffectsplot.png
 vignette: >
   %\VignetteIndexEntry{Certara R Packages}
   %\VignetteEngine{knitr::rmarkdown}
