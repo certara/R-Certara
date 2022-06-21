@@ -1,0 +1,40 @@
+---
+title: "Lesson 4: Modeling with RsNLME"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 4: Modeling with RsNLME}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 4: Modeling with RsNLME
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_EOhzvrk1Qq6koHE5k4JkwA" target="_blank">Register for Lesson 4 Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+
+In Lesson 4, we will introduce modeling capabilities with the [`RsNLME`](https://certara.github.io/R-RsNLME/index.html) package and show how we can leverage the [RsNLME Model Builder](https://certara.github.io/R-RsNLME-model-builder/index.html) Shiny GUI to create our models in R and learn the RsNLME model building syntax, then extend our workflow to the R command line.
+
+<br></br>
+<br></br>
+<br></br>
+
+
+### Live Webinar Date: 7/27/2022 @10am EST
+
+In the webinar we will cover the following topics:
+
+* Define base model
+* Map columns to model variables
+* Set initial estimates
+* Fit model
+
+

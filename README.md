@@ -118,7 +118,7 @@ For a quick overview using an older version of the app head to this [YouTube Tut
 
 <br/>
 
-### [coveffectsplot](https://smouksassi.github.io/coveffectsplot/) <a href = "https://smouksassi.github.io/coveffectsplot/"><img src='vignettes/img/coveffectsplot.png' align="left" height="150" style = "float:left; height: 150px; padding-right: 10px;"/></a>
+### [coveffectsplot](https://smouksassi.github.io/coveffectsplot/) <a href = "https://smouksassi.github.io/coveffectsplot/"><img src='vignettes/img/coveffectsplot.png' align="right" height="150" style = "float:right; height: 150px;"/></a>
 
 [`coveffectsplot`](https://github.com/smouksassi/coveffectsplot) is an R package that provide the function forest_plot and an accompanying Shiny application that facilitates the production of forest plots to visualize covariate effects as commonly used in pharmacometrics population PK/PD report
 

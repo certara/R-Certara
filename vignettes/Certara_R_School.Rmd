@@ -66,9 +66,9 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 4: Modeling with RsNLME
+## [Lesson 4: Modeling with RsNLME](lesson_4.html)
 
-* Webinar Date: *TBD*
+* Webinar Date: *7/27/2022 @10am EST*
 
 ---
 
