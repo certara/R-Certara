@@ -13,9 +13,7 @@ vignette: >
 
 ---
 
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_jKSzJxD5SKGjqXM5WbRkHw" target="_blank">Register for Lesson 3 Webinar</a>
-</center>
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/723039084?h=20d0e9068a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Certara. R School Lesson 3 - EDA"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
 ---
 
@@ -26,10 +24,16 @@ Certara.R School Lesson 3 will demonstrate in depth applications of Exploratory 
 <br></br>
 <br></br>
 
-### Live Webinar Date: 6/22/2022 @10am EST
+
+### Webinar Overview
 
 In the webinar we will cover the following topics:
 
 * Examine the value and scope of exploratory data analysis methods
 * How to communicate information effectively using visual methods in R
 * Demo Exploratory Data Analysis (EDA) with [`ggquickeda`](https://smouksassi.github.io/ggquickeda/)
+
+### Webinar Resources
+
+* [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_3)
+* [Presentation](https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+3+-+EDA/Certara+R+School+Lesson+3.pdf)

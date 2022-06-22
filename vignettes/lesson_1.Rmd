@@ -14,15 +14,11 @@ vignette: >
 
 ---
 
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/rec/play/XxU4QjsEijEXip6e4pyMbGoM3dqhTx4F-mHrO7pqaxt0RKZF6LR5h4UIH_brg6XCj7hqnsTs101-wba6.PIgabJyv1YN0XdUU?startTime=1651154353000&_x_zm_rtaid=0psuG8eAQViHfkY_X5zwlA.1651167154263.d55d73769c1e1a010c9784657360db67&_x_zm_rhtaid=533" target="_blank">Watch Lesson 1 Recording</a>
-</center>
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/704706451?h=45e576da9a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Certara.R School Lesson 1"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
 ---
 
-<a href="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+1/Certara.R+School+Lesson1+Materials.zip" download>Download Lesson 1 Materials</a>, which include the PowerPoint presentation, R script, and data shown during Lesson 1.
-
-----
+### Webinar Overview
 
 In the webinar you will learn:
 
@@ -37,6 +33,10 @@ In the webinar you will learn:
 
 R Packages Used: `Certara.RsNLME`, `readr` 
 
+### Webinar Resources
+
+* [Files and Presentation](https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+1/Certara.R+School+Lesson1+Materials.zip)
+
 ----
 
 ### Lesson 1: Extended RsNLME Installation Video
@@ -47,8 +47,3 @@ R Packages Used: `Certara.RsNLME`, `readr`
 
 ---
 
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_jKSzJxD5SKGjqXM5WbRkHw" target="_blank">Register for Upcoming Webinar</a>
-</center>
-
----
