@@ -1,0 +1,40 @@
+---
+title: "Lesson 5: Model Diagnostics"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 5: Model Diagnostics}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 5: Model Diagnostics
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_LZYM-NkmT_CLVv8Tp8RbDQ" target="_blank">Register for Lesson 5 Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='https://certara.github.io/R-model-results/articles/img/ModelResults.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+
+In Lesson 5, we will continue to introduce the modeling capabilities with the [`RsNLME`](https://certara.github.io/R-RsNLME/index.html) package and demonstrate how to easily generate `ggplot2` based model diagnostics plots using the [Model Results Shiny GUI](https://certara.github.io/R-model-results/index.html). We will then demonstrate how to generate the underlying `xpose` and `ggplot2` code from the Shiny GUI, saving as an R script for reproducibility.
+
+
+<br></br>
+<br></br>
+<br></br>
+
+
+### Live Webinar Date: 8/23/2022 @10am EST
+
+In the webinar we will cover the following topics:
+
+* Creating a data object (`xpose_data`) in R from RsNLME model output
+* Using the Shiny GUI to easily explore model diagnostic plots and tables
+* Reproducing and extending model diagnostics from the command line
+* Export plots and tables to different file output
+

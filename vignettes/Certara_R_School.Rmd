@@ -72,37 +72,43 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 5: Model Refinement
+## [Lesson 5: Model Diagnostics](lesson_5.html)
+
+* Webinar Date: *8/23/2022 @10am EST*
+
+---
+
+## Lesson 6: Model Refinement
 
 * Webinar Date: *TBD*
 
 ---
 
-## Lesson 6: Evaluate Model Diagnostics
+## Lesson 7: Simulation Diagnostics
 
 * Webinar Date: *TBD*
 
 ---
 
-## Lesson 7: Model Simulation and VPC
-
-* Webinar Date: *TBD*
-
----
-
-## Lesson 8: Best Practices for Reproducibility in R
+## Lesson 8: VPC - Using the `tidyvpc` package
 
 * Upcoming Webinar Date: *TBD*
 
 ---
 
-## Lesson 9: Publishing Results with RMarkdown
+## Lesson 9: Publishing Results in R Markdown
 
 * Upcoming Webinar Date: *TBD*
 
 ---
 
-## Lesson 10: Working with PML
+## Lesson 10: Best Practices for Reproducibility in R
+
+* Upcoming Webinar Date: *TBD*
+
+---
+
+## Lesson 11: Working with PML
 
 * Upcoming Webinar Date: *TBD*
 

@@ -76,7 +76,7 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 
 <br/>
 
-### [VPCResults]("https://certara.github.io/R-VPCResults/index.html) <a href = "https://certara.github.io/R-VPCResults/index.html"><img src='vignettes/img/VPCResults.png' align="left" height="150" style = "float:left; height: 150px; padding-right: 10px;"/></a>
+### [VPCResults](https://certara.github.io/R-VPCResults/index.html) <a href = "https://certara.github.io/R-VPCResults/index.html"><img src='vignettes/img/VPCResults.png' align="left" height="150" style = "float:left; height: 150px; padding-right: 10px;"/></a>
 
 [`Certara.VPCResults`](https://certara.github.io/R-VPCResults/index.html) is an R package and Shiny application used to parameterize and plot a Visual Predictive Check (VPC).
 
