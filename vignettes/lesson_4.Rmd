@@ -37,4 +37,12 @@ In the webinar we will cover the following topics:
 * Set initial estimates
 * Fit model
 
+### Live Office Hours Date: 8/3/2022 @10am EST
+
+Following the webinar, we will be holding virtual office hours where users may ask their R/RsNLME related questions to the hosts.  
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/j/85642806232?pwd=aGhzRUNidkNvMEJMS0UxRmhlSWNzUT09" target="_blank">Office Hours</a>
+</center>
+
 
