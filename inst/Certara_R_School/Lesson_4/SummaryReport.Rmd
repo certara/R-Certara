@@ -1,0 +1,242 @@
+---
+title: "Data Memo Example"
+author: "Keith Nieforth & James Craig"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    css: css/style.css
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    df_print: paged
+    code_folding: hide
+  word_document:
+    toc: yes
+    toc_depth: '4'
+toctitle: Contents
+---
+
+```{r certara-logo, echo=FALSE, message = FALSE, warning = FALSE, fig.width=1, fig.height=10}
+knitr::opts_chunk$set(dpi=600) 
+htmltools::img(src = knitr::image_uri(file.path('img', 'certara.PNG')), 
+               alt = 'logo', 
+               style = 'position:fixed; top:0; right:0; padding:10px; width:300px;')
+```
+
+# Notes and Conventions {.tabset .tabset-fade .tabset-pills} 
+
+## Notes
+
+::: {#description-overview}
+* This is an example R Markdown report to demonstrate the workflow for building a "data memo" or report object in parallel with the conduct of a RsNLME analysis.
+* We use html output and "tabsets" within the RMarkdown document to show how RsNLME can be used together with R markdown to produce very dense, interactive data summaries that capture a large amount of data in well organized, easily shared delivery mechanism.
+:::
+
+## Conventions used in this document
+
+::: {.description}
+* We've used blue text boxes to indicate descriptive information
+:::
+
+::: {.results}
+* We've used yellow text boxes to indicate results
+:::
+
+::: {.keymessage}
+*  Green text boxes provide key messages from the analysis results
+*  Example:  This is a key message statement
+:::
+
+```{r session-set-up, warning=FALSE, message=FALSE, results=FALSE}
+# Analysis ID     : Certara.R School Lesson 4 - Modeling with RsNLME
+# Purpose         : Introduce R Markdown 
+# Other Info      : 
+library(flextable)
+library(plotly)
+```
+
+# Objectives {.tabset .tabset-fade .tabset-pills} 
+
+The purpose of this data memo is to provide a summary of the base population pharmacokinetic model fit for study XYZ   
+
+## Study Design
+::: {.description}
+*  150 healthy male and female subjects were enrolled in this study
+*  Subjects were administered a single 5000, 10000, or 20000 ug dose of Drug XYZ at time=0
+*  Blood samples were obtained at 0, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 12, 16 and 24 hours after dosing
+*  Covariates in the dataset include baseline subject age, weight, sex, and race
+:::
+
+## Methods
+::: {.description}
+*  Data analysis was conducted using the population pharmacokinetic program RsNLME version 1.1.0 (https://certara.github.io/R-RsNLME/index.html) 
+*  etc.....
+:::
+
+# Overview of the data {.tabset .tabset-fade .tabset-pills}
+
+## Summary
+
+::: {.keymessage}
+*  Elimination profile appears to be mono-exponential
+*  Body weight and/or gender appear to influence PK
+:::
+
+<br><br>
+
+## Demography summary {.tabset .tabset-fade .tabset-pills}
+
+```{r demography-summary, echo = TRUE, warning=FALSE, message=FALSE}
+
+dm_table <- readRDS(file='dmtable.RDS')
+dm_table
+
+```
+
+<br><br>
+
+## Mean Concentration Summary {.tabset .tabset-fade .tabset-pills}
+
+```{r conc-summary, echo = TRUE, warning=FALSE, message=FALSE}
+
+mean_conc_table <- readRDS(file='mean_conc_table.RDS')
+mean_conc_table
+
+```
+
+<br><br>
+
+## PK profiles Linear {.tabset .tabset-fade .tabset-pills}
+
+```{r pkplot, echo = TRUE, warning=FALSE, message=FALSE, out.width="80%", out.height="50%"}
+
+pkplot <- readRDS(file='pkplot.RDS')
+
+ggplotly(pkplot)
+
+```
+
+<br><br>
+
+## PK profiles Log {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Disposition appears mono-exponential
+:::
+
+```{r mean-log, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplotlog <- readRDS(file='pkplotlog.RDS')
+pkplotlog
+
+```
+
+<br><br>
+
+## Facet Gender and Dose Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Possible gender difference in PK with observed concentrations higher in females
+:::
+
+```{r gender-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_dosesex <- readRDS(file='pkplot_dosesex.RDS')
+pkplot_dosesex
+
+```
+
+<br><br>
+
+## Facet Race and Dose Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   PK appears similar across race
+:::
+
+```{r race-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_doserace <- readRDS(file='pkplot_doserace.RDS')
+pkplot_doserace
+
+```
+
+<br><br>
+
+## Facet WT Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   PK appears similar across WT groups
+:::
+
+```{r wt-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_dosewt <- readRDS(file='pkplot_dosewt.RDS')
+pkplot_dosewt
+
+```
+
+<br><br>
+
+## Facet Age Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   PK appears similar across age groups.  Note limited age range (38 to 61 y). 
+:::
+
+```{r age-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_doseage <- readRDS(file='pkplot_doseage.RDS')
+pkplot_doseage
+
+```
+
+# Base Model Development {.tabset .tabset-fade .tabset-pills}
+
+## Summary
+
+::: {.keymessage}
+*  A 1 compartment model with first order oral input and elimination was used to fit the data
+*  Convergence was achieved with successful estimation of parameter standard errors
+:::
+
+<br><br>
+
+## Model Description {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+*  A 1 compartment model with first order oral input and elimination was used to fit the data
+*  Model parameters absorption rate constant (Ka), central clearance (Cl), and central volume (V)
+*  Between subject variability terms on Ka, Cl and V 
+*  Additive residual error model
+:::
+
+![Structural PK Model](img/onecptoral.png "One Compartment with Oral Input"){width=35%}
+```{r, base-model-specification}
+
+## View the updated model 
+basemod<-readRDS("basemod.RDS")
+print(basemod)
+
+```
+
+## Model Fit Summary {.tabset .tabset-fade .tabset-pills}
+::: {.results}
+*  Convergence was achieved with successful estimation of parameter standard errors
+:::
+
+```{r, base-model-fit}
+
+## View the updated model 
+basemodfit<-readRDS("basemodfit.RDS")
+print(basemodfit)
+
+```
+
+
+
+# Session Info {.tabset .tabset-fade .tabset-pills}
+
+```{r, session-info,comment = NA}
+sessionInfo()
+```
