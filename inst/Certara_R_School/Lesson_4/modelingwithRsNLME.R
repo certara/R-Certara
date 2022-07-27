@@ -174,6 +174,7 @@ basemod <- basemod %>%
                type = "Continuous",
                center = "Value",
                centerValue = 45,
+               #effect=NULL) %>%
                effect = c("V", "Cl")) %>%  #Would use this to assign age to Cl and V
 
   addCovariate(covariate = c("WT"),
@@ -278,16 +279,37 @@ basemodfit$theta
 
 
 # 5: Editing Models Directly ----
-
-basemodNew <- editModel(basemod)
+basemodNew <- copyModel(basemod, modelName = "basemodNew")
+basemodNew <- editModel(basemodNew)
 
 # 6: Shiny Apps ----
 # * 6.1. Model Builder  ----
-basemodui <- modelBuilderUI(finaldat, modelName = "basemodelui")
+modelBuilderUI(finaldat, modelName = "basemodui")
+
+basemodui <- pkmodel(isPopulation = TRUE, parameterization = "Clearance", absorption = "Extravascular",
+                 numCompartments = 1, isClosedForm = TRUE, isTlag = FALSE, hasEliminationComp = FALSE,
+                 isFractionExcreted = FALSE, isSaturating = FALSE, infusionAllowed = FALSE,
+                 isDuration = FALSE, columnMap = FALSE, modelName = "basemodui") %>%
+  residualError(predName = "C", errorType = "Additive", SD = 1, isFrozen = FALSE, isBQL = FALSE) %>%
+  structuralParameter(paramName = "V", fixedEffName = "tvV", randomEffName = "nV", style = "LogNormal", hasRandomEffect = TRUE) %>%
+  structuralParameter(paramName = "Ka", fixedEffName = "tvKa", randomEffName = "nKa", style = "LogNormal", hasRandomEffect = TRUE) %>%
+  structuralParameter(paramName = "Cl", fixedEffName = "tvCl", randomEffName = "nCl", style = "LogNormal", hasRandomEffect = TRUE) %>%
+  addCovariate(covariate = "AGE", effect = NULL, type = "Continuous", direction = "Forward", center = "Value", centerValue = 45L) %>%
+  addCovariate(covariate = "WT", effect = NULL, type = "Continuous", direction = "Forward", center = "Value", centerValue = 70L) %>%
+  addCovariate(covariate = "RACE", effect = NULL, type = "Categorical", direction = "Forward", levels = c(0, 1, 2, 3), labels = c("WHITE", "BLACK", "ASIAN", "OTHER")) %>%
+  addCovariate(covariate = "SEX", effect = NULL, type = "Categorical", direction = "Forward", levels = c(0, 1), labels = c("M", "F")) %>%
+  addCovariate(covariate = "DOSEGRP", effect = NULL, type = "Continuous", direction = "Forward", center = "None") %>%
+  fixedEffect(effect = "tvV", value = 90, lowerBound = NULL, upperBound = NULL, isFrozen = FALSE, unit = NULL) %>%
+  fixedEffect(effect = "tvCl", value = 10, lowerBound = NULL, upperBound = NULL, isFrozen = FALSE, unit = NULL) %>%
+  fixedEffect(effect = "tvKa", value = 1.5, lowerBound = NULL, upperBound = NULL, isFrozen = FALSE, unit = NULL) %>%
+  randomEffect(effect = c("nKa", "nV", "nCl"), value = c(0.1, 0.1, 0.1), isDiagonal = TRUE, isFrozen = FALSE) %>%
+  dataMapping(finaldat) %>%
+  colMapping(c(id = "ID", time = "TIME", CObs = "CONC", AGE = "AGE", WT = "WT", RACE = "RACE", SEX = "SEX", DOSEGRP = "DOSEGRP", Aa = "AMT"))
+
 
 print(basemodui)
 
-# * 6.2. Initial Estimates
+# * 6.2. Initial Estimates ----
 basemodui <- estimatesUI(basemodui)
 
 print(basemodui)
@@ -296,7 +318,7 @@ print(basemodui)
 basemoduifit <- fitmodel(basemodui)
 
 
-# 5: Evaluate Model Fit Diagnostics (next lecture)
+# 7: Evaluate Model Fit Diagnostics (next lecture) ----
 library(Certara.ModelResults)
 resultsUI(basemod)
 

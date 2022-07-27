@@ -166,7 +166,7 @@ pkplot_doserace
 ## Facet WT Linear {.tabset .tabset-fade .tabset-pills}
 
 ::: {.results}
--   PK appears similar across WT groups
+-   Possible WT influence on PK with larger subjects having lower exposures
 :::
 
 ```{r wt-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
