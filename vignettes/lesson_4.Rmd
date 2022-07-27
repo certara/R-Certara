@@ -37,6 +37,10 @@ In the webinar we will cover the following topics:
 * Set initial estimates
 * Fit model
 
+### Webinar Resources
+
+* [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_4)
+
 ### Live Office Hours Date: 8/3/2022 @10am EST
 
 Following the webinar, we will be holding virtual office hours where users may ask their R/RsNLME related questions to the hosts.  
