@@ -44,6 +44,8 @@ In the webinar we will cover the following topics:
 
 Following the webinar, we will be holding virtual office hours where users may ask their R/RsNLME related questions to the hosts.  
 
+Click [here](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_4/Office_Hours) to access files used during Lesson 4 Office Hours.
+
 <center>
 <a class = "registration-button" href="https://certara.zoom.us/j/85642806232?pwd=aGhzRUNidkNvMEJMS0UxRmhlSWNzUT09" target="_blank">Office Hours</a>
 </center>
