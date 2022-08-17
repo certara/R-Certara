@@ -78,9 +78,9 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 6: Model Refinement
+## [Lesson 6: Model Refinement](lesson_6.html)
 
-* Webinar Date: *TBD*
+* Webinar Date: *9/28/2022 @10am EST*
 
 ---
 

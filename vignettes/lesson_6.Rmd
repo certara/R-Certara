@@ -1,0 +1,40 @@
+---
+title: "Lesson 6: Model Refinement"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 5: Model Refinement}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 6: Model Refinement
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_r1ed78DEQ_iWY9GLjkm5rA" target="_blank">Register for Lesson 6 Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+
+In Lesson 6, we will explore model refinement. You will learn how to create a new model with parameter estimates from a previously executed
+model. We will then add covariates into our new model and explore their impact using model diagnostic plots.
+
+
+<br></br>
+<br></br>
+<br></br>
+
+
+### Live Webinar Date: 9/28/2022 @10am EST
+
+In the webinar we will cover the following topics:
+
+* Using the [`copyModel()`](https://certara.github.io/R-RsNLME/reference/copyModel.html) function to create a new model with parameter estimates from the fitted base model
+* Adding covariates and fitting additional covariate models
+* Exploring covariate effects using model diagnostic plots
+
