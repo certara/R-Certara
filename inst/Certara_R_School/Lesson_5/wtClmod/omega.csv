@@ -1,0 +1,10 @@
+#,Scenario,Label,nKa,nV,nCl
+,WorkFlow,Omega
+"","WorkFlow","nKa",0.0725421905852538,0,0
+"","WorkFlow","nV",0,0.171718606060781,0
+"","WorkFlow","nCl",0,0,0.27860642265678
+,WorkFlow,Correlation
+"","WorkFlow","nKa",1,0,0
+"","WorkFlow","nV",0,1,0
+"","WorkFlow","nCl",0,0,1
+,WorkFlow,Shrinkage,0.32067889137808,0.0590175763484032,0.0742360083893494

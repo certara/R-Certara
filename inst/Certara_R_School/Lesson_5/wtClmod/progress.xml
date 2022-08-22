@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<progress>
+  <MachineName>LocalHost</MachineName>
+  <ParallelProtocol>local_mpi</ParallelProtocol>
+  <ModelName>WorkFlow</ModelName>
+  <StartTime>Aug 2022 22 10:45:57 PM</StartTime>
+  <EndTime>Aug 2022 22 10:48:03 PM</EndTime>
+  <Status>Finished</Status>
+  <NumOfSamples>1</NumOfSamples>
+  <NumOfSamplesCompleted>1</NumOfSamplesCompleted>
+  <NumOfSamplesFailed>0</NumOfSamplesFailed>
+  <NumOfSamplesExpired>0</NumOfSamplesExpired>
+  <NumOfSamplesErrored>0</NumOfSamplesErrored>
+  <ProgressStage/>
+  <DetailInfoLine1>
+Finished summarizing results. Transferring data and loading the results...
+</DetailInfoLine1>
+  <DetailInfoLine2>Generating posthoc.csv and table0n.csv</DetailInfoLine2>
+</progress>

@@ -1,0 +1,12 @@
+ /e -1 
+/m 5 /n 1000 /o 6 
+-xnp 0 -anagrad 0 -logtran 1 -xrestart 0 -xnorderagq 1 -xfocehess 1  -xstderr 1 -rtol 0.000001 -atol 0.000001 
+ -xlameth 1  
+ -xlandig 7 
+ -xlatol 0.010000 
+ -xblmeth 1 
+ -xblndig 13 
+ -xbltol 0.002000 
+ -xmapnp 0 
+-nmxstep 50000  -sort   -csv    -sand   
+/d1 cols1.txt data1.txt

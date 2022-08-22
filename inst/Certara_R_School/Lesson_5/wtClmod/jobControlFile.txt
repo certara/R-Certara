@@ -1,0 +1,5 @@
+test.mdl
+jobArgsCombined.txt data1.txt cols1.txt test.mdl
+*.csv *.txt *.log *.dat *.LOG
+1
+WorkFlow,jobArgsCombined.txt:1,,out.txt,*.csv *.txt *.log *.dat *.LOG,progress.txt dmp.txt nlme7engine.log 
