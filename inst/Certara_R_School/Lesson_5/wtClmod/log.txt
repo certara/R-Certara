@@ -1,3 +1,0 @@
-Servername : no-net
-Sentinel License file : C:\Program Files\Certara\NLME_Engine\lservrc
-Using license : NU_Academic_ALL_N
