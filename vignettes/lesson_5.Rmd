@@ -13,15 +13,13 @@ vignette: >
 
 ---
 
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_LZYM-NkmT_CLVv8Tp8RbDQ" target="_blank">Register for Lesson 5 Webinar</a>
-</center>
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/742313829?h=9414ee1d92&color=0a7bc1&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
 ---
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='https://certara.github.io/R-model-results/articles/img/ModelResults.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+<a href = "https://certara.github.io/R-Xpose-NLME/index.html"><img src="https://certara.github.io/R-Xpose-NLME/articles/img/XposeNLME.png"  align="left" style = "height: 150px; padding-right: 10px;"/></a>
 
-In Lesson 5, we will continue to introduce the modeling capabilities with the [`RsNLME`](https://certara.github.io/R-RsNLME/index.html) package and demonstrate how to easily generate `ggplot2` based model diagnostics plots using the [Model Results Shiny GUI](https://certara.github.io/R-model-results/index.html). We will then demonstrate how to generate the underlying `xpose` and `ggplot2` code from the Shiny GUI, saving as an R script for reproducibility.
+In Lesson 5, we will continue to introduce the modeling capabilities of the [`RsNLME`](https://certara.github.io/R-RsNLME/index.html) package and demonstrate how to easily generate `ggplot2` based model diagnostics plots using the [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) and [`xpose`](https://uupharmacometrics.github.io/xpose/) packages. Finally, we will explore additional plot customization options using `ggplot2` commands.
 
 
 <br></br>
@@ -29,14 +27,18 @@ In Lesson 5, we will continue to introduce the modeling capabilities with the [`
 <br></br>
 
 
-### Live Webinar Date: 8/23/2022 @10am EST
+### Webinar Overview
 
 In the webinar we will cover the following topics:
 
 * Creating a data object (`xpose_data`) in R from RsNLME model output
-* Using the Shiny GUI to easily explore model diagnostic plots and tables
-* Reproducing and extending model diagnostics from the command line
-* Export plots and tables to different file output
+* Exploring model diagnostics with `xpose` and `Certara.Xpose.NLME` plot commands
+* Extending and customizing model diagnostics with `ggplot2`
+
+### Webinar Resources
+
+* [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_5)
+* [Presentation](https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+5+-+Diagnostics/Certara+R+School+Lesson+5.pdf)
 
 ### Live Office Hours Date: 9/7/2022 @10am EST
 

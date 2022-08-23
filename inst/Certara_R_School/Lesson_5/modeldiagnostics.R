@@ -245,16 +245,14 @@ custdat %>%
   geom_abline(slope=0) +
   geom_smooth(col='red',lty=2,se=FALSE)
 
-##==========================================================================================================
 # 2: Create Diagnostic Plots using xpose ----
-##==========================================================================================================
 
 # * 2.1 Create an xpose database object ----
 library(Certara.Xpose.NLME)
 library(xpose)
 
 ## xposeNlme imports results of an NLME run into xpose database to create commonly used diagnostic plots
-xpdb <- xposeNlme(dir = basemod@modelInfo@workingDir)
+xpdb <- xposeNlme(dir = "C:/Users/jcraig/Documents/GitHub/R-Certara/basemod")
 
 ## xpose objects are a special class of list
 class(xpdb)
@@ -277,10 +275,14 @@ xpdb %>% dv_vs_pred(type="ps",
                     facets = 'SEX')  #facet by gender
 xpdb %>% dv_vs_pred(type="ps",
                     subtitle = "Ofv: @ofv, Method: @method",
-                    facets = SEX~cut(WT,3))  #facet by gender and weight, note formula syntax "~"
-
+                    facets = SEX~cut(WT,3))
+# reproducing above plot with ggplot2 syntax
+xpdb %>% dv_vs_pred(type="ps",
+                    subtitle = "Ofv: @ofv, Method: @method") +
+  facet_grid(SEX~cut(WT,3), labeller = label_both)
 
 # * * 2.2.2 Residual Plots ----
+list_vars(xpdb) #To view all potential residuals that may be plotted
 xpdb %>% res_vs_pred()  #residual vs predicted ?res_vs_pred
 xpdb %>% res_vs_pred(aes(x=IPRED,y=CWRES)) #modify aesthetics to plot ipred
 xpdb %>% res_vs_idv()  #res vs time
@@ -295,11 +297,10 @@ xpdb %>% ind_plots(page=1,nrow=5, ncol=5)
 xpdb %>% res_vs_cov(covariate="WT",type='ps') +
   geom_abline(slope=0)
 
-xpdb %>% res_vs_cov(covariate="SEX") +
+xpdb %>% res_vs_cov(covariate="SEX", type = "b") +
   geom_abline(slope=0)
 
-xpdb %>% prm_vs_cov(covariate="WT",type='ps') +
-  geom_abline(slope=0)
+xpdb %>% prm_vs_cov(covariate="WT",type='ps')
 
 xpdb %>% eta_vs_cov(covariate="WT",type='ps') +
   geom_abline(slope=0)
@@ -312,6 +313,9 @@ xpdb %>% eta_distrib(scales="fixed")
 xpdb %>% res_qq()
 xpdb %>% eta_qq()
 
+# Other plots available - explore on your own!
+xpdb %>% prm_vs_iteration()
+
 
 # * 2.3 Customizing xpose Plots with ggplot2 layers ----
 
@@ -319,9 +323,6 @@ xpdb %>% dv_vs_pred(type="ps") +
   scale_x_continuous(limits=c(0,400)) + #modify x axis limits to match y
   geom_abline(color='red') +
   geom_point(aes(x=IPRED,y=DV),color='blue',alpha=0.3)  #superimpose IPRED
-
-# Other plots available - explore on your own!
-xpdb %>% prm_vs_iteration()
 
 # * 2.4 Indexing a list object directly ----
 # This would be advanced use case, but point is that RsNLME output accessible in many ways
@@ -333,12 +334,16 @@ xpdb$files$data[[2]]$value
 
 xpdb$files$data[[2]][,c('label','value')]
 
+# However, it is much easier to use built in functions from Certara.Xpose.NLME, which returns a tibble.
+xpdb %>% get_prmNlme()
+
+xpdb %>% get_overallNlme()
+
 # * 2.5 Manipulating xpose Data Objects ----
 
 # * * 2.5.1 Filter
 
 xpdb %>% filter(WT<60) %>% dv_vs_pred(title='WT<60 kg')  #model misses in low BW subjects
-
 
 # * 2.6 Advanced Examples ----
 
@@ -359,22 +364,6 @@ xpdb %>% dv_vs_ipred(type='ps') +
   theme_certara()
 
 
-## * * 2.6.3 Create Custom Diagnostic Sets ----
-mygofs <- function(xpdb){
-  p1 <- dv_vs_pred(xpdb, type='ps')
-  p2 <- dv_vs_pred(xpdb, facet='SEX')
-  p3 <- dv_vs_pred(xpdb, facet='SEX',type='ps')
-  p4 <- dv_vs_pred(xpdb, facet='SEX',type='ps') + theme_certara()
-  p5 <- dv_vs_pred(xpdb, facet='SEX',type='ps') + theme_certara() + xlim(0,2) + ylim(0,2)
-
-
-
-  print(list(p1,p2,p3,p4,p5))
-
-}
-
-mygofs(xpdb)
-
 # 3: ggCertara Package ----
 library(ggcertara)
 # Use get_data function to extract data from xpdb object for
@@ -385,52 +374,23 @@ gofData <- get_data(xpdb)
 colnames(gofData) <- tolower(colnames(gofData)) #ggcertara expects lower case column names
 
 gof(gofData)
-gof(gofData,panels=3:6)
 
 #list of available panels
 gof_list(gofData,all=TRUE)
 
+gofPlots <- gof(gofData,panels=3:6)
 
+# Use patchwork for customizing the multi-plot panels
+library(patchwork)
+gofPlots +
+  plot_annotation(
+    title = 'GOF Plots',
+    subtitle = 'Goodness of fit plots for base model',
+    caption = 'Generated with R!'
+    )
 
 
 #4: Certara Model Results Shiny Application ----
 library(Certara.ModelResults)
-
-# * 4.1 Prep for ModelResults Demo
-
-#First we will create a new model and add WT covariate on CL
-#recall it looks like there's a WT effect on CL:
-eta_vs_cov(xpdb,covariate='WT',type='ps') + geom_abline(slope=0)
-
-#Use copyModel to make a copy
-wtClmod <- copyModel(basemod,acceptAllEffects = TRUE, modelName = "wtClmod")
-
-#add WT to Cl
-wtClmod <- wtClmod %>%
- structuralParameter(paramName = 'Cl',
-                      style = "LogNormal") %>%  #change this back from change in Lesson 4
-  addCovariate(covariate = "WT",
-               effect = "Cl",
-               center = "Value",
-               centerValue = 70)
-#check model
-print(wtClmod)
-
-#fit model
-wtClmodfit <- fitmodel(wtClmod)
-
-#create xp object and run our custom diagnostics function
-xpdb_wtCl <- xposeNlme(dir = wtClmod@modelInfo@workingDir)
-
-#compare to base model
-eta_vs_cov(xpdb_wtCl,covariate='WT',type='ps') + geom_abline(slope=0)
-
-## * 4.1 Launching ModelResults UI ----
-## This tool is open source like all RsNLME packages and works with NLME and NONMEM output
-#resultsUI(xpdb=xpdb_NLME) -- package includes built-in datasets for exploration NONMEM and NLME
-#resultsUI(xpdb=xpdb_NONMEM)
-
-library(Certara.ModelResults)
-resultsUI(c(basemod,wtClmod))  #We can compare multiple fits in resultsUI
-
+resultsUI(basemod)
 
