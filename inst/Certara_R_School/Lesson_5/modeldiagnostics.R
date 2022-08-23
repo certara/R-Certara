@@ -25,6 +25,8 @@ lastdatapoint<- convergenceData %>%
 
 p1
 
+#xpdb %>% prm_vs_iteration()
+
 #get fancy and add final values to plot
 library(ggrepel) #use with ggplot to avoid text labels overlaying data
 p1 + geom_label_repel(label = lastdatapoint$Value,
@@ -216,8 +218,8 @@ dmptxt$value$residuals %>%
   ggplot(aes(x=DV,y=PRED)) +
   geom_point() +
   geom_abline() +
-  scale_x_continuous(limits=c(0,max(max(resids$DV),max(resids$PRED)))) +
-  scale_y_continuous(limits=c(0,max(max(resids$DV),max(resids$PRED))))
+  scale_x_continuous(limits=c(0,max(max(dmptxt$value$residuals$DV),max(dmptxt$value$residuals$PRED)))) +
+  scale_y_continuous(limits=c(0,max(max(dmptxt$value$residuals$DV),max(dmptxt$value$residuals$PRED))))
 
 #Plot ETAs in Unit Space of Parameter
 custdat <- dmptxt$value$posthoc
@@ -225,7 +227,7 @@ custdat <- custdat %>%
   mutate(tvKa=dmptxt$value$coefficients$fixed[1],
          tvV=dmptxt$value$coefficients$fixed[2],
          tvCl=dmptxt$value$coefficients$fixed[3]) %>%
-  mutate(dlKa=Ka-tvKa, dlV=V-tvV, dlCl=Cl-tvCl)
+  mutate(dlKa=Ka-tvKa, dlV=V-tvV, dlCl=Cl-tvCl)       #Subtract typical value from individual value
 
 custdat %>%
   ggplot(aes(x=WT,y=dlKa)) +
@@ -338,6 +340,12 @@ xpdb$files$data[[2]][,c('label','value')]
 # * * 2.5.1 Filter
 
 xpdb %>% filter(WT<60) %>% dv_vs_pred(title='WT<60 kg')  #model misses in low BW subjects
+
+# * * 2.5.2 Mutate
+
+xpdb %>% mutate(SEX = factor(SEX, labels=c("Male","Female"))) %>%
+  prm_vs_cov(covariate="SEX")
+
 
 
 # * 2.6 Advanced Examples ----
