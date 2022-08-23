@@ -4,7 +4,7 @@ output: rmarkdown::html_vignette
 resource_files:
   - img/RsNLME.png
 vignette: >
-  %\VignetteIndexEntry{Lesson 5: Model Refinement}
+  %\VignetteIndexEntry{Lesson 6: Model Refinement}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
