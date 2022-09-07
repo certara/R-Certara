@@ -27,15 +27,19 @@
 
 posthoc <- read.csv("./basemod/posthoc.csv")     #read csv directly
 
+# or...
+
 source("./basemod/dmp.txt")                      #source the dmp.txt file and index
 posthoc <- dmp.txt$posthoc
+
+#or...
 
 xpdb <- xposeNlme(basemod@modelInfo@workingDir)  #create the xpose object and index
 posthoc <- xpdb$data$data[[1]]
 
 posthoc %>%
-  select(Ka, V, Cl) %>%     #keep only Ka V and Cl
-  unique() %>%              #only want 1 row per individual
+  select(ID5, Ka, V, Cl) %>%     #keep only Ka V and Cl
+  distinct(ID5,.keep_all = TRUE)  %>%              #only want 1 row per individual - selects distinct rows
   summarise(meanCl = mean(Cl),  #use summarise from
             sdCl = sd(Cl),
             #cvCl = 100*sd(Cl)/mean(Cl),             #calc %CV
@@ -47,12 +51,14 @@ posthoc %>%
             sdKa = sd(Ka)) %>%
   flextable()
 
-
+View(xpdb)
 # I like gtsummary for this type of thing:  https://www.danieldsjoberg.com/gtsummary/articles/tbl_summary.html
 # Note gtsummary doesn't include %cv as an available statistic though
+library(gtsummary)
 posthoc %>%
-  select(Ka, V, Cl) %>%     #keep only Ka V and Cl
-  unique() %>%
+  select(ID5, Ka, V, Cl) %>%     #keep only Ka V and Cl
+  distinct(ID5,.keep_all = TRUE) %>%
+  select(Ka, V, Cl) %>%
   tbl_summary(statistic = all_continuous() ~ c("{mean} ({sd})"))
 
 
