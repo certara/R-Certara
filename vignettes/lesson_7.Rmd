@@ -1,15 +1,15 @@
 ---
-title: "Lesson 7: Simulation Diagnostics"
+title: "Lesson 7: Simulation"
 output: rmarkdown::html_vignette
 resource_files:
   - img/RsNLME.png
 vignette: >
-  %\VignetteIndexEntry{Lesson 7: Simulation Diagnostics}
+  %\VignetteIndexEntry{Lesson 7: Simulation}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
-## Lesson 7: Simulation Diagnostics
+## Lesson 7: Simulation
 
 ---
 
@@ -21,7 +21,7 @@ vignette: >
 
 <a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
 
-In Lesson 7, we will perform simulation using the `baseModel` developed in our previous lesson. You will learn how to specify desired simulation output tables, define applicable engine settings, and execute the simulation using the `simmodel()` function in `Certara.RsNLME`. We will then post-process the simulation results and create diagnostic plots to evaluate our output using `ggplot2`.
+In Lesson 7, we will demonstrate how to run simulations with RsNLME models.
 
 
 <br></br>

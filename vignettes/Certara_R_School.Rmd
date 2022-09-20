@@ -84,7 +84,7 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## [Lesson 7: Simulation Diagnostics](lesson_7.html)
+## [Lesson 7: Simulation](lesson_7.html)
 
 * Webinar Date: *10/26/2022 @10am EST*
 
