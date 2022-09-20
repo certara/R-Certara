@@ -84,9 +84,9 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 7: Simulation Diagnostics
+## [Lesson 7: Simulation Diagnostics](lesson_7.html)
 
-* Webinar Date: *TBD*
+* Webinar Date: *10/26/2022 @10am EST*
 
 ---
 
@@ -96,13 +96,13 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 9: Publishing Results in R Markdown
+## Lesson 9: Best Practices for Reproducibility in R
 
 * Upcoming Webinar Date: *TBD*
 
 ---
 
-## Lesson 10: Best Practices for Reproducibility in R
+## Lesson 10: Publishing Results in R Markdown
 
 * Upcoming Webinar Date: *TBD*
 

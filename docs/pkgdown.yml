@@ -10,6 +10,7 @@ articles:
   lesson_4: lesson_4.html
   lesson_5: lesson_5.html
   lesson_6: lesson_6.html
+  lesson_7: lesson_7.html
   news: news.html
   packages: packages.html
   pml_library: pml_library.html
@@ -17,5 +18,5 @@ articles:
   rsnlme_tutorial: rsnlme_tutorial.html
   webinars: webinars.html
   why_learn_r: why_learn_r.html
-last_built: 2022-08-23T16:26Z
+last_built: 2022-09-20T18:12Z
 

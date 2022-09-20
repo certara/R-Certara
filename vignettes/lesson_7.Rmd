@@ -1,0 +1,40 @@
+---
+title: "Lesson 7: Simulation Diagnostics"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 7: Simulation Diagnostics}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 7: Simulation Diagnostics
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_eyKCdmfRTUGbXtBFOUEp_w" target="_blank">Register for Lesson 7 Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+
+In Lesson 7, we will perform simulation using the `baseModel` developed in our previous lesson. You will learn how to specify desired simulation output tables, define applicable engine settings, and execute the simulation using the `simmodel()` function in `Certara.RsNLME`. We will then post-process the simulation results and create diagnostic plots to evaluate our output using `ggplot2`.
+
+
+<br></br>
+<br></br>
+<br></br>
+
+
+### Live Webinar Date: 10/26/2022 @10am EST
+
+In the webinar we will cover the following topics:
+
+* Define desired simulation output table with appropriate variables and time sequences
+* Specify correct engine parameters for simulation
+* Use the [`simmodel()`](https://certara.github.io/R-RsNLME/reference/simmodel.html) function to execute simulation
+* Post-process simulation results and create diagnostic plots
+
