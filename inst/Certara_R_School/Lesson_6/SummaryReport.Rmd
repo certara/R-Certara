@@ -215,7 +215,7 @@ pkplot_doseage
 ```{r, base-model-specification}
 
 ## View the updated model 
-basemod<-readRDS("../Lesson_5/basemod.RDS")
+basemod<-readRDS("../Lesson_4/basemod.RDS")
 print(basemod)
 
 ```
@@ -229,7 +229,7 @@ print(basemod)
 ```{r, base-model-fit}
 
 ## View the updated model 
-basemodfit<-readRDS("../Lesson_5/basemodfit.RDS")
+basemodfit<-readRDS("../Lesson_4/basemodfit.RDS")
 print(basemodfit)
 
 ```
