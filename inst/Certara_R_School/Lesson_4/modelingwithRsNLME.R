@@ -16,7 +16,7 @@ library(tidyr)
 
 # 1: Import Data ----
 # * 1.1 Read in xpt datasets ----
-finaldat <- readRDS("finaldat.RDS")
+finaldat <- readRDS("../Lesson_2/finaldat.RDS")
 
 # 2: Explore/Summarize Data ----
 # * 2.1. Descriptive Statistics Tables ----
