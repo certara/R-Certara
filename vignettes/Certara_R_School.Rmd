@@ -11,7 +11,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-<img src='img/Certara_R_School.png' align="center" height="175" style = "width:100%;"/>
+<img id='r_school_banner' src='img/Certara_R_School.png' align="center" height="175" style = "width:100%;"/>
 
 <br></br>
 

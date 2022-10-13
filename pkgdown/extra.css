@@ -41,3 +41,8 @@ h2#section-installation {
   background-color: #e7977a;
   color: white;
 }
+
+@media only screen and (max-width: 600px) {
+  #r_school_banner {
+    height: 70px;
+  }
