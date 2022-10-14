@@ -152,6 +152,18 @@ See the following [vignette](https://certara.github.io/table1c/vignettes/table1c
 
 <br/>
 
+### [pmxpartabc](https://github.com/certara/pmxpartabc)
+
+[pmxpartabc](https://github.com/certara/pmxpartabc) is an R package for generating parameter estimates tables. `pmxpartabc` provides ease of table generation via specification of NONMEM `run_dir` or information contained in a user-provided `yaml` file. Additional support for bootstrap estimates is provided.
+
+Visit the [pmxpartabc website](https://certara.github.io/pmxpartabc/index.html) for examples of usage details.
+
+<br/>
+
+---
+
+<br/>
+
 ### [scmreg](https://github.com/certara/scmreg)
 
 The [`scmreg`](https://github.com/certara/scmreg) package provides functions to perform Stepwise Covariate Modeling (SCM) in R. With the `scm_reg()` function, you can setup and execute a stepwise covariate model selection using different regression techniques and easily generate table output using the `tabscm()` function.
