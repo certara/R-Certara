@@ -17,9 +17,17 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-EFH9NLH18N"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EFH9NLH18N');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Certara.R</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -68,14 +76,15 @@
 <li>
   <a href="../articles/news.html">News</a>
 </li>
+      </ul>
+<ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/certara/R-Certara/">
+  <a href="https://github.com/certara/R-Certara/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -85,56 +94,56 @@
 
       
 
-      </header><script src="lesson_3_files/header-attrs-2.16/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Lesson 3: Exploratory Data Analysis</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/master/vignettes/lesson_3.Rmd"><code>vignettes/lesson_3.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/HEAD/vignettes/lesson_3.Rmd" class="external-link"><code>vignettes/lesson_3.Rmd</code></a></small>
       <div class="hidden name"><code>lesson_3.Rmd</code></div>
 
     </div>
 
     
     
-<div id="lesson-3-exploratory-data-analysis-eda" class="section level2">
-<h2 class="hasAnchor">
-<a href="#lesson-3-exploratory-data-analysis-eda" class="anchor"></a>Lesson 3: Exploratory Data Analysis (EDA)</h2>
+<div class="section level2">
+<h2 id="lesson-3-exploratory-data-analysis-eda">Lesson 3: Exploratory Data Analysis (EDA)<a class="anchor" aria-label="anchor" href="#lesson-3-exploratory-data-analysis-eda"></a>
+</h2>
 <hr>
 <div style="padding:56.25% 0 0 0;position:relative;">
 <iframe src="https://player.vimeo.com/video/723039084?h=20d0e9068a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Certara. R School Lesson 3 - EDA">
 </iframe>
 </div>
 <script src="https://player.vimeo.com/api/player.js"></script><hr>
-<p><a href="https://smouksassi.github.io/ggquickeda/"><img src="img/ggquickeda.png" align="left" style="height: 150px; padding-right: 10px;"></a></p>
+<p><a href="https://smouksassi.github.io/ggquickeda/" class="external-link"><img src="img/ggquickeda.png" align="left" style="height: 150px; padding-right: 10px;"></a></p>
 <p>Certara.R School Lesson 3 will demonstrate in depth applications of
-Exploratory Data Analysis (EDA) in R using the <a href="https://smouksassi.github.io/ggquickeda/"><code>ggquickeda</code></a>
+Exploratory Data Analysis (EDA) in R using the <a href="https://smouksassi.github.io/ggquickeda/" class="external-link"><code>ggquickeda</code></a>
 package. Exploratory Data Analysis is a critical step in the
 pharmacometric workflow, allowing you to understand your data and
 communicate information effectively. The presenter of this lesson will
-be Dr.Samer Mouksassi, who is the author of the <a href="https://smouksassi.github.io/ggquickeda/"><code>ggquickeda</code></a>
+be Dr.Samer Mouksassi, who is the author of the <a href="https://smouksassi.github.io/ggquickeda/" class="external-link"><code>ggquickeda</code></a>
 R package.</p>
 <p><br><br></p>
-<div id="webinar-overview" class="section level3">
-<h3 class="hasAnchor">
-<a href="#webinar-overview" class="anchor"></a>Webinar Overview</h3>
+<div class="section level3">
+<h3 id="webinar-overview">Webinar Overview<a class="anchor" aria-label="anchor" href="#webinar-overview"></a>
+</h3>
 <p>In the webinar we will cover the following topics:</p>
 <ul>
 <li>Examine the value and scope of exploratory data analysis
 methods</li>
 <li>How to communicate information effectively using visual methods in
 R</li>
-<li>Demo Exploratory Data Analysis (EDA) with <a href="https://smouksassi.github.io/ggquickeda/"><code>ggquickeda</code></a>
+<li>Demo Exploratory Data Analysis (EDA) with <a href="https://smouksassi.github.io/ggquickeda/" class="external-link"><code>ggquickeda</code></a>
 </li>
 </ul>
 </div>
-<div id="webinar-resources" class="section level3">
-<h3 class="hasAnchor">
-<a href="#webinar-resources" class="anchor"></a>Webinar Resources</h3>
+<div class="section level3">
+<h3 id="webinar-resources">Webinar Resources<a class="anchor" aria-label="anchor" href="#webinar-resources"></a>
+</h3>
 <ul>
-<li><a href="https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_3">Files</a></li>
-<li><a href="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+3+-+EDA/Certara+R+School+Lesson+3.pdf">Presentation</a></li>
+<li><a href="https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_3" class="external-link">Files</a></li>
+<li><a href="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+3+-+EDA/Certara+R+School+Lesson+3.pdf" class="external-link">Presentation</a></li>
 </ul>
 </div>
 </div>
@@ -151,11 +160,13 @@ R</li>
 
 
       <footer><div class="copyright">
-  <p>Developed by James Craig, Certara USA, Inc..</p>
+  <p></p>
+<p>Developed by James Craig, Certara USA, Inc..</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -163,6 +174,8 @@ R</li>
 
   
 
+
+  
 
   </body>
 </html>

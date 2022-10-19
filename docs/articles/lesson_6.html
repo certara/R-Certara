@@ -17,9 +17,17 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-EFH9NLH18N"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EFH9NLH18N');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Certara.R</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -68,14 +76,15 @@
 <li>
   <a href="../articles/news.html">News</a>
 </li>
+      </ul>
+<ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/certara/R-Certara/">
+  <a href="https://github.com/certara/R-Certara/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -85,52 +94,52 @@
 
       
 
-      </header><script src="lesson_6_files/header-attrs-2.16/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Lesson 6: Model Refinement</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/master/vignettes/lesson_6.Rmd"><code>vignettes/lesson_6.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/HEAD/vignettes/lesson_6.Rmd" class="external-link"><code>vignettes/lesson_6.Rmd</code></a></small>
       <div class="hidden name"><code>lesson_6.Rmd</code></div>
 
     </div>
 
     
     
-<div id="lesson-6-model-refinement" class="section level2">
-<h2 class="hasAnchor">
-<a href="#lesson-6-model-refinement" class="anchor"></a>Lesson 6: Model Refinement</h2>
+<div class="section level2">
+<h2 id="lesson-6-model-refinement">Lesson 6: Model Refinement<a class="anchor" aria-label="anchor" href="#lesson-6-model-refinement"></a>
+</h2>
 <hr>
 <div style="padding:56.25% 0 0 0;position:relative;">
 <iframe src="https://player.vimeo.com/video/755219557?h=4c6a684cbb&amp;color=0a7bc1&amp;title=0&amp;byline=0&amp;portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
 </iframe>
 </div>
 <script src="https://player.vimeo.com/api/player.js"></script><hr>
-<p><a href="https://certara.github.io/R-RsNLME/index.html"><img src="img/RsNLME.png" align="left" style="height: 150px; padding-right: 10px;"></a></p>
+<p><a href="https://certara.github.io/R-RsNLME/index.html" class="external-link"><img src="img/RsNLME.png" align="left" style="height: 150px; padding-right: 10px;"></a></p>
 <p>In Lesson 6, we will explore model refinement. You will learn how to
 create a new model with parameter estimates from a previously executed
 model. We will then add covariates into our new model and explore their
 impact using model diagnostic plots.</p>
 <p><br><br><br></p>
-<div id="webinar-overview" class="section level3">
-<h3 class="hasAnchor">
-<a href="#webinar-overview" class="anchor"></a>Webinar Overview</h3>
+<div class="section level3">
+<h3 id="webinar-overview">Webinar Overview<a class="anchor" aria-label="anchor" href="#webinar-overview"></a>
+</h3>
 <p>In the webinar we will cover the following topics:</p>
 <ul>
-<li>Using the <a href="https://certara.github.io/R-RsNLME/reference/copyModel.html"><code>copyModel()</code></a>
+<li>Using the <a href="https://certara.github.io/R-RsNLME/reference/copyModel.html" class="external-link"><code>copyModel()</code></a>
 function to create a new model with parameter estimates from the fitted
 base model</li>
 <li>Adding covariates and fitting additional covariate models</li>
 <li>Exploring covariate effects using model diagnostic plots</li>
 </ul>
 </div>
-<div id="webinar-resources" class="section level3">
-<h3 class="hasAnchor">
-<a href="#webinar-resources" class="anchor"></a>Webinar Resources</h3>
+<div class="section level3">
+<h3 id="webinar-resources">Webinar Resources<a class="anchor" aria-label="anchor" href="#webinar-resources"></a>
+</h3>
 <ul>
-<li><a href="https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_6">Files</a></li>
-<li><a href="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+6/Certara+R+School+Lesson+6.pdf">Presentation</a></li>
+<li><a href="https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_6" class="external-link">Files</a></li>
+<li><a href="https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+6/Certara+R+School+Lesson+6.pdf" class="external-link">Presentation</a></li>
 </ul>
 </div>
 </div>
@@ -147,11 +156,13 @@ base model</li>
 
 
       <footer><div class="copyright">
-  <p>Developed by James Craig, Certara USA, Inc..</p>
+  <p></p>
+<p>Developed by James Craig, Certara USA, Inc..</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -159,6 +170,8 @@ base model</li>
 
   
 
+
+  
 
   </body>
 </html>

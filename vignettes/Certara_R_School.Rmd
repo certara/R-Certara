@@ -11,7 +11,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-<img src='img/Certara_R_School.png' align="center" height="175" style = "width:100%;"/>
+<img id='r_school_banner' src='img/Certara_R_School.png' align="center" height="175" style = "width:100%;"/>
 
 <br></br>
 
@@ -90,9 +90,9 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 8: VPC - Using the `tidyvpc` package
+## [Lesson 8: Visual Predictive Check (VPC)](lesson_8.html)
 
-* Upcoming Webinar Date: *TBD*
+* Upcoming Webinar Date: *11/30/2022 @10am EST*
 
 ---
 

@@ -5,9 +5,7 @@
 
 [![](https://www.r-pkg.org/badges/version/Certara.R?color=green)](https://cran.r-project.org/package=Certara.R)
 
-`Certara.R` provides a collection of packages and Shiny applications designed for Pharmacometric workflows in R. Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio.
-
-[Why should I learn R?](https://certara.github.io/R-Certara/articles/why_learn_r.html)
+`Certara.R` provides a collection of packages and Shiny applications designed for Pharmacometric workflows in R. Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio. [Learn more](articles/why_learn_r.html)
 
 ### Installation and Running Information
 
@@ -124,6 +122,8 @@ For a quick overview using an older version of the app head to this [YouTube Tut
 
 Learn more about the package [here](https://github.com/smouksassi/coveffectsplot).
 
+<br/>
+
 ---
 
 <br/>
@@ -147,5 +147,28 @@ See the following [vignette](https://certara.github.io/ggcertara/vignettes/ggcer
 See the following [vignette](https://certara.github.io/table1c/vignettes/table1c-howto.html) for an overview of the package.
 
 <br/>
+
+---
+
+<br/>
+
+### [pmxpartabc](https://github.com/certara/pmxpartabc)
+
+[pmxpartabc](https://github.com/certara/pmxpartabc) is an R package for generating parameter estimates tables. `pmxpartabc` provides ease of table generation via specification of NONMEM `run_dir` or information contained in a user-provided `yaml` file. Additional support for bootstrap estimates is provided.
+
+Visit the [pmxpartabc website](https://certara.github.io/pmxpartabc/index.html) for examples of usage details.
+
+<br/>
+
+---
+
+<br/>
+
+### [scmreg](https://github.com/certara/scmreg)
+
+The [`scmreg`](https://github.com/certara/scmreg) package provides functions to perform Stepwise Covariate Modeling (SCM) in R. With the `scm_reg()` function, you can setup and execute a stepwise covariate model selection using different regression techniques and easily generate table output using the `tabscm()` function.
+
+<br/>
+
 
 

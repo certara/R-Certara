@@ -17,9 +17,17 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-EFH9NLH18N"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EFH9NLH18N');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Certara.R</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -68,14 +76,15 @@
 <li>
   <a href="../articles/news.html">News</a>
 </li>
+      </ul>
+<ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/certara/R-Certara/">
+  <a href="https://github.com/certara/R-Certara/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -85,44 +94,42 @@
 
       
 
-      </header><script src="packages_files/header-attrs-2.16/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Certara R Packages</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/master/vignettes/packages.Rmd"><code>vignettes/packages.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/HEAD/vignettes/packages.Rmd" class="external-link"><code>vignettes/packages.Rmd</code></a></small>
       <div class="hidden name"><code>packages.Rmd</code></div>
 
     </div>
 
     
     
-<div id="r-packages-for-pharmacometrics" class="section level1">
-<h1 class="hasAnchor">
-<a href="#r-packages-for-pharmacometrics" class="anchor"></a>R Packages for Pharmacometrics</h1>
+<div class="section level2">
+<h2 id="r-packages-for-pharmacometrics">R Packages for Pharmacometrics<a class="anchor" aria-label="anchor" href="#r-packages-for-pharmacometrics"></a>
+</h2>
 <p><code>Certara.R</code> provides a collection of R packages and Shiny
 applications designed for Pharmacometric workflows in R. All Shiny
 applications provide the ability to generate R code given
 point-and-click operations, enabling a reproducible and extensible
 workflow from Shiny GUI to RStudio.</p>
-<div id="rsnlme" class="section level2">
-<h2 class="hasAnchor">
-<a href="#rsnlme" class="anchor"></a>RsNLME <img src="img/RsNLME.png" align="right" height="200">
-</h2>
-<p><a href="https://certara.github.io/R-RsNLME/index.html"><code>Certara.RsNLME</code></a>
-uses <a href="https://www.tidyverse.org/">tidyverse</a> syntax to build
+<div class="section level3">
+<h3 id="rsnlme">RsNLME <img src="img/RsNLME.png" align="right" height="200"><a class="anchor" aria-label="anchor" href="#rsnlme"></a>
+</h3>
+<p><a href="https://certara.github.io/R-RsNLME/index.html" class="external-link"><code>Certara.RsNLME</code></a>
+uses <a href="https://www.tidyverse.org/" class="external-link">tidyverse</a> syntax to build
 Non-Linear-Mixed-Effects (NLME) models in R. Create and execute NLME
 models using built-in R functions.</p>
 <hr>
 <p><br><br><br><br></p>
 </div>
-<div id="rsnlme-modelbuilder" class="section level2">
-<h2 class="hasAnchor">
-<a href="#rsnlme-modelbuilder" class="anchor"></a>RsNLME.ModelBuilder
-<img src="img/ModelBuilder.png" align="left" height="200" style="padding-right: 10px">
-</h2>
-<p><a href="https://certara.github.io/R-RsNLME-model-builder/index.html"><code>Certara.RsNLME.ModelBuilder</code></a>
+<div class="section level3">
+<h3 id="rsnlme-modelbuilder">RsNLME.ModelBuilder
+<img src="img/ModelBuilder.png" align="left" height="200" style="padding-right: 10px"><a class="anchor" aria-label="anchor" href="#rsnlme-modelbuilder"></a>
+</h3>
+<p><a href="https://certara.github.io/R-RsNLME-model-builder/index.html" class="external-link"><code>Certara.RsNLME.ModelBuilder</code></a>
 is an R package and Shiny application used to build an RsNLME model.</p>
 <p>Use the GUI to select from various model building options and observe
 the PML update in real time. Additionally, users may generate the
@@ -131,12 +138,11 @@ R.</p>
 <hr>
 <p><br><br><br><br></p>
 </div>
-<div id="rsnlme-modelexecutor" class="section level2">
-<h2 class="hasAnchor">
-<a href="#rsnlme-modelexecutor" class="anchor"></a>RsNLME.ModelExecutor
-<img src="img/ModelExecutor.png" align="right" height="200">
-</h2>
-<p><a href="https://certara.github.io/R-RsNLME-model-executor/index.html"><code>Certara.RsNLME.ModelExecutor</code></a>
+<div class="section level3">
+<h3 id="rsnlme-modelexecutor">RsNLME.ModelExecutor
+<img src="img/ModelExecutor.png" align="right" height="200"><a class="anchor" aria-label="anchor" href="#rsnlme-modelexecutor"></a>
+</h3>
+<p><a href="https://certara.github.io/R-RsNLME-model-executor/index.html" class="external-link"><code>Certara.RsNLME.ModelExecutor</code></a>
 is an R package and Shiny application used to execute an RsNLME
 model.</p>
 <p>Use the GUI to add additional output tables, specify engine
@@ -144,12 +150,11 @@ parameters, select various run types, and more!</p>
 <hr>
 <p><br><br><br><br></p>
 </div>
-<div id="modelresults" class="section level2">
-<h2 class="hasAnchor">
-<a href="#modelresults" class="anchor"></a>ModelResults
-<img src="img/ModelResults.png" align="left" height="200" style="padding-right: 10px">
-</h2>
-<p><a href="https://certara.github.io/R-model-results/index.html"><code>Certara.ModelResults</code></a>
+<div class="section level3">
+<h3 id="modelresults">ModelResults
+<img src="img/ModelResults.png" align="left" height="200" style="padding-right: 10px"><a class="anchor" aria-label="anchor" href="#modelresults"></a>
+</h3>
+<p><a href="https://certara.github.io/R-model-results/index.html" class="external-link"><code>Certara.ModelResults</code></a>
 is an R package and Shiny GUI used to generate, customize, and report
 model diagnostic plots and tables from NLME or NONMEM runs.</p>
 <p>Users are not limited by the GUI however, Certara.ModelResults will
@@ -162,31 +167,29 @@ output.</p>
 <hr>
 <p><br><br><br><br></p>
 </div>
-<div id="xposenlme" class="section level2">
-<h2 class="hasAnchor">
-<a href="#xposenlme" class="anchor"></a>XposeNLME
-<img src="img/XposeNLME.png" align="right" height="200">
-</h2>
-<p><a href="https://certara.github.io/R-Xpose-NLME/index.html"><code>Certara.Xpose.NLME</code></a>
+<div class="section level3">
+<h3 id="xposenlme">XposeNLME
+<img src="img/XposeNLME.png" align="right" height="200"><a class="anchor" aria-label="anchor" href="#xposenlme"></a>
+</h3>
+<p><a href="https://certara.github.io/R-Xpose-NLME/index.html" class="external-link"><code>Certara.Xpose.NLME</code></a>
 is an R package used to creates <code>xpose</code> databases
-(<code>xpose_data</code>) for PML/NLME results. Additionally, <a href="https://certara.github.io/R-Xpose-NLME/index.html"><code>Certara.Xpose.NLME</code></a>
+(<code>xpose_data</code>) for PML/NLME results. Additionally, <a href="https://certara.github.io/R-Xpose-NLME/index.html" class="external-link"><code>Certara.Xpose.NLME</code></a>
 offers various covariate model diagnostic functions, not available in
 the <code>xpose</code> package.</p>
 <hr>
 <p><br><br><br><br></p>
 </div>
-<div id="vpcresults" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vpcresults" class="anchor"></a>VPCResults
-<img src="img/VPCResults.png" align="left" height="200" style="padding-right: 10px">
-</h2>
-<p><a href="https://certara.github.io/R-VPCResults/index.html"><code>Certara.VPCResults</code></a>
+<div class="section level3">
+<h3 id="vpcresults">VPCResults
+<img src="img/VPCResults.png" align="left" height="200" style="padding-right: 10px"><a class="anchor" aria-label="anchor" href="#vpcresults"></a>
+</h3>
+<p><a href="https://certara.github.io/R-VPCResults/index.html" class="external-link"><code>Certara.VPCResults</code></a>
 is an R package and Shiny application used to parameterize and plot a
 Visual Predictive Check (VPC).</p>
 <p>Use the GUI to select from various binning or binless methods and
 specify options such as censoring, stratification, and
 prediction-corrected.</p>
-<p>Users are not limited by the GUI however, <a href="https://certara.github.io/R-VPCResults/index.html"><code>Certara.VPCResults</code></a>
+<p>Users are not limited by the GUI however, <a href="https://certara.github.io/R-VPCResults/index.html" class="external-link"><code>Certara.VPCResults</code></a>
 will generate the underlying <code>tidyvpc</code> and
 <code>ggplot2</code> code (<code>.R</code> and/or <code>.Rmd</code>) for
 you inside the Shiny application, which you can then use to recreate
@@ -195,17 +198,16 @@ reporting output.</p>
 <hr>
 <p><br><br><br><br></p>
 </div>
-<div id="tidyvpc" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tidyvpc" class="anchor"></a>tidyvpc
-<img src="img/tidyvpc.png" align="right" height="200">
-</h2>
-<p>The <a href="https://certara.github.io/tidyvpc/index.html"><code>tidyvpc</code></a>
+<div class="section level3">
+<h3 id="tidyvpc">tidyvpc
+<img src="img/tidyvpc.png" align="right" height="200"><a class="anchor" aria-label="anchor" href="#tidyvpc"></a>
+</h3>
+<p>The <a href="https://certara.github.io/tidyvpc/index.html" class="external-link"><code>tidyvpc</code></a>
 package is used to perform a Visual Predictive Check (VPC), while
 accounting for stratification, censoring, and prediction correction.</p>
 <p>Using piping from ‘magrittr’, the intuitive syntax gives users a
 flexible and powerful method to generate VPCs using both traditional
-binning and a new binless approach Jamsen et al. (2018) <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6202468/">doi:10.1002/psp4.12319</a>
+binning and a new binless approach Jamsen et al. (2018) <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6202468/" class="external-link">doi:10.1002/psp4.12319</a>
 with Additive Quantile Regression (AQR) and Locally Estimated
 Scatterplot Smoothing (LOESS) prediction correction.</p>
 <hr>
@@ -224,11 +226,13 @@ Scatterplot Smoothing (LOESS) prediction correction.</p>
 
 
       <footer><div class="copyright">
-  <p>Developed by James Craig, Certara USA, Inc..</p>
+  <p></p>
+<p>Developed by James Craig, Certara USA, Inc..</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -236,6 +240,8 @@ Scatterplot Smoothing (LOESS) prediction correction.</p>
 
   
 
+
+  
 
   </body>
 </html>
