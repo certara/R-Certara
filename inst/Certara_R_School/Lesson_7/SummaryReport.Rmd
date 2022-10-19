@@ -1,0 +1,617 @@
+---
+title: "Data Memo Example"
+author: "Keith Nieforth & James Craig"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    css: css/style.css
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    df_print: paged
+    code_folding: hide
+  word_document:
+    toc: yes
+    toc_depth: '4'
+toctitle: Contents
+---
+
+```{r certara-logo, echo=FALSE, message = FALSE, warning = FALSE, fig.width=1, fig.height=10}
+knitr::opts_chunk$set(dpi=600) 
+htmltools::img(src = knitr::image_uri(file.path('img', 'certara.PNG')), 
+               alt = 'logo', 
+               style = 'position:fixed; top:0; right:0; padding:10px; width:300px;')
+```
+
+# Notes and Conventions {.tabset .tabset-fade .tabset-pills} 
+
+## Notes
+
+::: {#description-overview}
+* This is an example R Markdown report to demonstrate the workflow for building a "data memo" or report object in parallel with the conduct of a RsNLME analysis.
+* We use html output and "tabsets" within the RMarkdown document to show how RsNLME can be used together with R markdown to produce very dense, interactive data summaries that capture a large amount of data in well organized, easily shared delivery mechanism.
+:::
+
+## Conventions used in this document
+
+::: {.description}
+* We've used blue text boxes to indicate descriptive information
+:::
+
+::: {.results}
+* We've used yellow text boxes to indicate results
+:::
+
+::: {.keymessage}
+*  Green text boxes provide key messages from the analysis results
+*  Example:  This is a key message statement
+:::
+
+```{r session-set-up, warning=FALSE, message=FALSE, results=FALSE}
+# Analysis ID     : Certara.R School Lesson 4 - Modeling with RsNLME
+# Purpose         : Introduce R Markdown 
+# Other Info      : 
+library(flextable)
+library(plotly)
+```
+
+# Objectives {.tabset .tabset-fade .tabset-pills} 
+
+The purpose of this data memo is to provide a summary of the base population pharmacokinetic model fit for study XYZ   
+
+## Study Design
+::: {.description}
+*  150 healthy male and female subjects were enrolled in this study
+*  Subjects were administered a single 5000, 10000, or 20000 ug dose of Drug XYZ at time=0
+*  Blood samples were obtained at 0, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 12, 16 and 24 hours after dosing
+*  Covariates in the dataset include baseline subject age, weight, sex, and race
+:::
+
+## Methods
+::: {.description}
+*  Data analysis was conducted using the population pharmacokinetic program RsNLME version 1.1.0 (https://certara.github.io/R-RsNLME/index.html) 
+*  etc.....
+:::
+
+# Overview of the data {.tabset .tabset-fade .tabset-pills}
+
+## Summary
+
+::: {.keymessage}
+*  Elimination profile appears to be mono-exponential
+*  Body weight and/or gender appear to influence PK
+:::
+
+<br><br>
+
+## Demography summary {.tabset .tabset-fade .tabset-pills}
+
+```{r demography-summary, echo = TRUE, warning=FALSE, message=FALSE}
+
+dm_table <- readRDS(file='../Lesson_4/dmtable.RDS')
+dm_table
+
+```
+
+<br><br>
+
+## Mean Concentration Summary {.tabset .tabset-fade .tabset-pills}
+
+```{r conc-summary, echo = TRUE, warning=FALSE, message=FALSE}
+
+mean_conc_table <- readRDS(file='../Lesson_4/mean_conc_table.RDS')
+mean_conc_table
+
+```
+
+<br><br>
+
+## PK profiles Linear {.tabset .tabset-fade .tabset-pills}
+
+```{r pkplot, echo = TRUE, warning=FALSE, message=FALSE, out.width="80%", out.height="50%"}
+
+pkplot <- readRDS(file='../Lesson_4/pkplot.RDS')
+
+ggplotly(pkplot)
+
+```
+
+<br><br>
+
+## PK profiles Log {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Disposition appears mono-exponential
+:::
+
+```{r mean-log, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplotlog <- readRDS(file='../Lesson_4/pkplotlog.RDS')
+pkplotlog
+
+```
+
+<br><br>
+
+## Facet Gender and Dose Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Possible gender difference in PK with observed concentrations higher in females
+:::
+
+```{r gender-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_dosesex <- readRDS(file='../Lesson_4/pkplot_dosesex.RDS')
+pkplot_dosesex
+
+```
+
+<br><br>
+
+## Facet Race and Dose Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   PK appears similar across race
+:::
+
+```{r race-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_doserace <- readRDS(file='../Lesson_4/pkplot_doserace.RDS')
+pkplot_doserace
+
+```
+
+<br><br>
+
+## Facet WT Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Possible WT influence on PK with larger subjects having lower exposures
+:::
+
+```{r wt-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_dosewt <- readRDS(file='../Lesson_4/pkplot_dosewt.RDS')
+pkplot_dosewt
+
+```
+
+<br><br>
+
+## Facet Age Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   PK appears similar across age groups.  Note limited age range (38 to 61 y). 
+:::
+
+```{r age-linear, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+pkplot_doseage <- readRDS(file='../Lesson_4/pkplot_doseage.RDS')
+pkplot_doseage
+
+```
+
+# Base Model Development {.tabset .tabset-fade .tabset-pills}
+
+## Summary
+
+::: {.keymessage}
+*  A 1 compartment model with first order oral input and elimination was used to fit the data
+*  Convergence was achieved with successful estimation of parameter standard errors
+:::
+
+<br><br>
+
+## Model Description {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+*  A 1 compartment model with first order oral input and elimination was used to fit the data
+*  Model parameters absorption rate constant (Ka), central clearance (Cl), and central volume (V)
+*  Between subject variability terms on Ka, Cl and V 
+*  Additive residual error model
+:::
+
+![Structural PK Model](img/onecptoral.png "One Compartment with Oral Input"){width=35%}
+```{r, base-model-specification}
+
+## View the updated model 
+basemod<-readRDS("../Lesson_4/basemod.RDS")
+print(basemod)
+
+```
+
+## Model Fit Summary {.tabset .tabset-fade .tabset-pills}
+::: {.results}
+*  Convergence was achieved with successful estimation of parameter standard errors
+:::
+
+### Additive Error Model
+```{r, base-model-fit}
+
+## View the updated model 
+basemodfit<-readRDS("../Lesson_4/basemodfit.RDS")
+print(basemodfit)
+
+```
+
+### Multiplicative Error Model
+```{r, baseNew-model-fit}
+
+## View the updated model 
+basemodNewfit<-readRDS("../Lesson_6/basemodNewfit.RDS")
+print(basemodNewfit)
+
+```
+
+## Base Model Diagnostics {.tabset .tabset-fade .tabset-pills}
+### Additive Residual Error Model {.tabset .tabset-fade .tabset-pills}
+#### Structural Model {.tabset .tabset-fade .tabset-pills}
+::: {.keymessage}
+* A multiplicative residual error model was selected in place of 
+* the base model additive error model
+:::
+
+##### DV vs PRED
+
+```{r dx-basedvpred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basedvpred <- readRDS(file='../Lesson_6/basedvpred.RDS')
+basedvpred
+
+```
+
+##### DV vs IPRED
+
+```{r dx-basedvipred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basedvipred <- readRDS(file='../Lesson_6/basedvipred.RDS')
+basedvipred
+
+```
+
+##### CWRES vs TIME
+
+```{r dx-baseresidv, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+baseresidv <- readRDS(file='../Lesson_6/baseresidv.RDS')
+baseresidv
+
+```
+
+##### CWRES vs IPRED
+
+```{r dx-baserespred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+baserespred <- readRDS(file='../Lesson_6/baserespred.RDS')
+baserespred
+
+```
+
+##### absCWRES vs IPRED
+
+```{r dx-basearespred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basearespred <- readRDS(file='../Lesson_6/basearespred.RDS')
+basearespred
+
+```
+
+#### Covariate Model {.tabset .tabset-fade .tabset-pills}
+
+::: {.keymessage}
+* CL appears to be influenced by subject bodyweight
+:::
+
+##### Parameter vs WT
+
+```{r dx-baseprmcovwt, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+baseprmcovwt <- readRDS(file='../Lesson_6/baseprmcovwt.RDS')
+baseprmcovwt
+
+```
+
+##### ETA vs WT
+
+```{r dx-baseetacovwt, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+baseetacovwt <- readRDS(file='../Lesson_6/baseetacovwt.RDS')
+baseetacovwt
+
+```
+
+### Multiplicative Residual Error Model {.tabset .tabset-fade .tabset-pills}
+#### Structural Model {.tabset .tabset-fade .tabset-pills}
+::: {.keymessage}
+* A multiplicative residual error model was selected in place of 
+* the base model additive error model
+:::
+
+##### DV vs PRED
+
+```{r dx-basenewdvpred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewdvpred <- readRDS(file='../Lesson_6/basenewdvpred.RDS')
+basenewdvpred
+
+```
+
+##### DV vs IPRED
+
+```{r dx-basenewdvipred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewdvipred <- readRDS(file='../Lesson_6/basenewdvipred.RDS')
+basenewdvipred
+
+```
+
+##### CWRES vs TIME
+
+```{r dx-basenewresidv, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewresidv <- readRDS(file='../Lesson_6/basenewresidv.RDS')
+basenewresidv
+
+```
+
+##### CWRES vs IPRED
+
+```{r dx-basenewrespred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewrespred <- readRDS(file='../Lesson_6/basenewrespred.RDS')
+basenewrespred
+
+```
+
+##### absCWRES vs IPRED
+
+```{r dx-basenewarespred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewarespred <- readRDS(file='../Lesson_6/basenewarespred.RDS')
+basenewarespred
+
+```
+
+#### Covariate Model {.tabset .tabset-fade .tabset-pills}
+
+::: {.keymessage}
+* CL appears to be influenced by subject bodyweight
+:::
+
+##### Parameter vs WT
+
+```{r dx-basenewprmcovwt, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewprmcovwt <- readRDS(file='../Lesson_6/basenewprmcovwt.RDS')
+basenewprmcovwt
+
+```
+
+##### ETA vs WT
+
+```{r dx-basenewetacovwt, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewetacovwt <- readRDS(file='../Lesson_6/basenewetacovwt.RDS')
+basenewetacovwt
+
+```
+
+##### ETAs vs All Covariates
+```{r dx-baseranparcov, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+basenewranparcov <- readRDS(file='../Lesson_6/basenewranparcov.RDS')
+basenewranparcov
+
+```
+
+# Covariate Models {.tabset .tabset-fade .tabset-pills}
+
+## Summary
+
+::: {.keymessage}
+*  Significant covariates in single covariate model runs include...
+*  
+:::
+
+<br><br>
+
+
+## Run1WTonCL {.tabset .tabset-fade .tabset-pills}
+
+### Model Fit Summary {.tabset .tabset-fade .tabset-pills}
+```{r, run1-WTonCL-fit}
+
+run1WTonCLfit<-readRDS("../Lesson_6/run1WTonCLfit.RDS")
+print(run1WTonCLfit)
+
+```
+
+### Structural Model {.tabset .tabset-fade .tabset-pills}
+#### DV vs PRED
+
+```{r dx-run1dvpred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run1dvpred <- readRDS(file='../Lesson_6/run1dvpred.RDS')
+run1dvpred
+
+```
+
+#### DV vs IPRED
+
+```{r dx-run1dvipred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run1dvipred <- readRDS(file='../Lesson_6/run1dvipred.RDS')
+run1dvipred
+
+```
+
+#### CWRES vs TIME
+
+```{r dx-run1residv, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run1residv <- readRDS(file='../Lesson_6/run1residv.RDS')
+run1residv
+
+```
+
+#### CWRES vs IPRED
+
+```{r dx-run1respred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run1respred <- readRDS(file='../Lesson_6/run1respred.RDS')
+run1respred
+
+```
+
+### Covariate Model {.tabset .tabset-fade .tabset-pills}
+
+#### ETAs vs All Covariates
+```{r dx-run1ranparcov, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run1ranparcov <- readRDS(file='../Lesson_6/run1ranparcov.RDS')
+run1ranparcov
+
+```
+
+## Run2SEXonCL {.tabset .tabset-fade .tabset-pills}
+
+### Model Fit Summary {.tabset .tabset-fade .tabset-pills}
+```{r, run2-SEXonCL-fit}
+
+run2SEXonCLfit<-readRDS("../Lesson_6/run2SEXonCLfit.RDS")
+print(run2SEXonCLfit)
+
+```
+
+### Structural Model {.tabset .tabset-fade .tabset-pills}
+#### DV vs PRED
+
+```{r dx-run2dvpred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run2dvpred <- readRDS(file='../Lesson_6/run2dvpred.RDS')
+run2dvpred
+
+```
+
+#### DV vs IPRED
+
+```{r dx-run2dvipred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run2dvipred <- readRDS(file='../Lesson_6/run2dvipred.RDS')
+run2dvipred
+
+```
+
+#### CWRES vs TIME
+
+```{r dx-run2residv, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run2residv <- readRDS(file='../Lesson_6/run2residv.RDS')
+run2residv
+
+```
+
+#### CWRES vs IPRED
+
+```{r dx-run2respred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run2respred <- readRDS(file='../Lesson_6/run2respred.RDS')
+run2respred
+
+```
+
+### Covariate Model {.tabset .tabset-fade .tabset-pills}
+
+#### ETAs vs All Covariates
+```{r dx-run2ranparcov, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run2ranparcov <- readRDS(file='../Lesson_6/run2ranparcov.RDS')
+run2ranparcov
+
+```
+
+## Run3WTonV {.tabset .tabset-fade .tabset-pills}
+
+### Model Fit Summary {.tabset .tabset-fade .tabset-pills}
+```{r, run3-WTonV-fit}
+
+run3WTonVfit<-readRDS("../Lesson_6/run3WTonVfit.RDS")
+print(run3WTonVfit)
+
+```
+
+### Structural Model {.tabset .tabset-fade .tabset-pills}
+#### DV vs PRED
+
+```{r dx-run3dvpred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run3dvpred <- readRDS(file='../Lesson_6/run3dvpred.RDS')
+run3dvpred
+
+```
+
+#### DV vs IPRED
+
+```{r dx-run3dvipred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run3dvipred <- readRDS(file='../Lesson_6/run3dvipred.RDS')
+run3dvipred
+
+```
+
+#### CWRES vs TIME
+
+```{r dx-run3residv, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run3residv <- readRDS(file='../Lesson_6/run3residv.RDS')
+run3residv
+
+```
+
+#### CWRES vs IPRED
+
+```{r dx-run3respred, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run3respred <- readRDS(file='../Lesson_6/run3respred.RDS')
+run3respred
+
+```
+
+### Covariate Model {.tabset .tabset-fade .tabset-pills}
+
+#### ETAs vs All Covariates
+```{r dx-run3ranparcov, echo = TRUE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6}
+
+run3ranparcov <- readRDS(file='../Lesson_6/run3ranparcov.RDS')
+run3ranparcov
+
+```
+
+# Simulation {.tabset .tabset-fade .tabset-pills}
+
+## Summary
+
+::: {.keymessage}
+*  The final model was used to simulate a multiple dose regime of 5000, 10000, or 20000 ug q6h * 2 days ...
+*  
+:::
+
+<br><br>
+
+## Simulation Output {.tabset .tabset-fade .tabset-pills}
+
+```{r, simq6h, warning=FALSE}
+
+finalsimq6hbywtgrp<-readRDS("../Lesson_7/finalsimq6hbywtgrp.RDS")
+print(finalsimq6hbywtgrp)
+
+```
+
+
+
+
+# Session Info {.tabset .tabset-fade .tabset-pills}
+
+```{r, session-info,comment = NA}
+sessionInfo()
+```

@@ -1,0 +1,146 @@
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+}
+
+h1.title {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-size: 36px;
+}
+
+h4.author {
+  font-weight:bold;
+  font-style:italic;
+  margin-top: 0em;
+  margin-bottom: 1em;
+}
+
+h4.date {
+  font-weight:bold;
+  margin-top: 0em;
+  margin-bottom: 2em;
+}
+
+h1  {/* Define a margin before h1 element */
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-weight: bold;
+  font-size: 30px;
+  color: #333;
+}
+h2  {
+  margin-top: 2em;
+  font-weight: bold;
+}
+h3  {
+  margin-top: 2em;
+  font-weight: bold;
+}
+h4  {
+  margin-top: 4em;
+  font-weight: bold;
+}
+
+#TOC {
+    margin: 25px 0px 20px 0px;
+}
+/* -----------div tips------------- */
+
+/* -----------use #id for styling single div------------- */
+
+#description-overview {
+    padding: 1em;
+    margin: 1em;
+    padding-left: 50px;
+    background-size: 35px;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+    min-height: 50px;
+    font-size: 16px;
+    color: #000000;
+    background-color: #eee;
+    border: solid 5px #ddd;
+    background-image: url("../img/circle-info.svg");
+    }
+    
+/* -----------use .class applying styling to multiple divs------------- */
+
+.description {
+    padding: 1em;
+    margin: 1em;
+    padding-left: 50px;
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+    min-height: 35px;
+    font-size: 16px;
+    color: #000000;
+    background-color: #bed3ec;
+    border: solid 5px #dfedff;
+    background-image: url("../img/file-lines.svg");
+    }
+
+.results {
+    padding: 1em;
+    margin: 1em;
+    padding-left: 50px;
+    background-size: 35px;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+    min-height: 40px;
+    font-size: 16px;
+    color: #000000;
+    background-color: #FAD07D;
+    border: solid 5px #FFDE9C;
+    background-image: url("../img/chart-area.svg");
+    }
+  
+.keymessage {
+    padding: 1em;
+    margin: 1em;
+    padding-left: 50px;
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+    min-height: 40px;
+    font-size: 16px;
+    color: #000000;
+    background-color: #b1eba8;
+    border: solid 5px #e0f3e4;
+    background-image: url("../img/file-medical.svg");
+    }
+
+.rmd-icon {
+  padding: 5px;
+  height: 35px;
+  }
+  
+.tabset ul li{
+ font-size:14px;
+}
+
+.nav-pills > li > a {
+    border-radius: 2px;
+    line-height: 0.75;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+    color: #fff;
+    background-color: #125887;
+}
+
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    z-index: 2;
+    color: #fff;
+    background-color: #125887;
+    border-color: #125887;
+}
+
+a {
+    color: #125887;
+}
+
