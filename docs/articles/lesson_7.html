@@ -17,9 +17,17 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-EFH9NLH18N"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EFH9NLH18N');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Certara.R</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -68,14 +76,15 @@
 <li>
   <a href="../articles/news.html">News</a>
 </li>
+      </ul>
+<ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/certara/R-Certara/">
+  <a href="https://github.com/certara/R-Certara/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -85,42 +94,42 @@
 
       
 
-      </header><script src="lesson_7_files/header-attrs-2.16/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Lesson 7: Simulation</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/master/vignettes/lesson_7.Rmd"><code>vignettes/lesson_7.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/HEAD/vignettes/lesson_7.Rmd" class="external-link"><code>vignettes/lesson_7.Rmd</code></a></small>
       <div class="hidden name"><code>lesson_7.Rmd</code></div>
 
     </div>
 
     
     
-<div id="lesson-7-simulation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#lesson-7-simulation" class="anchor"></a>Lesson 7: Simulation</h2>
+<div class="section level2">
+<h2 id="lesson-7-simulation">Lesson 7: Simulation<a class="anchor" aria-label="anchor" href="#lesson-7-simulation"></a>
+</h2>
 <hr>
 <center>
-<a class="registration-button" href="https://certara.zoom.us/webinar/register/WN_eyKCdmfRTUGbXtBFOUEp_w" target="_blank">Register
+<a class="external-link registration-button" href="https://certara.zoom.us/webinar/register/WN_eyKCdmfRTUGbXtBFOUEp_w" target="_blank">Register
 for Lesson 7 Webinar</a>
 </center>
 <hr>
-<p><a href="https://certara.github.io/R-RsNLME/index.html"><img src="img/RsNLME.png" align="left" style="height: 150px; padding-right: 10px;"></a></p>
+<p><a href="https://certara.github.io/R-RsNLME/index.html" class="external-link"><img src="img/RsNLME.png" align="left" style="height: 150px; padding-right: 10px;"></a></p>
 <p>In Lesson 7, we will demonstrate how to run simulations with RsNLME
 models.</p>
 <p><br><br><br></p>
-<div id="live-webinar-date-10262022-10am-est" class="section level3">
-<h3 class="hasAnchor">
-<a href="#live-webinar-date-10262022-10am-est" class="anchor"></a>Live Webinar Date: 10/26/2022 <span class="citation">@10am</span>
-EST</h3>
+<div class="section level3">
+<h3 id="live-webinar-date-10262022-10am-est">Live Webinar Date: 10/26/2022 <span class="citation">@10am</span>
+EST<a class="anchor" aria-label="anchor" href="#live-webinar-date-10262022-10am-est"></a>
+</h3>
 <p>In the webinar we will cover the following topics:</p>
 <ul>
 <li>Define desired simulation output table with appropriate variables
 and time sequences</li>
 <li>Specify correct engine parameters for simulation</li>
-<li>Use the <a href="https://certara.github.io/R-RsNLME/reference/simmodel.html"><code>simmodel()</code></a>
+<li>Use the <a href="https://certara.github.io/R-RsNLME/reference/simmodel.html" class="external-link"><code>simmodel()</code></a>
 function to execute simulation</li>
 <li>Post-process simulation results and create diagnostic plots</li>
 </ul>
@@ -139,11 +148,13 @@ function to execute simulation</li>
 
 
       <footer><div class="copyright">
-  <p>Developed by James Craig, Certara USA, Inc..</p>
+  <p></p>
+<p>Developed by James Craig, Certara USA, Inc..</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -151,6 +162,8 @@ function to execute simulation</li>
 
   
 
+
+  
 
   </body>
 </html>

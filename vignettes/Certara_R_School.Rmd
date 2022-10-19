@@ -90,9 +90,9 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 ---
 
-## Lesson 8: VPC - Using the `tidyvpc` package
+## [Lesson 8: Visual Predictive Check (VPC)](lesson_8.html)
 
-* Upcoming Webinar Date: *TBD*
+* Upcoming Webinar Date: *11/30/2022 @10am EST*
 
 ---
 

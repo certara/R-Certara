@@ -1,0 +1,38 @@
+---
+title: "Lesson 8: Visual Predictive Check (VPC)"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 8: Visual Predictive Check (VPC)}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 8: Visual Predictive Check (VPC)
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_fLBYsjRsTxaiCjZnIwycNg#/registration" target="_blank">Register for Lesson 8 Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/tidyvpc.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+
+In Lesson 8, we will demonstrate usage of [`RsNLME`](https://certara.github.io/R-RsNLME/) with the [`tidyvpc`](https://certara.github.io/tidyvpc/) package to perform a Visual Predictive Check (VPC).
+
+<br></br>
+<br></br>
+<br></br>
+
+
+### Live Webinar Date: 11/30/2022 @10am EST
+
+In the webinar we will cover the following topics:
+
+* Executing a VPC run in [`RsNLME`](https://certara.github.io/R-RsNLME/)
+* Explore different binning and binless methods to compute VPC statistics in [`tidyvpc`](https://certara.github.io/tidyvpc/)
+* Use the [`VPCResults`](https://certara.github.io/R-VPCResults/) Shiny App to parameterize a VPC from the GUI and generate corresponding R code for reproducibility in RStudio
+* Customize the resulting VPC plot using [`ggplot2`](https://ggplot2.tidyverse.org/)

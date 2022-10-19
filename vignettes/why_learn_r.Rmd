@@ -10,7 +10,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-<img src='https://www.r-project.org/logo/Rlogo.png' align="left" height="125" style='padding:15px'/>
+<img src='https://www.r-project.org/logo/Rlogo.png' align="left" style='padding:15px; height: 125px;'/>
 
 ## Why Learn R?
 
