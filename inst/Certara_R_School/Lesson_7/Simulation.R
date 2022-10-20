@@ -136,7 +136,7 @@ covsearchresults %>%
   autofit()
 
 # 4: Create Final Model and Fit ----
-finalmod <- copyModel(basemod, modelName="finalmod")
+finalmod <- copyModel(basemod, acceptAllEffects = TRUE, modelName="finalmod")
 
 ## Add covariate effects to the model
 finalmod <- finalmod %>%
@@ -327,67 +327,41 @@ SimTableout %>%
 
 # * 7.1 Make a copy of our first simulation model with the new multiple dose regimen----
 
-simmod2 <- copyModel(finalmod, acceptAllEffects = TRUE, modelName = "simmod2")
+simmod2 <- copyModel(simmod, modelName = "simmod2")
 
 print(simmod2)
-
-#replace this dataset with simdat using the dataMapping function
-simmod2 <- simmod2 %>%
-  dataMapping(simdat)
-
-# ** 5.2.3 Check Mappings and Map Variables as Necessary ----
-#Check mappings.  Note the presence of '?' for unmapped variables
-print(simmod2)
-
-#Map AMT and DV to A1 and CObs
-simmod2 <- simmod2 %>%
-  colMapping(c(Aa="AMT", CObs="CONC"))
-
-#Re-check mappings.  Note that Aa and DV are now mapped
-print(simmod2)
-
-#If original dataset did not use variables like ADDL, SS, etc., we need to add them
-# ** 5.2.4 Use addADDL to map multiple dose variables ----
-simmod2 <- simmod2 %>%
-  addADDL(ADDL="ADDL", II="II")
-
-#Re-check mappings.  Note that ADDL and II are now mapped
-print(simmod2)
-
-
 
 
 # * 7.2 Edit the model to simulate covariate values on the fly ----
 simmod2 <- editModel(simmod2)
 
 # test(){
-#   double(WT)  #declare a variable we name WT
-#
-#   sequence{
-#     WT = 100 + 10 * norm()  #set the value of WT - mean 100, sd 10.
-#   }
-#
-#   deriv(Aa = -Ka * Aa)
-#   deriv(A1 = Ka * Aa - Cl * C)
-#   dosepoint(Aa)
-#   C = A1 / V
-#   error(CEps=0.206785987348122)
-#   observe(CObs=C * ( 1 + CEps))
-#   stparm(Ka = tvKa * exp(nKa))
-#   stparm(V = tvV * exp(nV))
-#   stparm(Cl = tvCl * ((WT/70)^dCldWT)   * exp(nCl))
-#   fcovariate(AGE)
-#   #fcovariate(WT)   comment out WT covariate (would expect WT from datset)
-#   fcovariate(SEX())
-#   fcovariate(RACE())
-#   fcovariate(DOSEGRP)
-#   fixef( tvKa = c(,1.17810280534081,))
-#   fixef( tvV = c(,81.5657539364354,))
-#   fixef( tvCl = c(,7.76447828738055,))
-#   fixef( dCldWT(enable=c(0)) = c(,2.76217598762253,))
-#   ranef(diag(nKa,nV,nCl) = c(0.0771743182767522,0.179062993434557,0.259470580853362))
+#  double(WTdist)  #declare a variable we name WTdist
+#  sequence{
+#    WTdist = 100 + 10 * norm()  #sample WTdist from specified distribution - mean 100, sd 10.
+#  }
+#  cfMicro(A1,Cl/V, first = (Aa = Ka))
+#  dosepoint(Aa)
+#  C = A1 / V
+#  WT = WTdist    #assign WT to WTdist
+#  error(CEps=0.206785987348122)
+#  observe(CObs=C * ( 1 + CEps))
+#  stparm(Ka = tvKa * exp(nKa))
+#  stparm(V = tvV * exp(nV))
+#  stparm(Cl = tvCl * ((WT/70)^dCldWT)   * exp(nCl))
+#  fcovariate(AGE)
+#  #fcovariate(WT)   #comment out WT covariate (we are not using WT from datset)
+#  fcovariate(SEX())
+#  fcovariate(RACE())
+#  fcovariate(DOSEGRP)
+#  fixef( tvKa = c(,1.17810280534081,))
+#  fixef( tvV = c(,81.5657539364354,))
+#  fixef( tvCl = c(,7.76447828738055,))
+#  fixef( dCldWT(enable=c(0)) = c(,2.76217598762253,))
+#  ranef(diag(nKa,nV,nCl) = c(0.0771743182767522,0.179062993434557,0.259470580853362))
 #
 # }
+
 
 
 # * 7.3 Specify Simulation Outputs, and Prepare Simulation Settings ----
