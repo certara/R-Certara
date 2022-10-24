@@ -362,7 +362,40 @@ simmod2 <- editModel(simmod2)
 #
 # }
 
-
+## Example with categorical covariate
+# test(){
+#
+#   double(udist, SEXdist)
+#   sequence{
+#     udist = unif()
+#     if (udist < 0.7){          #This will create 70% SEX = 0, 30% SEX = 1
+#       SEXdist = 0
+#     } else {
+#       SEXdist = 1
+#     }
+#   }
+#
+#   cfMicro(A1,Cl/V, first = (Aa = Ka))
+#   dosepoint(Aa)
+#   C = A1 / V
+#   SEX = SEXdist    #assign SEX to SEXdist
+#   error(CEps=0.206785987348122)
+#   observe(CObs=C * ( 1 + CEps))
+#   stparm(Ka = tvKa * exp(nKa))
+#   stparm(V = tvV * exp(nV))
+#   stparm(Cl = tvCl * exp(dClSEX1*(SEX==1))   * exp(nCl))  #SEX==1 is logical check, returns 1 if true, 0 if false
+#   fcovariate(AGE)
+#   fcovariate(WT)
+#   #fcovariate(SEX()) #comment out SEX covariate (we are not using SEX from datset)
+#   fcovariate(RACE())
+#   fcovariate(DOSEGRP)
+#   fixef( tvKa = c(,1.17810280534081,))
+#   fixef( tvV = c(,81.5657539364354,))
+#   fixef( tvCl = c(,7.76447828738055,))
+#   fixef( dClSEX1(enable=c(0)) = c(,0,))
+#   ranef(diag(nKa,nV,nCl) = c(0.0771743182767522,0.179062993434557,0.259470580853362))
+#
+# }
 
 # * 7.3 Specify Simulation Outputs, and Prepare Simulation Settings ----
 
