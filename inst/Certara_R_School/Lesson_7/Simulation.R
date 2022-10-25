@@ -150,9 +150,15 @@ finalmodfit <- fitmodel(finalmod)
 # 5: Simulation ----
 
 # Can directly simulate from any model
-# For example, this runs a simulation from our final model
+# For example, this runs a simulation from our base model
 # using default settings for outputs and simulation parameters
 # (100 replicates, dataset times for output): See ?simmodel
+
+# Make a copy of basemod with acceptAllEffects = TRUE
+# Why?:  otherwise the initial parameter estimates would be used for simulation
+basemod <- copyModel(basemod,acceptAllEffects = TRUE, modelName = "basemod")
+
+print(basemod)
 
 # Run simulation
 basesim <- simmodel(basemod)
@@ -242,7 +248,7 @@ simmodfit <- simmodel(simmod, SimSetup)
 ## Read in the simulation output dataset specified in the call to NlmeSimTableDef
 
 ## can read the file in from the simulation directory
-## simdat<-read.csv("data/myRproject/TwoCptIVWTonClVsim/SimTable.csv")
+## simdat<-read.csv("./simmod/SimTable.csv")
 
 ## Or, can extract it from the simulation fit object
 SimTableout <- simmodfit$SimTable %>%
@@ -281,7 +287,7 @@ summary(simdat$WT)  #WT Range in data is 55-94 kg
 
 # Some different cut examples
 # base R cut function
-SimTableout$wtgrp <- cut(SimTableout$WT,breaks = c(50,70,100),right=FALSE)
+SimTableout$wtgrp <- cut(SimTableout$WT,breaks = c(50,70,100))
 SimTableout %>%
   select(C,wtgrp,WT) %>%
   tbl_summary(by=wtgrp,
@@ -417,7 +423,7 @@ SimTableout2 <- simmodfit2$SimTable %>%
   rename("Replicate"="# repl") %>%   #rename repl column to Replicate
   mutate(id=as.numeric(paste0(Replicate,id5)))
 
-options(scipen = 999)
+options(scipen = 999) #suppress scientific notation in y axis label
 ggplot(SimTableout2, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
   scale_y_log10() +
