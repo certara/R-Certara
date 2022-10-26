@@ -240,8 +240,16 @@ SimSetup <- NlmeSimulationParams(numReplicates = 10,
                                  seed = 1234,
                                  simulationTables = c(SimTable))
 
+## Optional:  Define a host to parallelize simulation (note: we're only specifying 10 replicates here,
+## need to increase numReplicates to see benefit)
+
+localMultiCoreHost <- NlmeParallelHost(installationDirectory = Sys.getenv("INSTALLDIR"),
+                                       parallelMethod = NlmeParallelMethod("multicore"),
+                                       hostName = "Local_MultiCore",
+                                       numCores = 4)
+
 ## * 5.4 Run the simulation ----
-simmodfit <- simmodel(simmod, SimSetup)
+simmodfit <- simmodel(simmod, SimSetup, hostPlatform = localMultiCoreHost)
 
 ## * 5.5 Post-Process, Plot simulation results ----
 ## Simulated drug concentration at the central compartment
