@@ -14,7 +14,7 @@ vignette: >
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_fLBYsjRsTxaiCjZnIwycNg#/registration" target="_blank">Register for Lesson 8 Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_fLBYsjRsTxaiCjZnIwycNg" target="_blank">Register for Lesson 8 Webinar</a>
 </center>
 
 ---

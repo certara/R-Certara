@@ -37,7 +37,7 @@ Academic Institution:">Request RsNLME Academic License</a>
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_fLBYsjRsTxaiCjZnIwycNg#/registration" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_fLBYsjRsTxaiCjZnIwycNg" target="_blank">Register for Upcoming Webinar</a>
 </center>
 
 ---
