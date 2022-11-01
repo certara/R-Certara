@@ -40,4 +40,5 @@ In the webinar we will cover the following topics:
 ### Webinar Resources
 
 * [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_7)
+* [Presentation](https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+7/Certara+R+School+Lesson+7.pdf)
 
