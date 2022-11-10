@@ -23,15 +23,17 @@ The following lessons will demonstrate how to begin using R in your Pharmacometr
 
 *Note: While an `RsNLME` license is not mandatory to participate, many of the lectures will cover core pharmacometric workflows using the `RSNLME` package. License options are available for Certara.R school participants via the links below.*
 
-<a href="mailto:certara.licensing@certara.com?subject=Certara.R School RsNLME Trial License&body=Hello, I have registered for the upcoming Certara.R School webinar and request a 90-day trial license for RsNLME: %0d%0a%0d%0a
+* <a href="mailto:certara.licensing@certara.com?subject=Certara.R School RsNLME Trial License&body=Hello, I have registered for the upcoming Certara.R School webinar and request a 90-day trial license for RsNLME: %0d%0a%0d%0a
 Name: %0d%0a
 Email: %0d%0a
 Organization/Institution:">Request Certara.R School RsNLME Trial License</a>  
 
-<a href="mailto:certara.licensing@certara.com?subject=RsNLME Academic License&body=Hello, I am requesting an academic license for RsNLME: %0d%0a%0d%0a
+* <a href="mailto:certara.licensing@certara.com?subject=RsNLME Academic License&body=Hello, I am requesting an academic license for RsNLME: %0d%0a%0d%0a
 Name: %0d%0a
 Academic Email: %0d%0a
 Academic Institution:">Request RsNLME Academic License</a>  
+
+Learn how to access [Certara.R School lesson files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School) using [GitHub Desktop](https://desktop.github.com/) in the following [video](lesson_materials.html).
 
 
 ---
