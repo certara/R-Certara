@@ -88,9 +88,9 @@ xpdb %>% prm_vs_cov(covariate="WT",type='ps')
 xpdb %>% eta_vs_cov(covariate="WT",type='ps', scales="fixed") +
   geom_abline(slope=0)
 
-xpdb %>% eta_vs_cov(covariate="WT",type='ps', scales="fixed") +
-  geom_abline(slope=0)
+xpdb %>% eta_vs_cov(covariate="WT",type='ps', scales="fixed", guide_slope = 0)
 
+# A note about documentation...
 # A note about '...' e.g., unnamed arguments
 # xpose can be extended with ggplot2 e.g., geom_point()
 xpdb %>% res_vs_cov(covariate="WT",type='ps', scales="fixed") +
@@ -99,9 +99,9 @@ xpdb %>% res_vs_cov(covariate="WT",type='ps', scales="fixed") +
 xpdb %>% res_vs_cov(covariate="WT",type='ps', scales="fixed", point_color = "red")
 
 # More on ellipsis
-# params <- engineParams(basemod, method = "Naive-Pooled")
+# params <- engineParams(basemod, method = "FOCE-ELS")
 # fitmodel(basemod, params = params)
-# fitmodel(basemod, method = "Naive-Pooled")
+# fitmodel(basemod, params = params, method = "Naive-Pooled")
 
 # 2. VPC Base Model ----
 
@@ -109,7 +109,11 @@ xpdb %>% res_vs_cov(covariate="WT",type='ps', scales="fixed", point_color = "red
 basemod_vpc <- copyModel(basemod, acceptAllEffects = TRUE, modelName = "basemod_vpc")
 
 # * 2.2 Setup VPC Params for run
-vpcParams <- NlmeVpcParams(numReplicates = 50, outputPRED = TRUE)
+
+# VPC Params Setup
+vpcParams <- NlmeVpcParams(numReplicates = 50,
+                           seed = 1234,
+                           outputPRED = TRUE)
 
 # * 2.3 Run VPC model
 basemod_vpc_fit <- vpcmodel(model = basemod_vpc,
@@ -198,7 +202,6 @@ observed(obsdat, x = IVAR, yobs = DV) %>%
 observed(obsdat, x = IVAR, yobs = DV) %>%
   simulated(simdat, ysim = DV) %>%
   binning(bin = "kmeans", nbins = 7) %>%
-  vpcstats() %>%
   plot()
 
 # You can also plot() without calling vpcstats() function, e.g., plot bins only
@@ -232,8 +235,10 @@ bininfo(vpc)
 
 obsdat %>%
   filter(IVAR >=0.25 & IVAR < 1.5) %>%
-  pull(DV) %>%
+  pull(IVAR) %>%
   summary()
+
+plot(vpc)
 
 
 # What's inside the tidyvpcobj?
@@ -269,7 +274,7 @@ ggplot(vpc$stats, aes(x = xbin)) +
   geom_rug(data = bininfo(vpc)[, .(x = sort(unique(c(xleft, xright))))], aes(x = x), sides = "t", size = 1) +
   ylab(sprintf("Observed/Simulated percentiles and associated %s%% CI", 100 * vpc$conf.level)) +
   xlab("TIME") +
-  theme_certara() +
+  Certara.VPCResults::theme_certara() +
   theme(legend.position = "top")
 
 
@@ -347,7 +352,7 @@ observed(obsfinaldat, x = IVAR, yobs = DV) %>%
 # 6. Certara.VPCResults ----
 # The Shiny GUI can be used as a learning heuristic and for easy customization of resulting ggplot
 library(Certara.VPCResults)
-vpcResultsUI(obsfinaldat, simfinaldat)
+#vpcResultsUI(obsfinaldat, simfinaldat)
 
 
 # 7. Benchmarking tidyvpc ----
