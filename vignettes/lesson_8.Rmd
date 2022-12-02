@@ -33,7 +33,7 @@ We will be holding a virtual office hour where users may ask questions to presen
 
 <br></br>
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/tidyvpc.png'  align="left" style = "height: 150px; padding-right: 30px;"/></a>
+<a href = "https://certara.github.io/tidyvpc/"><img src='img/tidyvpc.png'  align="left" style = "height: 150px; padding-right: 30px;"/></a>
 
 ### Webinar Overview
 

@@ -1,0 +1,37 @@
+---
+title: "Lesson 9: RsNLME Case Study"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 9: RsNLME Case Study}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 9: RsNLME Case Study
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_cBUdHGo8T7OEN8U94wH9tw" target="_blank">Register for Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+
+In Lesson 9 we provide a case study of [`RsNLME`](https://certara.github.io/R-RsNLME/), demonstrating an end to end workflow using the suite of R packages and Shiny applications developed by Certara.
+
+<br></br>
+
+### Webinar Overview
+
+In the webinar we will cover the following topics:
+
+* Create a base model and explore covariate effects
+* Evaluate model diagnostic plots
+* Perform a Visual Predictive Check (VPC)
+* Use RMarkdown to generate a report
+
+
