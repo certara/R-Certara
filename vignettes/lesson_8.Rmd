@@ -13,22 +13,29 @@ vignette: >
 
 ---
 
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_fLBYsjRsTxaiCjZnIwycNg" target="_blank">Register for Lesson 8 Webinar</a>
-</center>
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/776709832?h=53ef440bfa&color=0a7bc1&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
 ---
-
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/tidyvpc.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
 
 In Lesson 8, we will demonstrate usage of [`RsNLME`](https://certara.github.io/R-RsNLME/) with the [`tidyvpc`](https://certara.github.io/tidyvpc/) package to perform a Visual Predictive Check (VPC).
 
 <br></br>
-<br></br>
-<br></br>
 
 
-### Live Webinar Date: 11/30/2022 @10am EST
+
+### Live Office Hours Date: 12/14/2022 @10am EST
+
+We will be holding a virtual office hour where users may ask questions to presenters about past webinar topics. 
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/j/85642806232?pwd=aGhzRUNidkNvMEJMS0UxRmhlSWNzUT09" target="_blank">Join Office Hours</a>
+</center>
+
+<br></br>
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/tidyvpc.png'  align="left" style = "height: 150px; padding-right: 30px;"/></a>
+
+### Webinar Overview
 
 In the webinar we will cover the following topics:
 
@@ -36,3 +43,10 @@ In the webinar we will cover the following topics:
 * Explore different binning and binless methods to compute VPC statistics in [`tidyvpc`](https://certara.github.io/tidyvpc/)
 * Use the [`VPCResults`](https://certara.github.io/R-VPCResults/) Shiny App to parameterize a VPC from the GUI and generate corresponding R code for reproducibility in RStudio
 * Customize the resulting VPC plot using [`ggplot2`](https://ggplot2.tidyverse.org/)
+
+### Webinar Resources
+
+* [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_8)
+* [Presentation](https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+8/Certara+R+School+Lesson+8.pdf)
+
+

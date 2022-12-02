@@ -31,12 +31,12 @@ basemod <- pkmodel(numCompartments = 1,
 
 # * 1.2 Map Dataset Columns to Model Variables ----
 basemod <- basemod %>%
-  colMapping(c(id = "ID", time = "TIME", Aa = "AMT", CObs = "CONC"))
+  colMapping(mappings = c(id = "ID", time = "TIME", Aa = "AMT", CObs = "CONC"))
 
 # *RsNLME v1.2.0 Feature Preview*
 # Using unquoted column names as alternative to above syntax
-# basemod <- basemod %>%
-#   colMapping(id = ID, time = TIME, Aa = AMT, CObs = CONC)
+basemod <- basemod %>%
+  colMapping(id = ID, time = TIME, Aa = AMT, CObs = CONC)
 
 # * 1.3 Add Covariates to explore model diagnostics ----
 basemod <- basemod %>%
@@ -75,6 +75,15 @@ basemod <- basemod %>%
 # * 1.4 Fit base model ----
 basemod_fit <- fitmodel(basemod)
 
+# Example of ellipsis in RsNLME fitmodel
+
+# Method can be specified in engineParams() then passed to params argument in fitmodel()
+params <- engineParams(basemod, method = "Naive-Pooled")
+fitmodel(basemod, params = params)
+
+# Or use the method argument inside fitmodel() via the ellipses
+ fitmodel(basemod, method = "Naive-Pooled")
+
 # * 1.5 Explore Model Diagnostics ----
 # Create xpdb diagnostics to show impact of covariate WT on CL
 xpdb <- xposeNlme(dir = basemod@modelInfo@workingDir,
@@ -88,20 +97,20 @@ xpdb %>% prm_vs_cov(covariate="WT",type='ps')
 xpdb %>% eta_vs_cov(covariate="WT",type='ps', scales="fixed") +
   geom_abline(slope=0)
 
-xpdb %>% eta_vs_cov(covariate="WT",type='ps', scales="fixed", guide_slope = 0)
+xpdb %>% eta_vs_cov(covariate="WT",type='ps', scales="fixed")
 
-# A note about documentation...
+
 # A note about '...' e.g., unnamed arguments
 # xpose can be extended with ggplot2 e.g., geom_point()
-xpdb %>% res_vs_cov(covariate="WT",type='ps', scales="fixed") +
-  geom_point(color = "red")
-# But you can also pass unnamed arguments using the '...'
-xpdb %>% res_vs_cov(covariate="WT",type='ps', scales="fixed", point_color = "red")
+xpdb %>% eta_vs_cov(covariate="WT",type='ps', scales="fixed", smooth_span = 0.5)
 
-# More on ellipsis
-# params <- engineParams(basemod, method = "FOCE-ELS")
-# fitmodel(basemod, params = params)
-# fitmodel(basemod, params = params, method = "Naive-Pooled")
+xpdb %>% eta_vs_cov(covariate="WT", type='ps', scales="fixed",
+                    smooth_color = "red", point_color = "blue")
+
+xpdb %>% eta_vs_cov(covariate="WT", type='ps', scales="fixed") +
+  geom_smooth(color = "red") +
+  geom_point(color = "blue")
+
 
 # 2. VPC Base Model ----
 
@@ -120,14 +129,14 @@ basemod_vpc_fit <- vpcmodel(model = basemod_vpc,
                             vpcParams = vpcParams)
 
 # Usages of dots '...' to pass arguments from NlmeVpcParams, engineParams, hostParams using unnamed arguments e.g., '...' in the vpcmodel() function
-# basemod_vpc_fit <- vpcmodel(
-#                             model = basemod_vpc,
-#                             numReplicates = 50,
-#                             outputPRED = TRUE,
-#                             method = "Naive-Pooled",
-#                             parallelMethod = NlmeParallelMethod("LOCAL_MPI"),
-#                             numCores = 4
-#                             )
+basemod_vpc_fit <- vpcmodel(
+                            model = basemod_vpc,
+                            numReplicates = 50,
+                            outputPRED = TRUE,
+                            method = "Naive-Pooled",
+                            parallelMethod = NlmeParallelMethod("LOCAL_MPI"),
+                            numCores = 4
+                            )
 
 
 # 3 Using tidyvpc ----
@@ -168,6 +177,7 @@ simdat <- simdat %>%
 # * 3.2 Basic Usage ----
 
 #Binning on Variable in data e.g., TIME
+#In such case the interval is created between each timepoint
 vpc_1 <- observed(obsdat, x = IVAR, yobs = DV) %>%
   simulated(simdat, ysim = DV) %>%
   binning(bin = IVAR) %>%
@@ -223,12 +233,21 @@ observed(obsdat, x = IVAR, yobs = DV) %>%
   binning(bin = "breaks", breaks = c(2,4,6,8,10,16,18)) %>%
   plot()
 
+# Using ellipses for unnamed args
+observed(obsdat, x = IVAR, yobs = DV) %>%
+  simulated(simdat, ysim = DV) %>%
+  binning(bin = "headtails", thr = 0.8) %>%
+  vpcstats() %>%
+  plot()
+
+
 
 # * 3.2.1 More on Binning ----
 
+set.seed(1234)
 vpc <- observed(obsdat, x = IVAR, yobs = DV) %>%
   simulated(simdat, ysim = DV) %>%
-  binning(bin = "kmeans", nbins = 5) %>%
+  binning(bin = "kmeans", nbins = 7) %>%
   vpcstats()
 
 bininfo(vpc)
@@ -242,13 +261,6 @@ plot(vpc)
 
 
 # What's inside the tidyvpcobj?
-vpc <- observed(obsdat, x = IVAR, yobs = DV) %>%
-  simulated(simdat, ysim = DV) %>%
-  binning(bin = "kmeans", nbins = 7) %>%
-  vpcstats()
-
-plot(vpc)
-
 glimpse(vpc)
 
 # What is plotted?
@@ -256,11 +268,13 @@ glimpse(vpc)
 vpc$stats
 # xbin value is the bin midpoint - but 'what midpoint is used'
 bininfo(vpc)
-# by default, xbin = 'xmedian'
+# by default, xbin = 'xmedian' - let's use 'xmean'
 vpc <- observed(obsdat, x = IVAR, yobs = DV) %>%
   simulated(simdat, ysim = DV) %>%
   binning(bin = "kmeans", nbins = 7, xbin = "xmean") %>%
   vpcstats()
+vpc$stats
+bininfo(vpc)
 # View below ggplot2 code to see values extracted from vpc object for plotting
 ggplot(vpc$stats, aes(x = xbin)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = qname, col = qname, group = qname), alpha = 0.1, col = NA) +
@@ -334,11 +348,22 @@ vpc_4 <- observed(obsfinaldat, x = IVAR, yobs = DV) %>%
 
 # tidyvpc supports n levels of stratification
 # * Generate VPC - with stratification on WT ~ SEX
+
 vpc_5 <- observed(obsfinaldat, x = IVAR, yobs = DV) %>%
   simulated(simfinaldat, ysim = DV) %>%
-  stratify(SEX ~ WT_CUT) %>%
+  stratify(SEX ~ WT_CUT) %>% # two sided formula uses facet_grid
   binning(bin = IVAR) %>%
   vpcstats()
+
+plot(vpc_5)
+
+vpc_6 <- observed(obsfinaldat, x = IVAR, yobs = DV) %>%
+  simulated(simfinaldat, ysim = DV) %>%
+  stratify(~ SEX + WT_CUT) %>% # one sided formula uses facet_wrap
+  binning(bin = IVAR) %>%
+  vpcstats()
+
+plot(vpc_6)
 
 table(obsdat$WT_CUT, obsdat$SEX)
 
@@ -352,7 +377,7 @@ observed(obsfinaldat, x = IVAR, yobs = DV) %>%
 # 6. Certara.VPCResults ----
 # The Shiny GUI can be used as a learning heuristic and for easy customization of resulting ggplot
 library(Certara.VPCResults)
-#vpcResultsUI(obsfinaldat, simfinaldat)
+vpcResultsUI(obsfinaldat, simfinaldat)
 
 
 # 7. Benchmarking tidyvpc ----

@@ -94,23 +94,29 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ## [Lesson 8: Visual Predictive Check (VPC)](lesson_8.html)
 
-* Upcoming Webinar Date: *11/30/2022 @10am EST*
+* Webinar Date: *11/30/2022 @10am EST*
 
 ---
 
-## Lesson 9: Best Practices for Reproducibility in R
+## Lesson 9:RsNLME Case Study
+
+* Upcoming Webinar Date: *2/22/2023 @10am EST*
+
+---
+
+## Lesson 10: Best Practices for Reproducibility in R
 
 * Upcoming Webinar Date: *TBD*
 
 ---
 
-## Lesson 10: Publishing Results in R Markdown
+## Lesson 11: Publishing Results in R Markdown
 
 * Upcoming Webinar Date: *TBD*
 
 ---
 
-## Lesson 11: Working with PML
+## Lesson 12: Working with PML
 
 * Upcoming Webinar Date: *TBD*
 
