@@ -11,10 +11,42 @@ vignette: >
 
 <br/><br/>
 
+## RsNLME v1.2.0 <img src='img/RsNLME.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" />
+
+* Date: 2023/1/30
+* [Release Notes](https://certara.github.io/R-RsNLME/articles/release_notes.html#rsnlme-1-2-0---january-2023)
+
+---
+
+<br/><br/>
+<br/><br/>
+
+## Pirana v23.11.1 <img src='img/pirana.png' height="100" align="right"  style = "float:right; height: 100px; padding: 5px; margin-top:10px;" />
+
+
+* Date: 2023/1/30
+* [Release Notes](https://onlinehelp.certara.com/pirana/23.1.1/index.html#t=Pirana_User_Guide%2FPiranaReleaseNotes%2FPiranaReleaseNotes.htm%231009015&rhtocid=_2)
+
+---
+
+<br/><br/>
+<br/><br/>
+
+
+## tidyvpc v1.4.0 <img src='img/tidyvpc.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" />
+
+* Date: 2022/10/27
+* [Release Notes](https://github.com/certara/tidyvpc/releases/tag/v1.4.0)
+
+---
+
+<br/><br/>
+<br/><br/>
+
 ## tidyvpc v1.3.0 <img src='img/tidyvpc.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" />
 
 * Date: 2022/03/11
-* [Release Notes](https://certara.github.io/tidyvpc/index.html)
+* [Release Notes](https://github.com/certara/tidyvpc/releases/tag/v1.3.0)
 
 ---
 
