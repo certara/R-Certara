@@ -17,7 +17,7 @@ reference:
 
 navbar:
   structure:
-    left:  [home, reference, pml, articles, webinars, resources, news]
+    left:  [home, reference, pml, articles, webinars, tutorials, resources, news]
     navbar:
   components:
     home: ~
@@ -30,6 +30,11 @@ navbar:
     webinars:
       text: Webinars
       href: articles/webinars.html
+    tutorials:
+      text: Tutorials
+      menu:
+      - text: RsNLME
+        href: articles/rsnlme_tutorial.html
     resources:
       text: Resources
       href: articles/resources.html
