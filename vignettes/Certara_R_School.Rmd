@@ -100,7 +100,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ## [Lesson 9: RsNLME Case Study](lesson_9.html)
 
-* Upcoming Webinar Date: *2/22/2023 @10am EST*
+* Upcoming Webinar Date: *3/29/2023 @10am EST*
 
 ---
 
