@@ -104,7 +104,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ---
 
-## Lesson 10: Best Practices for Reproducibility in R
+## [Lesson 10: Best Practices for Reproducibility in R](lesson_10.html)
 
 * Upcoming Webinar Date: *TBD*
 

@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 9: RsNLME Case Study • Certara.R</title>
+<title>Lesson 10: Best Practices for Reproducibility using R • Certara.R</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Lesson 9: RsNLME Case Study">
+<meta property="og:title" content="Lesson 10: Best Practices for Reproducibility using R">
 <meta property="og:description" content="Certara.R">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -97,46 +97,42 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Lesson 9: RsNLME Case Study</h1>
+      <h1 data-toc-skip>Lesson 10: Best Practices for Reproducibility
+using R</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/HEAD/vignettes/lesson_9.Rmd" class="external-link"><code>vignettes/lesson_9.Rmd</code></a></small>
-      <div class="hidden name"><code>lesson_9.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/certara/R-Certara/blob/HEAD/vignettes/lesson_10.Rmd" class="external-link"><code>vignettes/lesson_10.Rmd</code></a></small>
+      <div class="hidden name"><code>lesson_10.Rmd</code></div>
 
     </div>
 
     
     
 <div class="section level2">
-<h2 id="lesson-9-rsnlme-case-study">Lesson 9: RsNLME Case Study<a class="anchor" aria-label="anchor" href="#lesson-9-rsnlme-case-study"></a>
+<h2 id="lesson-10-best-practices-for-reproducibility-using-r">Lesson 10: Best Practices for Reproducibility using R<a class="anchor" aria-label="anchor" href="#lesson-10-best-practices-for-reproducibility-using-r"></a>
 </h2>
 <hr>
 <center>
-<a class="external-link registration-button" href="https://certara.zoom.us/webinar/register/WN_cBUdHGo8T7OEN8U94wH9tw" target="_blank">Register
+<a class="external-link registration-button" href="https://certara.zoom.us/webinar/register/WN_OOdLEKzkRKyeQfbH5VWrhg" target="_blank">Register
 for Webinar</a>
 </center>
 <hr>
 <p><a href="https://certara.github.io/R-RsNLME/index.html" class="external-link"><img src="img/RsNLME.png" align="left" style="height: 150px; padding-right: 25px;"></a></p>
-<p>In Lesson 9 we provide a case study of <a href="https://certara.github.io/R-RsNLME/" class="external-link"><code>RsNLME</code></a>,
-demonstrating an end to end workflow using the suite of R packages and
-Shiny applications developed by Certara.</p>
+<p>Lesson 10, we will provide a brief overview of RsNLME workflows that
+we’ve covered in previous lessons, and demonstrate best practices for
+organizing your project (e.g., directory structure, scripts, and run
+output folders) to ensure reproducibility and traceability of your
+results.</p>
 <p><br></p>
 <div class="section level3">
 <h3 id="webinar-overview">Webinar Overview<a class="anchor" aria-label="anchor" href="#webinar-overview"></a>
 </h3>
-<p>The bioequivalence of biosimilars is difficult to prove using
-traditional NCA approaches due to non-linear PK, or/and long half-life
-as such a lot of research has been ongoing to conduct a model-based
-approach.</p>
-<p>The model-based approach operation characteristics was studied using
-a simulation-reestimation approach.</p>
 <p>In this webinar we will cover:</p>
 <ul>
-<li>How to design a simulation re-estimation study</li>
-<li>How to write efficient R and RsNLME workflows that build the
-dataset, fit the model, conduct the required analysis and collect and
-compile results</li>
-<li>How to present the results using graphics and tables</li>
+<li>Organizing Runs and Workflow</li>
+<li>Saving R Scripts and data objects to facilitate reporting objectives
+analysis and collect and compile results</li>
+<li>Sharing analysis with others to ensure reproducibility</li>
 </ul>
 </div>
 </div>

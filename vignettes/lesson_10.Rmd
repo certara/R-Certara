@@ -1,0 +1,36 @@
+---
+title: "Lesson 10: Best Practices for Reproducibility using R"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 10: Best Practices for Reproducibility using R}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 10: Best Practices for Reproducibility using R
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_OOdLEKzkRKyeQfbH5VWrhg" target="_blank">Register for Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 25px;"/></a>
+
+Lesson 10, we will provide a brief overview of RsNLME workflows that we've covered in previous lessons, and demonstrate best practices for organizing your project (e.g., directory structure, scripts, and run output folders) to ensure reproducibility and traceability of your results.
+
+<br></br>
+
+### Webinar Overview
+
+In this webinar we will cover:
+
+* Organizing Runs and Workflow
+* Saving R Scripts and data objects to facilitate reporting objectives analysis and collect and compile results
+* Sharing analysis with others to ensure reproducibility
+
+

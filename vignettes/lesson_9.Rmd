@@ -19,7 +19,7 @@ vignette: >
 
 ---
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 25px;"/></a>
 
 In Lesson 9 we provide a case study of [`RsNLME`](https://certara.github.io/R-RsNLME/), demonstrating an end to end workflow using the suite of R packages and Shiny applications developed by Certara.
 
@@ -27,11 +27,14 @@ In Lesson 9 we provide a case study of [`RsNLME`](https://certara.github.io/R-Rs
 
 ### Webinar Overview
 
-In the webinar we will cover the following topics:
+The bioequivalence of biosimilars is difficult to prove using traditional NCA approaches due to non-linear PK, or/and long half-life as such a lot of research has been ongoing to conduct a model-based approach.
 
-* Create a base model and explore covariate effects
-* Evaluate model diagnostic plots
-* Perform a Visual Predictive Check (VPC)
-* Use RMarkdown to generate a report
+The model-based approach operation characteristics was studied using a simulation-reestimation approach. 
+
+In this webinar we will cover:
+
+* How to design a simulation re-estimation study
+* How to write efficient R and RsNLME workflows that build the dataset, fit the model, conduct the required analysis and collect and compile results
+* How to present the results using graphics and tables
 
 
