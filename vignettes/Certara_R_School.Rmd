@@ -39,7 +39,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 ---
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_cBUdHGo8T7OEN8U94wH9tw" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_OOdLEKzkRKyeQfbH5VWrhg" target="_blank">Register for Upcoming Webinar</a>
 </center>
 
 ---
