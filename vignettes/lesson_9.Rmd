@@ -36,3 +36,8 @@ In this webinar we will cover:
 * How to present the results using graphics and tables
 
 
+### Webinar Resources
+
+* [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_9)
+
+
