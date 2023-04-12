@@ -1,0 +1,47 @@
+test(){
+	covariate(FORM())
+	deriv(A1 = - Vmax * C / (Km + C) - Ke *A1 - Q1 * (C - C2) - Q2 * (C - C3))
+	deriv(A2 = Q1 * (C - C2))
+	deriv(A3 = Q2 * (C - C3))
+	deriv(A4 = A1/V1)
+
+	dosepoint(A1,duration = 1.5,bioavail=Frel)
+	stparm(Frel = tvFrel* exp(dFreldform1*(FORM!=0)))
+	fixef(tvFrel (freeze) = c(, 1, ))
+	fixef(dFreldform1 = c(, 0, ))
+
+	C = A1 / V1
+	C2 = A2 / V2
+	C3 = A3 / V3
+	CUMAUC=A4
+	error(CEps = 30)
+	observe(CObs = C + CEps * sqrt(1 + C^2 * (CMultStdev/sigma())^2))
+	stparm(CMultStdev = tvCMultStdev)
+	fixef(tvCMultStdev = c(, 0.14, ))
+
+	stparm(V1 = tvV1* exp(nV1))
+	stparm(V2 = tvV2)
+	stparm(V3 = tvV3)
+	stparm(Q1 = tvQ1)
+	stparm(Q2 = tvQ2)
+	stparm(Vmax = tvVmax)
+	stparm(Km = tvKm* exp(nKm))
+	stparm(Ke = tvKe* exp(nKe))
+
+	ranef(diag(nV1, nKm,nKe) = c(0.020899178 , 0.11907641,0.026831828))
+
+
+	fixef(tvV1 = c(, 3.26904961959272, ))
+	fixef(tvV2 = c(, 1.88989529404554, ))
+	fixef(tvV3 = c(, 1.96052798791638, ))
+	fixef(tvQ1 = c(, 0.00291003571610526, ))
+	fixef(tvQ2 = c(, 0.0434190232608694, ))
+	fixef(tvVmax = c(, 177.988828557482, ))
+	fixef(tvKm = c(, 900.316343437696, )) # ug/L
+	fixef(tvKe = c(, 0.00202360333449013, )) # ug/L
+
+}
+
+
+
+
