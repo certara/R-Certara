@@ -1,0 +1,90 @@
+---
+title: "Analysis Report"
+author: "James Craig"
+date: "2023-05-08"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+  pdf_document:
+    toc: true
+    toc_depth: 2
+  word_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "left")
+```
+
+## Summary
+
+This is an example R Markdown report to demonstrate the workflow for building a "data memo" or report object in parallel with the conduct of your analysis.
+
+---
+
+## Descriptive Statistics
+
+### Demographics Summary
+
+```{r dm_conctable, out.width='40%'}
+knitr::include_graphics('./tables/dmtable.png')
+```
+
+### Mean Concentration by Dose Group and Time
+
+```{r mean_conctable, out.width='60%'}
+knitr::include_graphics('./tables/mean_conctable.png')
+```
+
+---
+
+## Exploratory Data Analysis (EDA)
+
+### Time Concentration by Subject
+
+```{r time_concentration_by_subject, out.width='50%'}
+knitr::include_graphics('./plots/time_concentration_by_subject.png')
+```
+
+### Time Concentration by Dose Group
+
+```{r time_concentration_facet_dose_group, out.width='50%'}
+knitr::include_graphics('./plots/time_concentration_facet_dose_group.png')
+```
+
+---
+
+## Model Compartment Scenarios
+
+We evaluated the AIC for a one, two, and three compartment fit:
+
+```{r overall_table_cmpt_scenarios, out.width='50%'}
+knitr::include_graphics('./tables/overall_table_cmpt_scenarios.png')
+```
+
+We can see that the more parsimonious one compartment model should be selected as the base model.
+
+---
+
+## Model Diagnostic Plots
+
+### DV PRED vs IDV
+
+```{r dv_preds_idv, out.width='50%'}
+knitr::include_graphics('./plots/one_cmpt_dv_preds_idv.png')
+```
+
+### CWRES vs PRED
+```{r res_vs_pred, out.width='50%'}
+knitr::include_graphics('./plots/one_cmpt_res_vs_pred.png')
+```
+
+---
+
+## Session Information
+
+```{r session_info}
+sessionInfo()
+```
