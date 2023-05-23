@@ -1,3 +1,4 @@
+# Reference: Lesson 4
 # 5. Create Model Diagnostic Plots ----
 
 # Init xpose_data object
@@ -10,22 +11,12 @@ p8 <- dv_preds_vs_idv(
   xpdb,
   facets = c("variable", "DOSEGRP"),
   type = "ps",
-  smooth_method = "loess",
-  smooth_span = 0.75,
-  smooth_linetype = "solid",
   smooth_color = "#D63636",
-  smooth_size = 1.2,
-  point_shape = 16,
   point_color = "#757D8F",
   point_alpha = 0.5,
-  point_size = 1L,
-  point_stroke = 1,
-  line_color = "#000000",
-  line_alpha = 0.5,
-  line_size = 1L,
-  line_linetype = "solid",
+  point_size = 2,
   scales = "fixed"
-)
+) + theme_certara()
 
 ggsave("./plots/one_cmpt_dv_preds_idv.png", plot = p8)
 
@@ -37,21 +28,13 @@ p9 <-
     facets = "DOSEGRP",
     scales = "free_x",
     subtitle = "-2LL: @ofv, Eps shrink: @epsshk",
-    smooth_method = "loess",
-    smooth_span = 0.75,
-    smooth_linetype = "solid",
     smooth_color = "#D63636",
-    smooth_size = 1.2,
-    point_shape = 16,
     point_color = "#757D8F",
     point_alpha = 0.5,
-    point_size = 1L,
-    point_stroke = 1,
-    line_color = "#000000",
-    line_alpha = 0.5,
-    line_size = 1L,
-    line_linetype = "solid"
-  )
+    point_size = 2,
+    scales = "fixed"
+  ) +
+  theme_certara()
 
 ggsave("./plots/one_cmpt_res_vs_pred.png", plot = p9)
 
