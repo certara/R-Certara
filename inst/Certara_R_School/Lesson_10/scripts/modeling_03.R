@@ -1,3 +1,4 @@
+#Reference: Lesson 4 & 6
 # 5. Model Compartment Scenario Fits ----
 numCpt <-  c("OneCpt" = 1,
              "TwoCpt" = 2,

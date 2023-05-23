@@ -1,3 +1,5 @@
+# Reference: Lesson 4
+
 # 3. Descriptive Statistics Tables ----
 
 # * 3.1 Demographic summary table using gt ----
