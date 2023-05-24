@@ -6,6 +6,7 @@ articles:
   lesson_0: lesson_0.html
   lesson_1: lesson_1.html
   lesson_10: lesson_10.html
+  lesson_11: lesson_11.html
   lesson_2: lesson_2.html
   lesson_3: lesson_3.html
   lesson_4: lesson_4.html
@@ -22,5 +23,5 @@ articles:
   rsnlme_tutorial: rsnlme_tutorial.html
   webinars: webinars.html
   why_learn_r: why_learn_r.html
-last_built: 2023-04-12T17:30Z
+last_built: 2023-05-24T13:26Z
 

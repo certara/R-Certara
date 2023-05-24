@@ -43,7 +43,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 </div>
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_OOdLEKzkRKyeQfbH5VWrhg" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_KS8XTRGiQFu9cFPKVVzhUg" target="_blank">Register for Upcoming Webinar</a>
 </center>
 
 ---
@@ -110,13 +110,13 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ## [Lesson 10: Best Practices for Reproducibility in R](lesson_10.html)
 
-* Upcoming Webinar Date: *5/24/2023 @10am EST*
+* Webinar Date: *5/24/2023 @10am EST*
 
 ---
 
-## Lesson 11: Publishing Results in R Markdown
+## [Lesson 11: Publishing Results in R Markdown](lesson_11.html)
 
-* Upcoming Webinar Date: *TBD*
+* Upcoming Webinar Date: *7/26/2023 @10am EST*
 
 ---
 

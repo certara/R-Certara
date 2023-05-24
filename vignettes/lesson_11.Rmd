@@ -1,0 +1,36 @@
+---
+title: "Lesson 11: Advanced Usage of RMarkdown"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 11: Advanced Usage of RMarkdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 11: Advanced Usage of RMarkdown
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_KS8XTRGiQFu9cFPKVVzhUg" target="_blank">Register for Webinar</a>
+</center>
+
+---
+
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 25px;"/></a>
+
+In Lesson 11, we will demonstrate advanced usage of RMarkdown and provide an overview of:
+
+<br></br>
+
+### Webinar Overview
+
+In this webinar we will cover:
+
+* Customizing output formats and usage of MS Word templates or CSS for organizational styling
+* Parameterized reports which can include interactive visualizations for HTML output in conditionally rendered code chunks
+* Child RMarkdown documents which can more effectively organize large reports
+
+
