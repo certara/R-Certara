@@ -39,7 +39,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 ---
 
 <div style="text-align: center;">
-### [Best Practices for Reproducibility in R](lesson_10.html)
+### [Watch Last Webinar: Best Practices for Reproducibility in R](lesson_10.html)
 </div>
 
 <center>

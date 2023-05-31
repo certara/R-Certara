@@ -9,13 +9,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-## Lesson 10: Best Practices for Reproducibility using R
+## Lesson 10: Best Practices for Reproducibility in R
 
 ---
 
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_OOdLEKzkRKyeQfbH5VWrhg" target="_blank">Register for Webinar</a>
-</center>
+<div style="padding:62.5% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/832041011?h=e28d70c6d9&color=0a7bc1&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
 ---
 
@@ -30,7 +28,13 @@ Lesson 10, we will provide a brief overview of RsNLME workflows that we've cover
 In this webinar we will cover:
 
 * Organizing Runs and Workflow
-* Saving R Scripts and data objects to facilitate reporting objectives analysis and collect and compile results
+* Saving R Scripts and plot/table output to facilitate reporting objectives in Rmarkdown
+* Using version control (GitHub Desktop) to track changes
 * Sharing analysis with others to ensure reproducibility
+
+### Webinar Resources
+
+* [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_10)
+
 
 
