@@ -5,6 +5,7 @@ resource_files:
   - img/certara_university.jpg
   - img/certara_circle.jpg
   - img/Certara_R_School.png
+  - img/Certara.R.png
 vignette: >
   %\VignetteIndexEntry{Certara R School}
   %\VignetteEngine{knitr::rmarkdown}
