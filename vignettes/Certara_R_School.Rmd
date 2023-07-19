@@ -117,12 +117,12 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ## [Lesson 11: Publishing Results in R Markdown](lesson_11.html)
 
-* Upcoming Webinar Date: *7/26/2023 @10am EST*
+* Upcoming Webinar Date: *8/30/2023 @10am EST*
 
 ---
 
 ## Lesson 12: Working with PML
 
-* Upcoming Webinar Date: *TBD*
+* Upcoming Webinar Date: *9/27/2023 @10am EST*
 
 ---
