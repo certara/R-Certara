@@ -1,0 +1,163 @@
+---
+title: "Data Memo Example"
+author: "Keith Nieforth & James Craig"
+output:
+  html_document:
+    theme: united
+    css: css/style.css
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    df_print: paged
+    code_folding: hide
+toctitle: Contents
+params:
+  interactive: FALSE
+  sections: "eda, model"
+---
+
+```{r certara-setup, echo=FALSE, message = FALSE, warning = FALSE, fig.width=1, fig.height=10}
+knitr::opts_chunk$set(dpi=300, echo = TRUE, warning = FALSE, message = FALSE, out.width = "100%", out.height = "50%") 
+htmltools::img(src = knitr::image_uri(file.path('img', 'certara.PNG')), 
+               alt = 'logo', 
+               style = 'position:fixed; top:0; right:0; padding:10px; width:300px;')
+interactive <- params$interactive
+sections <- strsplit(params$sections, ",")[[1]]
+```
+
+# Notes and Conventions {.tabset .tabset-fade .tabset-pills} 
+
+## Notes
+
+::: {#description-overview}
+* This is an example R Markdown report to demonstrate the workflow for building a "data memo" or report object in parallel with the conduct of a RsNLME analysis.
+* We use html output and "tabsets" within the RMarkdown document to show how RsNLME can be used together with R markdown to produce very dense, interactive data summaries that capture a large amount of data in well organized, easily shared delivery mechanism.
+* We also show how RsNLME shiny apps generate code specific to your analysis problem that allows you to get the job done, even if you're not an R expert!
+:::
+
+## Conventions used in this document
+
+::: {.description}
+* We've used blue text boxes to indicate descriptive information
+:::
+
+::: {.results}
+* We've used yellow text boxes to indicate results
+:::
+
+::: {.keymessage}
+*  Green text boxes provide key messages from the analysis results
+*  Example:  This is a key message statement
+:::
+
+```{r session-set-up, warning=FALSE, message=FALSE, results=FALSE}
+# Analysis ID     : Project XYZ Preliminary Population PK Analysis
+# Purpose         : Initial Target Attainment Assessment
+# Other Info      : Define your own!
+library(flextable)
+library(plotly)
+library(DT)
+```
+
+# Objectives {.tabset .tabset-fade .tabset-pills} 
+
+The purpose of this data memo is to provide a summary of the base population pharmacokinetic model fit for study XYZ.  
+
+## Study Design
+::: {.description}
+*  150 healthy and infected male and female subjects were enrolled in this study at 3 centers under inpatient and outpatient settings
+*  Subjects were administered 100 mg of Drug XYZ intravenously at time=0 and time=24
+*  Blood samples were obtained at 0, 0.25, 0.5, 1, 2, 4, 6, 8, 12, and 24 hours after the first dose, and 12, and 24 hours after the second dose of Drug XYZ
+*  Covariate effects were not explored during base model development.
+:::
+
+## Methods
+::: {.description}
+*  Data analysis was conducted using the population pharmacokinetic program RsNLME version 1.1.0 (https://certara.github.io/R-RsNLME/index.html) 
+* A scenario search was performed for a one, two, and three compartment model, with -2LL and AIC used and GOF plots evaluated to select the best model fit.
+*  A one-compartment model with bolus input and first-order elimination from the central compartment was selected to model the time course of drug XYZ plasma concentrations. The parameters of this model were clearance (Cl), volume of distribution of the central compartment (V).
+:::
+
+
+```{r child = "EDA.Rmd", eval = "eda" %in% sections}
+
+```
+
+# Base Model Development {.tabset .tabset-fade .tabset-pills}
+
+
+## Model Overview by Number of Compartments 
+
+::: {.results}
+*  A one, two, and three compartment model was run.
+:::
+
+::: {.keymessage}
+*  The 1 compartment model was selected.
+:::
+
+
+```{r, overall_table_cmpt_scenarios}
+
+## View the overall tables
+overall_table_cmpt_scenarios <- readRDS("./tables/overall_table_cmpt_scenarios.RDS")
+overall_table_cmpt_scenarios
+
+```
+
+## GOF Plots {.tabset .tabset-fade .tabset-pills}
+
+### DV vs PRED
+```{r, dvpred, eval = !interactive}
+dvpred <- readRDS("./plots/one_cmpt_dv_preds_idv.RDS")
+dvpred
+```
+
+```{r, dvpred-interactive, eval = interactive}
+dvpred <- readRDS("./plots/one_cmpt_dv_preds_idv.RDS")
+dvpred |>
+  plotly::ggplotly()
+```
+
+### CWRES vs PRED
+
+```{r, cwrespred, echo = TRUE, warning=FALSE, message=FALSE, eval = !interactive}
+cwrespred <- readRDS("./plots/one_cmpt_res_vs_pred.RDS")
+cwrespred
+```
+
+```{r, cwrespred-interactive, echo = TRUE, warning=FALSE, message=FALSE, eval = interactive}
+cwrespred <- readRDS("./plots/one_cmpt_res_vs_pred.RDS")
+cwrespred |> 
+  plotly::ggplotly()
+```
+
+
+## Parameter Estimates {.tabset .tabset-fade .tabset-pills}
+
+### Thetas
+
+```{r, tabletheta}
+table_theta <- readRDS("./tables/one_cmpt_theta.RDS")
+table_theta
+```
+
+### Omegas
+
+```{r, tableomega}
+table_omega <- readRDS("./tables/one_cmpt_omega.RDS")
+table_omega
+```
+
+### Sigmas
+
+```{r, tablesigma}
+table_sigma <- readRDS("./tables/one_cmpt_sigma.RDS")
+table_sigma
+```
+
+# Session Info {.tabset .tabset-fade .tabset-pills}
+
+```{r, session-info,comment = NA}
+sessionInfo()
+```

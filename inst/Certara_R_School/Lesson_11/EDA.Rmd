@@ -1,0 +1,126 @@
+---
+title: "Exploratory Data Analysis (EDA)"
+author: "James Craig"
+date: "2023-08-22"
+output: html_document
+params:
+  interactive: TRUE
+---
+
+```{r eda-setup, echo=FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(dpi=300, echo = TRUE, warning = FALSE, message = FALSE, out.width = "100%", out.height = "50%") 
+interactive <- params$interactive
+```
+
+# Overview of the data {.tabset .tabset-fade .tabset-pills}
+
+## Summary
+
+::: {.keymessage}
+*  Elimination profile appears to be bi-exponential
+*  Body weight and gender appear to influence PK
+:::
+
+
+## Data
+
+```{r data-preview, eval=interactive}
+library(DT)
+finaldat <- read.csv(file='./data/finaldat.csv')
+DT::datatable(finaldat, rownames = FALSE, filter = "top", 
+          options = list(pageLength = 5, scrollX = TRUE))
+```
+
+
+
+
+<br><br>
+
+## Demographics Table {.tabset .tabset-fade .tabset-pills}
+
+```{r dm-table}
+
+dm_table <- readRDS(file='./tables/dmtable.RDS')
+dm_table
+
+```
+
+<br><br>
+
+## Mean Concentration {.tabset .tabset-fade .tabset-pills}
+
+```{r mean-conc-table}
+
+mean_conctable <- readRDS(file='./tables/mean_conctable.RDS')
+mean_conctable
+
+```
+
+<br><br>
+
+## Time Concentration by Subject {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Disposition appears bi-exponential
+:::
+
+```{r mean-log, eval = !interactive}
+
+time_conc <- readRDS(file='./plots/time_concentration_by_subject.RDS')
+time_conc
+
+```
+
+```{r mean-log-interactive, eval = interactive}
+
+time_conc <- readRDS(file='./plots/time_concentration_by_subject.RDS')
+time_conc |>
+  plotly::ggplotly()
+
+```
+
+<br><br>
+
+## Facet Dose Group {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Possible gender difference in PK with observed concentrations higher in females
+:::
+
+```{r time-conc-dose-grp, eval = !interactive}
+
+time_conc_dose_grp <- readRDS(file='./plots/time_concentration_facet_dose_group.RDS')
+time_conc_dose_grp
+
+```
+
+```{r time-conc-dose-grp-interactive, eval = interactive}
+
+time_conc_dose_grp <- readRDS(file='./plots/time_concentration_facet_dose_group.RDS')
+time_conc_dose_grp |> 
+  plotly::ggplotly()
+
+```
+
+<br><br>
+
+## Facet WT Linear {.tabset .tabset-fade .tabset-pills}
+
+::: {.results}
+-   Possible WT influence on PK with higher concentrations in lower body weight subjects
+:::
+
+```{r wt-linear, eval = !interactive}
+
+time_conc_wt <- readRDS(file='./plots/time_concentration_by_subject_by_wt_cut.RDS')
+time_conc_wt
+
+```
+
+```{r wt-linear-interactive, eval = interactive}
+
+time_conc_wt <- readRDS(file='./plots/time_concentration_by_subject_by_wt_cut.RDS')
+time_conc_wt |> 
+  plotly::ggplotly()
+
+```
