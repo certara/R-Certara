@@ -40,7 +40,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 ---
 
 <div style="text-align: center;">
-### [Watch Last Webinar: Best Practices for Reproducibility in R](lesson_10.html)
+### [Watch Last Webinar: Advanced R Markdown](lesson_11.html)
 </div>
 
 <center>
@@ -115,7 +115,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ---
 
-## [Lesson 11: Publishing Results in R Markdown](lesson_11.html)
+## [Lesson 11: Advanced R Markdown](lesson_11.html)
 
 * Upcoming Webinar Date: *8/30/2023 @10am EST*
 
