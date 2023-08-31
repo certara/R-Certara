@@ -44,7 +44,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 </div>
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_KS8XTRGiQFu9cFPKVVzhUg" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_edK6JirdTx-DskdXXeMTnw" target="_blank">Register for Upcoming Webinar</a>
 </center>
 
 ---
@@ -121,7 +121,7 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ---
 
-## Lesson 12: Working with PML
+## [Lesson 12:  History and Advantages of the PML Language](lesson_12.html)
 
 * Upcoming Webinar Date: *9/27/2023 @10am EST*
 

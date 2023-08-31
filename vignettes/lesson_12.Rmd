@@ -1,0 +1,32 @@
+---
+title: "Lesson 12: History and Advantages of the PML Language"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 12: History and Advantages of the PML Language}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 12: History and Advantages of the PML Language
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_edK6JirdTx-DskdXXeMTnw" target="_blank">Register for Webinar</a>
+</center>
+
+---
+
+
+### Webinar Overview
+
+In this webinar we will cover:
+
+* History of the Pharmacometric Modeling Language (PML)
+* Advantages of PML
+* Basic overview and examples
+
+
+
