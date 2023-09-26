@@ -1,0 +1,34 @@
+test(){
+    dosepoint(Aa)
+    C = A1 / V
+    deriv(Aa =  - Ka*Aa + GBAa)
+    deriv(A1 =  Ka*Aa  -  Cl*C - K1G*A1)
+    deriv(GB = K1G*A1 - GBAa)
+    real(i, GBAa)
+    sequence{
+        i=0;
+        while(i<10){
+            i=i+1;
+            GBAa=0;
+            sleep(tCycle-tReflux);
+            GBAa=(GB/tReflux);
+            sleep(tReflux);
+            GBAa=0;
+        }
+    }
+    error(CEps=0.1)
+    observe(CObs=C * ( 1 + CEps))
+    stparm(Ka = tvKa * exp(nKa))
+    stparm(V = tvV * exp(nV))
+    stparm(Cl = tvCl * exp(nCl))
+    stparm(tCycle = tvtCycle)
+    stparm(tReflux = tvtReflux)
+    stparm(K1G = tvK1G)
+    fixef( tvKa = c(,1.5,))
+    fixef( tvV = c(,80,))
+    fixef( tvCl = c(,9,))
+    fixef(tvtCycle = c(,2,))
+    fixef(tvtReflux= c(,.5,))
+    fixef(tvK1G= c(,0.2,))
+    ranef(diag(nKa,nV,nCl) = c(0.1,0.1,0.1))
+}
