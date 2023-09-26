@@ -240,3 +240,203 @@ p3 +
                geom = "line", colour = "blue", size = 1.2, lty=2, alpha=.6)
 
 
+#Easy to Change Dose Regimens
+simmodMD <- simmodMD %>%
+  addDoseCycle(type = "ADDL", amount="AMT", name = "Aa", colName = "ADDL", II = 8)
+
+#Run Simulation
+simclean("simmodMD")
+simmodMDfit <- simmodel(simmodMD, SimSetup)
+
+# extract output from the simulation fit object
+SimTableMDout <- simmodMDfit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+#Make a plot
+
+p4<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Multiple Dose q8h -- What Happened!?") +
+  #geom_hline(yintercept=10, color='blue') +
+  scale_y_continuous(limits=c(0,120)) +
+  theme_certara()
+p4
+
+gridExtra::grid.arrange(p3, p4)
+
+p5<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Multiple Dose q8h -- What Happened!?") +
+  #geom_hline(yintercept=10, color='blue') +
+  scale_y_continuous(limits=c(0,120)) +
+  scale_x_continuous(limits=c(0,48),breaks=seq(0,48,4)) +
+  theme_certara() +
+  annotate("text", x=12, y=120, label= "addl(\"ADDL\", 12 dt \"AMT\" bolus(Aa)   8 dt \"AMT\" bolus(Aa))")
+p5
+
+
+
+# What Happened?
+# AddDoseCycle will continue to add new dose cycles on top of existing
+# This is useful for very complex dose regimens like infusions with supplementary boluses
+# Need to reset mappings first to completely change
+
+#### Advanced!  --  Conventional Method would be to create a new model
+####                by copying the single dose simmod
+#### However, it's possible to edit the internals of the model object directly
+
+simmodMD@extraDoses <- list()  #resets the model extraDoses slot
+simmodMD@columnMapping@mapping$ADDL<- NULL #Removes the previous ADDL mappings
+
+#Then, it's Easy to Change Dose Regimens
+
+# First we remap the new simdatMD to the model
+simmodMD <- simmodMD %>%
+  dataMapping(simdatMD) %>%
+  colMapping(c(Aa="AMT", CObs="CONC"))
+
+#Re-check mappings.  Note that Aa and DV are now mapped
+print(simmodMD)
+
+simmodMD <- simmodMD %>%
+  addDoseCycle(type = "ADDL", amount="AMT", name = "Aa", colName = "ADDL", II = 8)
+
+#Run Simulation
+simclean("simmodMD")
+simmodMDfit <- simmodel(simmodMD, SimSetup)
+
+# extract output from the simulation fit object
+SimTableMDout <- simmodMDfit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+#Make a plot
+
+p6<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Multiple Dose q8h") +
+  #geom_hline(yintercept=10, color='blue') +
+  scale_y_continuous(limits=c(0,160)) +
+  theme_certara()
+p6
+
+gridExtra::grid.arrange(p3 + scale_y_continuous(limits=c(0,160)),
+                        p6)
+
+
+# Bonus Code:  Enterohepatic Recycling Example ----
+
+EHRmod <- pkmodel(isClosedForm = FALSE, #use DE's for model syntax
+                  numCompartments = 1,
+                  absorption = "FirstOrder",
+                  data = simdat,
+                  columnMap = FALSE,
+                  modelName = "EHRmod") %>%
+          colMapping(c(id = "ID", time = "TIME", Aa = "AMT", CObs = "CONC")) %>%
+          fixedEffect(effect = c("tvKa", "tvV", "tvCl"), value = c(1.5, 80, 9)) %>%
+          randomEffect(effect = c("nKa", "nV", "nCl"), value = c(0.1, 0.1, 0.1))
+
+print(EHRmod)
+
+#See EHRmodel.txt file in lesson 12 directory for edits
+EHRmod <- editModel(EHRmod)
+
+#Define table we want as output from the simulation
+SimTable <- NlmeSimTableDef(name="SimTable.csv",
+                            timesList = seq(0,48,.5),
+                            variablesList = c("C", "CObs","Aa", "GB"))
+## Simulation setup
+SimSetup <- NlmeSimulationParams(numReplicates = 10,
+                                 seed = 1234,
+                                 simulationTables = c(SimTable))
+
+# ** 3.3.2 Run the simulation ----
+
+simclean("EHRmod")
+EHRmodfit <- simmodel(EHRmod, SimSetup)
+
+# * 3.3.3 Post-Process, Plot simulation results ----
+# extract output from the simulation fit object
+SimTableout <- EHRmodfit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+#Make a plot
+
+p7<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Single Dose EHR Model") +
+  #geom_hline(yintercept=mean(SimTableout$C[SimTableout$time==24]), color='blue') +
+  #scale_y_continuous(limits=c(0,120)) +
+  scale_x_continuous(breaks=seq(0,50,2)) +
+  theme_certara()
+p7
+
+p8<-ggplot(SimTableout, aes(x=time, y=Aa,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("Aa Amount vs Time Single Dose EHR Model") +
+  #geom_hline(yintercept=mean(SimTableout$C[SimTableout$time==24]), color='blue') +
+  #scale_y_continuous(limits=c(0,120)) +
+  scale_x_continuous(breaks=seq(0,50,2)) +
+theme_certara()
+p8
+
+p9<-ggplot(SimTableout, aes(x=time, y=GB,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("GB Amount (mg)") +
+  ggtitle("GB vs Time Single Dose EHR Model") +
+  #geom_hline(yintercept=mean(SimTableout$C[SimTableout$time==24]), color='blue') +
+  #scale_y_continuous(limits=c(0,120)) +
+  scale_x_continuous(breaks=seq(0,50,2)) +
+theme_certara()
+p9
+
+gridExtra::grid.arrange(p7, p8, p9)
