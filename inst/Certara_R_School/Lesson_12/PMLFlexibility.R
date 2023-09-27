@@ -39,9 +39,9 @@ finalmod <- pkmodel(numCompartments = 1,
 
   xpdb %>% dv_vs_pred(type="ps")
   xpdb %>% dv_vs_ipred(type="ps")
-  xpdb %>% ind_plots(page = 1, ncol = 3, nrow = 3)
+  #xpdb %>% ind_plots(page = 1, ncol = 3, nrow = 3)
 
-# 3: Simulate for a SS Regimen ----
+# 3: Simulate a Reference Single Dose, then a SS Regimen ----
 # * 3.1 Add a Single SS column to dataset with value = 1 for AMT records ----
 simdat <- finaldat %>%
     mutate(SS = if_else(AMT>0,1,0)) %>%
@@ -120,6 +120,8 @@ p1<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   scale_y_continuous(limits=c(0,120)) +
   theme_certara()
 p1
+
+
 # * 3.4 Steady State Simulation ----
 # ** 3.4.1 Use addDoseCycle to map SS dose variables ----
 simmodSS <- copyModel(simmod, modelName = "simmodSS")
@@ -230,6 +232,8 @@ p3<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
   theme_certara()
 p3
 
+
+#Superimpose our SS curve in blue
 p3 +
   #geom_line(data=SimTableSSout,alpha=.05) +
   stat_summary(data=SimTableSSout,aes(group=NULL),fun=median,geom='line',
