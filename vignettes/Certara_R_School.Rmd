@@ -40,11 +40,11 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 ---
 
 <div style="text-align: center;">
-### [Watch Last Webinar: Advanced R Markdown](lesson_11.html)
+### [Watch Last Webinar: History and Advantages of the PML Language](lesson_12.html)
 </div>
 
 <center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_edK6JirdTx-DskdXXeMTnw" target="_blank">Register for Upcoming Webinar</a>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_UTXQwvzQSa-cvWNKE1bCxA" target="_blank">Register for Upcoming Webinar</a>
 </center>
 
 ---
@@ -117,12 +117,18 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ## [Lesson 11: Advanced R Markdown](lesson_11.html)
 
-* Upcoming Webinar Date: *8/30/2023 @10am EST*
+* Webinar Date: *8/30/2023 @10am EST*
 
 ---
 
 ## [Lesson 12:  History and Advantages of the PML Language](lesson_12.html)
 
-* Upcoming Webinar Date: *9/27/2023 @10am EST*
+* Webinar Date: *9/27/2023 @10am EST*
+
+---
+
+## [Lesson 13:  Hands-on Application of PML in R](lesson_13.html)
+
+* Upcoming Webinar Date: *11/15/2023 @10am EST*
 
 ---

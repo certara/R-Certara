@@ -1,0 +1,31 @@
+---
+title: "Lesson 13: Hands-on Application of PML in R"
+output: rmarkdown::html_vignette
+resource_files:
+  - img/RsNLME.png
+vignette: >
+  %\VignetteIndexEntry{Lesson 13: Hands-on Application of PML in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## Lesson 13: Hands-on Application of PML in R
+
+---
+
+<center>
+<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_UTXQwvzQSa-cvWNKE1bCxA" target="_blank">Register for Webinar</a>
+</center>
+---
+
+### Webinar Overview
+
+In this webinar we will cover:
+
+* Hands on usage of Pharmacometric Modeling Language (PML) within RsNLME
+* Creating models and editing PML code within R and Shiny
+* Using PML generated from Phoenix to fit a model in R
+
+
+
+

@@ -13,12 +13,9 @@ vignette: >
 
 ---
 
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_edK6JirdTx-DskdXXeMTnw" target="_blank">Register for Webinar</a>
-</center>
+<div style="padding:62.5% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/868812381?h=da4902c441&color=0a7bc1&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
 ---
-
 
 ### Webinar Overview
 
@@ -27,6 +24,11 @@ In this webinar we will cover:
 * History of the Pharmacometric Modeling Language (PML)
 * Advantages of PML
 * Basic overview and examples
+
+### Webinar Resources
+
+* [Files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School/Lesson_12)
+* [Presentation](https://certara-training.s3.amazonaws.com/Certara.R+School/Lesson+12/Certara+R+School+Lesson+12.pdf)
 
 
 
