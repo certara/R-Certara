@@ -129,6 +129,6 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ## [Lesson 13:  Hands-on Application of PML in R](lesson_13.html)
 
-* Upcoming Webinar Date: *11/15/2023 @10am EST*
+* Upcoming Webinar Date: *12/13/2023 @10am EST*
 
 ---
