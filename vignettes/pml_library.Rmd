@@ -9,5 +9,5 @@ vignette: >
 
 
 <iframe
-  src="https://pharmacometrics.shinyapps.io/pml_library/"
+  src="https://certara.shinyapps.io/r-pml-library/"
   style="width:140%; height:1000px;" frameBorder="0"></iframe>
