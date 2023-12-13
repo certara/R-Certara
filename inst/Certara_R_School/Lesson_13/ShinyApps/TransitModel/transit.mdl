@@ -1,0 +1,19 @@
+test(){
+  dosepoint(Aa)
+  C = A1 / V
+  transit(Aa, mtt, ntr, max=50, out =  -Ka * Aa)
+  deriv(A1 =  Ka * Aa  -  Cl * C)
+  error(CEps=0.1)
+  observe(CObs=C * ( 1 + CEps))
+  stparm(Ka = tvKa * exp(nKa))
+  stparm(V = tvV * exp(nV))
+  stparm(Cl = tvCl * exp(nCl))
+  stparm(mtt = tvmtt * exp(nmtt))
+  stparm(ntr = tvntr)
+  fixef( tvKa = 1.5 )
+  fixef( tvV = 50 )
+  fixef( tvCl = 2 )
+  fixef( tvmtt = 6.5 )
+  fixef( tvntr = 20 )
+  ranef(diag(nKa,nV,nCl,nmtt) = c(0.04,0.04,0.04,.04))
+}

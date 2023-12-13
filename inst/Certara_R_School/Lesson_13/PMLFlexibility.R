@@ -1,109 +1,65 @@
 # Overview ----
-# This is code for Certara.R School Lesson 12, History and Advantages of the PML Language
-# In this lesson we will run a few examples demonstrating the flexibility of the PML Language
+# This is code for Certara.R School Lesson 13, Hands-on Application of PML in R
+# In this lesson we will look a little deeper at the PML language
 
 # 0: Load libraries
 
 library(Certara.RsNLME) #RsNLME package
-library(Certara.RsNLME.ModelBuilder) #R Shiny app for creating models
+library(Certara.RsNLME.ModelBuilder)
 library(Certara.ModelResults)
 library(ggplot2) #useful plotting package
 library(dplyr)
-library(Certara.Xpose.NLME)
-library(xpose)
 library(gridExtra)
 
-# 1: Import Data ----
-# * 1.1 Read in final dataset from lesson 2 ----
-finaldat <- readRDS("../Lesson_2/finaldat.RDS")
+# 1: Create a Simple Dataset ----
 
+dat<-data.frame(ID=1,Time=0,Dose=1000,Conc=0,WT=75,SEX="F",ADDL=6)
 
-# 2: Specify and Fit PK Model ----
-finalmod <- pkmodel(numCompartments = 1,
+# 2: Create a simple model ----
+simmod <- pkmodel(numCompartments = 1,
+                   isClosedForm = FALSE,
                    absorption = "FirstOrder",
-                   data = finaldat,
+                   data = dat,
                    columnMap = FALSE,
-                   modelName = "finalmod") %>%
-  colMapping(c(id = "ID", time = "TIME", Aa = "AMT", CObs = "CONC")) %>%
-  fixedEffect(effect = c("tvKa", "tvV", "tvCl"), value = c(1.5, 80, 9)) %>%
-  randomEffect(effect = c("nKa", "nV", "nCl"), value = c(0.1, 0.1, 0.1)) %>%
-  addCovariate(covariate = "WT", effect = c("Cl"), center = "Value", centerValue = 70)
+                   modelName = "simmod") %>%
+  colMapping(c(id = "ID", time = "Time", Aa = "Dose", CObs = "Conc")) %>%
+  fixedEffect(effect = c("tvKa", "tvV", "tvCl"), value = c(1.5, 50, 2)) %>%
+  randomEffect(effect = c("nKa", "nV", "nCl"), value = c(0.04, 0.04, 0.04))
 
-  print(finalmod)
+  print(simmod)
 
-  ## Fit final model
-  finalmodfit <- fitmodel(finalmod)
-
-  ## GOF Plots
-  xpdb <- xposeNlme("finalmod", dir="finalmod")
-
-  xpdb %>% dv_vs_pred(type="ps")
-  xpdb %>% dv_vs_ipred(type="ps")
-  xpdb %>% ind_plots(page = 1, ncol = 3, nrow = 3)
-
-# 3: Simulate for a SS Regimen ----
-# * 3.1 Add a Single SS column to dataset with value = 1 for AMT records ----
-simdat <- finaldat %>%
-    mutate(SS = if_else(AMT>0,1,0)) %>%
-    filter(ID %in% 1:10)   #cut dataset to 10 subjects for speed
-
-# * 3.2 Set up simulation as in Lesson 7 ----
-
-# ** 3.2.1 Make a copy of our final model ----
-simmod <- copyModel(finalmod, acceptAllEffects = TRUE, modelName = "simmod")
-
-# ** 3.2.2 Replace the Mapped Dataset with the Simulation Dataset ----
-
-#View the dataset that the model is currently mapped to
-simmod@inputData  #shows original dataset
-
-#Swap dataset to new simdat
-simmod@inputData <- simdat
-
-# ** 3.2.3 Check Mappings and Map Variables as Necessary ----
-#Check mappings.  All look OK
-print(simmod)
-
-#Cut BSV to low number so we can easily see dose/schedule change impact for demo
-simmod <- simmod %>%
-  randomEffect(effect = c("nKa", "nV", "nCl"), value = c(0.01, 0.01, 0.01))
-
-# * 3.3 Single Dose Simulation for Reference ----
-
-# ** 3.3.1 Specify Simulation Outputs, and Prepare Simulation Settings ----
-
+# 3: Create and Run a Simulation ----
 #Define table we want as output from the simulation
 SimTable <- NlmeSimTableDef(name="SimTable.csv",
                             timesList = seq(0,48,.5),
-                            variablesList = c("C", "CObs","WT","SEX","DOSEGRP"))
+                            variablesList = c("C", "CObs"))
 ## Simulation setup
 SimSetup <- NlmeSimulationParams(numReplicates = 10,
                                  seed = 1234,
                                  simulationTables = c(SimTable))
 
-# ** 3.3.2 Run the simulation ----
+# * 3.1 Run the simulation ----
 
 #This function checks for existing simulation directory and deletes if present
 #by default RsNLME will not overwrite sim output
 simclean <- function(file_name) {
   if (file.exists(file_name)) {
-  unlink(file_name,recursive = T)
-  print("File is deleted..")
-} else{
-  print("File not exists..")
-}
+    unlink(file_name,recursive = T)
+    print("File is deleted..")
+  } else{
+    print("File not exists..")
+  }
 }
 
 simclean("simmod")
 simmodfit <- simmodel(simmod, SimSetup)
 
-# * 3.3.3 Post-Process, Plot simulation results ----
+# * 3.2 Post-Process, Make a Plot ----
 # extract output from the simulation fit object
 SimTableout <- simmodfit$SimTable %>%
   rename("Replicate"="# repl") %>%   #rename repl column to Replicate
   mutate(id=as.numeric(paste0(Replicate,id5)))
 
-#Make a plot
 
 p1<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
@@ -115,106 +71,51 @@ p1<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
                geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
   xlab("Time (hr)") +
   ylab("C (mg/L)") +
-  ggtitle("C vs Time Single Dose") +
-  #geom_hline(yintercept=mean(SimTableout$C[SimTableout$time==24]), color='blue') +
-  scale_y_continuous(limits=c(0,120)) +
-  theme_certara()
+  ggtitle("C vs Time Single Dose")
+  #scale_y_continuous(limits=c(0,50))
+
 p1
-# * 3.4 Steady State Simulation ----
-# ** 3.4.1 Use addDoseCycle to map SS dose variables ----
-simmodSS <- copyModel(simmod, modelName = "simmodSS")
+
+#Map Sex and WT to model
+simmod<-simmod %>%
+  addCovariate(covariate = "WT", effect = NULL, type = "Continuous", direction = "Forward", center = "Value", centerValue = 70) %>%
+  addCovariate(covariate = "SEX", effect = NULL, type = "Categorical", direction = "Forward",
+               levels = c(0, 1), labels = c("M", "F"))
+
+print(simmod)
+
+simmod@columnMapping
+simmod@covariateList
+
+simclean("simmod")
+simmodfit <- simmodel(simmod, SimSetup)
 
 
-simmodSS <- simmodSS %>%
-addDoseCycle(type = "SteadyState", amount="AMT", name = "Aa", colName = "SS", II = 12)
+#Map ADDL dose cycle to model
+simmod<-simmod %>%
+  addDoseCycle(type="ADDL", colName="ADDL", name="Aa", amount="Dose",II=12)
 
-#Re-check mappings.  Note that SteadyState is now mapped
-print(simmodSS)
+simclean("simmod")
 
-#Run Simulation
-simclean("simmodSS")
-simmodSSfit <- simmodel(simmodSS, SimSetup)
-
-# * 3.4.2 Post-Process, Plot simulation results ----
-# extract output from the simulation fit object
-SimTableSSout <- simmodSSfit$SimTable %>%
-  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
-  mutate(id=as.numeric(paste0(Replicate,id5)))
-
-#Make a plot
-
-p2<-ggplot(SimTableSSout, aes(x=time, y=C,group=factor(id))) +
-  geom_line(alpha=.05) +
-  #scale_y_log10() +
-  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
-  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
-               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
-  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
-               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
-  xlab("Time (hr)") +
-  ylab("C (mg/L)") +
-  ggtitle("C vs Time Steady State q12h") +
-  #geom_hline(yintercept=mean(SimTableSSout$C[SimTableSSout$time==24]), color='blue') +
-  scale_y_continuous(limits=c(0,120)) +
-  theme_certara()
-p2
-gridExtra::grid.arrange(p1,p2,ncol=2)
-
-
-# * 3.5 Multiple Dose Simulation ----
-# Make a copy of model
-simmodMD <- copyModel(simmod, modelName = "simmodMD")
-
-print(simmodMD)
-
-simmodMD@inputData
-
-# We need to add an addl column to the dataset
-simdatMD <- simdat %>%
-  mutate(ADDL = if_else(AMT>0,10,0))
-
-# Now we map the new simdatMD to the model
-simmodMD <- simmodMD %>%
-  dataMapping(simdatMD)
-
-#Check mappings.  Note the presence of '?' for unmapped variables
-print(simmodMD)
-
-#Map AMT and DV to Aa and CObs
-simmodMD <- simmodMD %>%
-  colMapping(c(Aa="AMT", CObs="CONC"))
-
-#Re-check mappings.  Note that Aa and DV are now mapped
-print(simmodMD)
-
-# ** 3.5.1 Use addDoseCycle to map multiple dose variables ----
-simmodMD <- simmodMD %>%
-  addDoseCycle(type = "ADDL", amount="AMT", name = "Aa", colName = "ADDL", II = 12)
-
-#Re-check mappings.  Note that SteadyState is now mapped
-print(simmodMD)
-
-#Extend Sample times for Simulation
+## Sim Table (extend to 96h)
 SimTable <- NlmeSimTableDef(name="SimTable.csv",
-                            timesList = seq(0,168,.5),
-                            variablesList = c("C", "CObs","WT","SEX","DOSEGRP"))
-
+                            timesList = seq(0,96,.5),
+                            variablesList = c("C", "CObs"))
+## Simulation setup
 SimSetup <- NlmeSimulationParams(numReplicates = 10,
                                  seed = 1234,
                                  simulationTables = c(SimTable))
-#Run Simulation
-simclean("simmodMD")
-simmodMDfit <- simmodel(simmodMD, SimSetup)
 
-# * 3.4.2 Post-Process, Plot simulation results ----
+simmodfit <- simmodel(simmod, SimSetup)
+
+# * 3.2 Post-Process, Make a Plot ----
 # extract output from the simulation fit object
-SimTableMDout <- simmodMDfit$SimTable %>%
+SimTableout <- simmodfit$SimTable %>%
   rename("Replicate"="# repl") %>%   #rename repl column to Replicate
   mutate(id=as.numeric(paste0(Replicate,id5)))
 
-#Make a plot
 
-p3<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
+p2<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
@@ -224,38 +125,102 @@ p3<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
                geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
   xlab("Time (hr)") +
   ylab("C (mg/L)") +
-  ggtitle("C vs Time Multiple Dose q12h") +
-  #geom_hline(yintercept=10, color='blue') +
-  scale_y_continuous(limits=c(0,120)) +
-  theme_certara()
+  ggtitle("C vs Time Single Dose")
+#scale_y_continuous(limits=c(0,50))
+
+p2
+
+# 4: dosepoint statement options ----
+
+# Let's Edit Our Model manually
+# Recreate original single dose model
+simmod <- pkmodel(numCompartments = 1,
+                  isClosedForm = FALSE,
+                  absorption = "FirstOrder",
+                  data = dat,
+                  columnMap = FALSE,
+                  modelName = "simmod") %>%
+  colMapping(c(id = "ID", time = "Time", Aa = "Dose", CObs = "Conc")) %>%
+  fixedEffect(effect = c("tvKa", "tvV", "tvCl"), value = c(1.5, 50, 2)) %>%
+  randomEffect(effect = c("nKa", "nV", "nCl"), value = c(0.04, 0.04, 0.04))
+
+print(simmod)
+
+
+simmod_lag <- editModel(simmod)
+simmod_lag <- modelTextualUI(simmod)
+
+##Edit1 - Fixed Tlag
+#   dosepoint(Aa,tlag=6)
+
+SimTable <- NlmeSimTableDef(name="SimTable.csv",
+                            timesList = seq(0,48,.5),
+                            variablesList = c("C", "CObs"))
+## Simulation setup
+SimSetup <- NlmeSimulationParams(numReplicates = 10,
+                                 seed = 1234,
+                                 simulationTables = c(SimTable))
+
+# * 4.1 Run the simulation
+simclean("simmod_lag")
+simmodfit <- simmodel(simmod_lag, SimSetup)
+
+# * 4.2 Post-Process, Make a Plot
+# extract output from the simulation fit object
+SimTableout <- simmodfit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+p3<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Single Dose")
+#scale_y_continuous(limits=c(0,50))
+
 p3
 
-p3 +
-  #geom_line(data=SimTableSSout,alpha=.05) +
-  stat_summary(data=SimTableSSout,aes(group=NULL),fun=median,geom='line',
-               colour = "blue", size = 1.2, alpha=.6) +
-  stat_summary(data=SimTableSSout,aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
-               geom = "line", colour = "blue", size = 1.2, lty=2, alpha=.6) +
-  stat_summary(data=SimTableSSout,aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
-               geom = "line", colour = "blue", size = 1.2, lty=2, alpha=.6)
+
+#Lets include tlag as parameter
+simmod_lag2 <- editModel(simmod_lag)
+
+##Edit2 - Tlag with BSV
+# test(){
+#   dosepoint(Aa,tlag=Tlag)
+#   C = A1 / V
+#   deriv(Aa =  -  Ka * Aa)
+#   deriv(A1 =  Ka * Aa  -  Cl * C)
+#   error(CEps=0.1)
+#   observe(CObs=C * ( 1 + CEps))
+#   stparm(Ka = tvKa * exp(nKa))
+#   stparm(V = tvV * exp(nV))
+#   stparm(Cl = tvCl * exp(nCl))
+#   stparm(Tlag = tvTlag * exp(nTlag))
+#   fixef( tvKa = c(,1.5,))
+#   fixef( tvV = c(,50,))
+#   fixef( tvCl = c(,2,))
+#   fixef( tvTlag = c(,6,))
+#   ranef(diag(nKa,nV,nCl,nTlag) = c(0.04,0.04,0.04,.1))
+# }
 
 
-#Easy to Change Dose Regimens
-simmodMD <- simmodMD %>%
-  addDoseCycle(type = "ADDL", amount="AMT", name = "Aa", colName = "ADDL", II = 8)
+# Run the simulation
+simclean("simmod_lag2")
+simmodfit <- simmodel(simmod_lag2, SimSetup)
 
-#Run Simulation
-simclean("simmodMD")
-simmodMDfit <- simmodel(simmodMD, SimSetup)
-
+#Post-Process, Make a Plot
 # extract output from the simulation fit object
-SimTableMDout <- simmodMDfit$SimTable %>%
+SimTableout <- simmodfit$SimTable %>%
   rename("Replicate"="# repl") %>%   #rename repl column to Replicate
   mutate(id=as.numeric(paste0(Replicate,id5)))
 
-#Make a plot
-
-p4<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
+p4<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
@@ -265,15 +230,52 @@ p4<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
                geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
   xlab("Time (hr)") +
   ylab("C (mg/L)") +
-  ggtitle("C vs Time Multiple Dose q8h -- What Happened!?") +
-  #geom_hline(yintercept=10, color='blue') +
-  scale_y_continuous(limits=c(0,120)) +
-  theme_certara()
+  ggtitle("C vs Time Single Dose")
+#scale_y_continuous(limits=c(0,50))
+
 p4
 
-gridExtra::grid.arrange(p3, p4)
 
-p5<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
+# 5: Built in Advanced Absorption Models ----
+# * 5.1 Transit Model ----
+
+#Lets edit our model to a transit compartment model
+
+#Lets include tlag as parameter
+simmod_transit <- editModel(simmod)
+
+##Edit3 - Transit model
+# test(){
+#   dosepoint(Aa)
+#   C = A1 / V
+#   transit(Aa, mtt, ntr, max=50, out =  -Ka * Aa)
+#   deriv(A1 =  Ka * Aa  -  Cl * C)
+#   error(CEps=0.1)
+#   observe(CObs=C * ( 1 + CEps))
+#   stparm(Ka = tvKa * exp(nKa))
+#   stparm(V = tvV * exp(nV))
+#   stparm(Cl = tvCl * exp(nCl))
+#   stparm(mtt = tvmtt * exp(nmtt))
+#   stparm(ntr = tvntr)
+#   fixef( tvKa = c(,1.5,))
+#   fixef( tvV = c(,50,))
+#   fixef( tvCl = c(,2,))
+#   fixef( tvmtt = c(,5,))
+#   fixef( tvntr = c(,34,))
+#   ranef(diag(nKa,nV,nCl,nmtt) = c(0.04,0.04,0.04,.04))
+# }
+
+# Run the simulation
+simclean("simmod_transit")
+simmodfit <- simmodel(simmod_transit, SimSetup)
+
+#Post-Process, Make a Plot
+# extract output from the simulation fit object
+SimTableout <- simmodfit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+p5<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
@@ -283,53 +285,37 @@ p5<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
                geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
   xlab("Time (hr)") +
   ylab("C (mg/L)") +
-  ggtitle("C vs Time Multiple Dose q8h -- What Happened!?") +
-  #geom_hline(yintercept=10, color='blue') +
-  scale_y_continuous(limits=c(0,120)) +
-  scale_x_continuous(limits=c(0,48),breaks=seq(0,48,4)) +
-  theme_certara() +
-  annotate("text", x=12, y=120, label= "addl(\"ADDL\", 12 dt \"AMT\" bolus(Aa)   8 dt \"AMT\" bolus(Aa))")
+  ggtitle("C vs Time Single Dose")
+#scale_y_continuous(limits=c(0,50))
+
 p5
 
 
+#* 5.2 Delay Absorption Models ----
+simmod_delay <- pkmodel(numCompartments = 1,
+        absorption = "Gamma",
+        data = dat,
+        columnMap = FALSE,
+        modelName = "Gamma") %>%
+  colMapping(c(id="ID",time = "Time", A1 = "Dose", CObs = "Conc")) %>%
+  fixedEffect(effect = c("tvMeanDelayTime", "tvShapeParamMinusOne","tvV", "tvCl"),
+              value = c(8, 8, 50, 2)) %>%
+  randomEffect(effect = c("nMeanDelayTime","nShapeParamMinusOne", "nV", "nCl"),
+               value = c(0.04, 0.04, 0.04, 0.04))
 
-# What Happened?
-# AddDoseCycle will continue to add new dose cycles on top of existing
-# This is useful for very complex dose regimens like infusions with supplementary boluses
-# Need to reset mappings first to completely change
+print(simmod_delay)
 
-#### Advanced!  --  Conventional Method would be to create a new model
-####                by copying the single dose simmod
-#### However, it's possible to edit the internals of the model object directly
+# Run the simulation
+simclean("simmod_delay")
+simmodfit <- simmodel(simmod_delay, SimSetup)
 
-simmodMD@extraDoses <- list()  #resets the model extraDoses slot
-simmodMD@columnMapping@mapping$ADDL<- NULL #Removes the previous ADDL mappings
-
-#Then, it's Easy to Change Dose Regimens
-
-# First we remap the new simdatMD to the model
-simmodMD <- simmodMD %>%
-  dataMapping(simdatMD) %>%
-  colMapping(c(Aa="AMT", CObs="CONC"))
-
-#Re-check mappings.  Note that Aa and DV are now mapped
-print(simmodMD)
-
-simmodMD <- simmodMD %>%
-  addDoseCycle(type = "ADDL", amount="AMT", name = "Aa", colName = "ADDL", II = 8)
-
-#Run Simulation
-simclean("simmodMD")
-simmodMDfit <- simmodel(simmodMD, SimSetup)
-
+#Post-Process, Make a Plot
 # extract output from the simulation fit object
-SimTableMDout <- simmodMDfit$SimTable %>%
+SimTableout <- simmodfit$SimTable %>%
   rename("Replicate"="# repl") %>%   #rename repl column to Replicate
   mutate(id=as.numeric(paste0(Replicate,id5)))
 
-#Make a plot
-
-p6<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
+p6<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
@@ -339,32 +325,211 @@ p6<-ggplot(SimTableMDout, aes(x=time, y=C,group=factor(id))) +
                geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
   xlab("Time (hr)") +
   ylab("C (mg/L)") +
-  ggtitle("C vs Time Multiple Dose q8h") +
-  #geom_hline(yintercept=10, color='blue') +
-  scale_y_continuous(limits=c(0,160)) +
-  theme_certara()
+  ggtitle("C vs Time Single Dose")
+#scale_y_continuous(limits=c(0,50))
+
 p6
 
-gridExtra::grid.arrange(p3 + scale_y_continuous(limits=c(0,160)),
-                        p6)
+#6. Urine Model doafter observation statement ----
+
+urinedat <- read.csv("urinedat.csv")
+
+urinemod <- textualmodel(modelName="urinemod", data=urinedat, mdl="urinemod.txt")
+
+urinemod@isPopulation <- FALSE
+print(urinemod)
+
+urinemod <- urinemod %>%
+  colMapping(id=ID,time=Time,A1=Dose,CObs=Conc,A0Obs=UrineAmtCum)
+
+urinemodfit <- fitmodel(urinemod, method="Naive-Pooled")
+
+p7 <- urinemodfit$residuals %>%
+  ggplot(aes(x=IVAR, y=IPRED)) +
+            geom_line() +
+            geom_point(aes(y=DV)) +
+            facet_wrap(~ObsName, scales="free") +
+            theme_bw() +
+            xlab("Time (hr)") +
+            ylab("IPRED (mg/L)") +
+            ggtitle("Cumulative Urine Amt and Conc vs Time Single Dose")
+p7
+
+urinemodfit$theta
+
+#Now lets fit aliquot data, UrineAmt column, with doafter statement
+
+urinemod2 <- textualmodel(modelName="urinemod2", data=urinedat, mdl="urinemod2.txt")
+urinemod2@isPopulation <- FALSE
+print(urinemod2)
+
+urinemod2 <- urinemod2 %>%
+  colMapping(id=ID,time=Time,A1=Dose,CObs=Conc,A0Obs=UrineAmt)
+
+urinemod2fit <- fitmodel(urinemod2, method="Naive-Pooled")
+
+p8 <- urinemod2fit$residuals %>%
+  ggplot(aes(x=IVAR, y=IPRED)) +
+  geom_line() +
+  geom_point(aes(y=DV)) +
+  facet_wrap(~ObsName, scales="free") +
+  theme_bw() +
+  xlab("Time (hr)") +
+  ylab("IPRED (mg/L)") +
+  ggtitle("Urine Amt by Aliquot and Conc vs Time Single Dose")
+p8
+
+urinemodfit$theta
+urinemod2fit$theta
 
 
-# Bonus Code:  Enterohepatic Recycling Example ----
+#7: Sequence Statement Examples ----
+# * 7.1 Initialize state variables ----
 
-EHRmod <- pkmodel(isClosedForm = FALSE, #use DE's for model syntax
-                  numCompartments = 1,
-                  absorption = "FirstOrder",
-                  data = simdat,
-                  columnMap = FALSE,
-                  modelName = "EHRmod") %>%
-          colMapping(c(id = "ID", time = "TIME", Aa = "AMT", CObs = "CONC")) %>%
-          fixedEffect(effect = c("tvKa", "tvV", "tvCl"), value = c(1.5, 80, 9)) %>%
-          randomEffect(effect = c("nKa", "nV", "nCl"), value = c(0.1, 0.1, 0.1))
+seqmod1 <-editModel(simmod)
+#Add to model
+# sequence{
+#   A1=500
+# }
+
+print(seqmod1)
+
+
+#Define table we want as output from the simulation
+SimTable <- NlmeSimTableDef(name="SimTable.csv",
+                            timesList = seq(0,48,.5),
+                            variablesList = c("C", "CObs"))
+## Simulation setup
+SimSetup <- NlmeSimulationParams(numReplicates = 10,
+                                 seed = 1234,
+                                 simulationTables = c(SimTable))
+
+
+simclean("seqmod1")
+seqmod1fit <- simmodel(seqmod1, SimSetup)
+
+# Post-Process, Make a Plot
+# extract output from the simulation fit object
+SimTableout <- seqmod1fit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+
+p10<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Single Dose")
+#scale_y_continuous(limits=c(0,50))
+
+
+gridExtra::grid.arrange(p1 + scale_y_continuous(limits=c(0,40)),p10, nrow=1)
+
+
+# * 7.2 create Covariates on the fly for simulation ----
+covgenmod <- textualmodel(modelName="covgenmod",data=dat,mdl="covgenmod.txt")
+print(covgenmod)
+
+covgenmod <- covgenmod %>%
+  colMapping(c(id = "ID", time = "Time", A1 = "Dose", CObs = "Conc"))
+
+#Define table we want as output from the simulation
+SimTable <- NlmeSimTableDef(name="SimTable.csv",
+                            timesList = seq(0,48,.5),
+                            variablesList = c("C", "CObs","SEX","WT","CRCL","AGE"))
+## Simulation setup
+SimSetup <- NlmeSimulationParams(numReplicates = 10,
+                                 seed = 1234,
+                                 simulationTables = c(SimTable))
+simclean("covgenmod")
+covgenmodfit <- simmodel(covgenmod, SimSetup)
+
+# Post-Process, Make a Plot
+# extract output from the simulation fit object
+SimTableout <- covgenmodfit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+
+p11<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  facet_wrap(~SEX) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Single Dose")
+p11
+
+# * 7.3 Sequence with Sleep statement ----
+seqmod2 <-editModel(simmod)
+#Add to model
+# sequence{
+#   sleep(6)
+#   A1=A1+500
+# }
+
+print(seqmod2)
+
+
+#Define table we want as output from the simulation
+SimTable <- NlmeSimTableDef(name="SimTable.csv",
+                            timesList = seq(0,48,.5),
+                            variablesList = c("C", "CObs"))
+## Simulation setup
+SimSetup <- NlmeSimulationParams(numReplicates = 10,
+                                 seed = 1234,
+                                 simulationTables = c(SimTable))
+
+
+simclean("seqmod2")
+seqmod2fit <- simmodel(seqmod2, SimSetup)
+
+# Post-Process, Make a Plot
+# extract output from the simulation fit object
+SimTableout <- seqmod2fit$SimTable %>%
+  rename("Replicate"="# repl") %>%   #rename repl column to Replicate
+  mutate(id=as.numeric(paste0(Replicate,id5)))
+
+
+p12<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
+  geom_line(alpha=.05) +
+  #scale_y_log10() +
+  stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
+               geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
+  xlab("Time (hr)") +
+  ylab("C (mg/L)") +
+  ggtitle("C vs Time Single Dose")
+p12
+
+
+# * 7.4 Enterohepatic Recycling Example ----
+
+# Read in final dataset from lesson 2 ----
+finaldat <- readRDS("../Lesson_2/finaldat.RDS")
+#cut down to dose records for 10 subjects
+simdat <- finaldat %>%
+  mutate(SS = if_else(AMT>0,1,0)) %>%
+  filter(ID %in% 1:10)
+
+EHRmod <- textualmodel(modelName = "EHRmod", data=simdat, mdl="EHRmodel.txt")
+EHRmod <- EHRmod %>%
+            colMapping(c(id = "ID", time = "TIME", Aa = "AMT", CObs = "CONC"))
 
 print(EHRmod)
-
-#See EHRmodel.txt file in lesson 12 directory for edits
-EHRmod <- editModel(EHRmod)
 
 #Define table we want as output from the simulation
 SimTable <- NlmeSimTableDef(name="SimTable.csv",
@@ -375,12 +540,12 @@ SimSetup <- NlmeSimulationParams(numReplicates = 10,
                                  seed = 1234,
                                  simulationTables = c(SimTable))
 
-# ** 3.3.2 Run the simulation ----
+# Run the simulation
 
 simclean("EHRmod")
 EHRmodfit <- simmodel(EHRmod, SimSetup)
 
-# * 3.3.3 Post-Process, Plot simulation results ----
+# Post-Process, Plot simulation results
 # extract output from the simulation fit object
 SimTableout <- EHRmodfit$SimTable %>%
   rename("Replicate"="# repl") %>%   #rename repl column to Replicate
@@ -388,7 +553,7 @@ SimTableout <- EHRmodfit$SimTable %>%
 
 #Make a plot
 
-p7<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
+p13<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
@@ -403,9 +568,9 @@ p7<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   #scale_y_continuous(limits=c(0,120)) +
   scale_x_continuous(breaks=seq(0,50,2)) +
   theme_certara()
-p7
+p13
 
-p8<-ggplot(SimTableout, aes(x=time, y=Aa,group=factor(id))) +
+p14<-ggplot(SimTableout, aes(x=time, y=Aa,group=factor(id))) +
   geom_line(alpha=.05) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
@@ -414,15 +579,15 @@ p8<-ggplot(SimTableout, aes(x=time, y=Aa,group=factor(id))) +
   stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.95)),
                geom = "line", colour = "red", size = 1.2, lty=2, alpha=.6) +
   xlab("Time (hr)") +
-  ylab("C (mg/L)") +
+  ylab("Aa (mg)") +
   ggtitle("Aa Amount vs Time Single Dose EHR Model") +
   #geom_hline(yintercept=mean(SimTableout$C[SimTableout$time==24]), color='blue') +
   #scale_y_continuous(limits=c(0,120)) +
   scale_x_continuous(breaks=seq(0,50,2)) +
 theme_certara()
-p8
+p14
 
-p9<-ggplot(SimTableout, aes(x=time, y=GB,group=factor(id))) +
+p15<-ggplot(SimTableout, aes(x=time, y=GB,group=factor(id))) +
   geom_line(alpha=.05) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
@@ -437,6 +602,6 @@ p9<-ggplot(SimTableout, aes(x=time, y=GB,group=factor(id))) +
   #scale_y_continuous(limits=c(0,120)) +
   scale_x_continuous(breaks=seq(0,50,2)) +
 theme_certara()
-p9
+p15
 
-gridExtra::grid.arrange(p7, p8, p9)
+gridExtra::grid.arrange(p13, p14, p15)

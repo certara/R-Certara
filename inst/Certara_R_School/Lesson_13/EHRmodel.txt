@@ -27,8 +27,8 @@ test(){
     fixef( tvKa = c(,1.5,))
     fixef( tvV = c(,80,))
     fixef( tvCl = c(,9,))
-    fixef(tvtCycle = c(,2,))
+    fixef(tvtCycle = c(,8,))
     fixef(tvtReflux= c(,.5,))
-    fixef(tvK1G= c(,0.2,))
+    fixef(tvK1G= c(,0.08,))
     ranef(diag(nKa,nV,nCl) = c(0.1,0.1,0.1))
 }

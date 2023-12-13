@@ -1,0 +1,16 @@
+test(){
+dosepoint(A1)
+deriv(A1 = - (Cl * C))
+urinecpt(A0 = (Cl * C), fe=Fe)
+C=A1/V
+observe(CObs = C + CEps)
+error(CEps = .01)
+observe(A0Obs = A0 + A0Eps, doafter={A0=0})
+error(A0Eps = .01)
+stparm(V = tvV)
+stparm(Fe = tvFe)
+stparm(Cl = tvCl)
+fixef(tvV = c(, 29.6, ))
+fixef(tvFe = c(, 0.85, ))
+fixef(tvCl = c(, .52, ))
+}

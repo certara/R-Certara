@@ -1,0 +1,46 @@
+test(){
+  double(udist, SEXdist,WTdist,CRCLdist,AGEdist)
+  sequence{
+    udist = unif()
+    if (udist < 0.7){          #This will create 70% SEX = 0, 30% SEX = 1
+      SEXdist = 0 # male
+      WTdist = 70 + 7 * norm()
+      CRCLdist = 117 + 6.67 * norm()
+	  AGEdist = 45 + 9 * norm()
+    } else {
+      SEXdist = 1
+      WTdist = 50 + 5 * norm()
+      CRCLdist = 108 + 6.67 * norm()
+	  AGEdist = 45 + 9 * norm()
+    }
+  }
+  SEX = SEXdist
+  WT = WTdist
+  CRCL = CRCLdist
+  AGE = AGEdist
+
+  C2 = A2/V2
+  dosepoint(A1)
+  C = A1 / V
+  delayInfCpt(A1, MeanDelayTime, ShapeParamMinusOne, out =  -  Cl * C  -  Cl2 * (C - C2), dist = Gamma)
+  deriv(A2 =  Cl2 * (C - C2))
+  error(CEps=0.16)
+  observe(CObs=C * ( 1 + CEps))
+  stparm(MeanDelayTime = tvMeanDelayTime * exp(nMeanDelayTime))
+  stparm(ShapeParamMinusOne = tvShapeParamMinusOne * exp(nShapeParamMinusOne))
+  stparm(V = tvV * (WT^dVdWT) * exp(dVdSEX1*(SEX==1))  * exp(nV))
+  stparm(Cl = tvCl * (WT^dCldWT)   * ((CRCL/70)^dCldCRCL)   * exp(nCl))
+  stparm(V2 = tvV2  * exp(nV2))
+  stparm(Cl2 = tvCl2 * exp(nCl2))
+  fixef( tvMeanDelayTime = c(,4.86,))
+  fixef( tvShapeParamMinusOne = c(,1.6,))
+  fixef( tvV = c(,81.4,))
+  fixef( tvCl = c(,11.4,))
+  fixef( tvV2 = c(,112,))
+  fixef( tvCl2 = c(,8.35,))
+  fixef( dVdWT(enable=c(0)) = c(,1,))
+  fixef( dCldWT(enable=c(1)) = c(,0.75,))
+  fixef( dCldCRCL(enable=c(2)) = c(,0.44,))
+  fixef( dVdSEX1(enable=c(3)) = c(,-0.6,))
+  ranef(diag(nMeanDelayTime,nShapeParamMinusOne,nV,nCl,nV2,nCl2) = c(0.04,0.05,0.08,0.04,0.06,0.04))
+}
