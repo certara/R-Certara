@@ -17,14 +17,6 @@ shinyUI(fluidPage(
     sidebarPanel(
 
 
-      # radioButtons("delaytype", h5("Select Delay Distribution"),
-      #              c("Weibull" = "Weibull",
-      #                "Gamma" = "Gamma",
-      #                "InverseGaussian" = "InverseGaussian")),
-
-      # radioButtons("overlay", h5("Overlay?"),
-      #              c("Yes" = "yes",
-      #                "No" = "no")),
 
       numericInput("dose",
                    label = h5("Enter Dose (mg)"),

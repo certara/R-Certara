@@ -4,7 +4,7 @@ test(){
     udist = unif()
     if (udist < 0.7){          #This will create 70% SEX = 0, 30% SEX = 1
       SEXdist = 0 # male
-      WTdist = 70 + 7 * norm()
+      WTdist = 70 + 7 * norm() #WT mean ~70, SD~7
       CRCLdist = 117 + 6.67 * norm()
 	  AGEdist = 45 + 9 * norm()
     } else {

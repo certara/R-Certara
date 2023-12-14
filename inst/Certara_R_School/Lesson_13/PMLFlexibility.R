@@ -206,7 +206,7 @@ simmod_lag2 <- editModel(simmod_lag)
 #   fixef( tvV = c(,50,))
 #   fixef( tvCl = c(,2,))
 #   fixef( tvTlag = c(,6,))
-#   ranef(diag(nKa,nV,nCl,nTlag) = c(0.04,0.04,0.04,.1))
+#   ranef(diag(nKa,nV,nCl,nTlag) = c(0.04,0.04,0.04,.2))
 # }
 
 
@@ -382,6 +382,22 @@ p8
 urinemodfit$theta
 urinemod2fit$theta
 
+#Simulate Aliquot Data
+urinemod2sim <- copyModel(urinemod2, acceptAllEffects = TRUE, modelName="urinemod2sim")
+
+urinemodsimfit <- simmodel(urinemod2sim, numReplicates = 10, seed = 29423, numPoints = 240,
+                        maxXRange =168,
+                        yVariables = "A0", simAtObs = TRUE)
+
+urinemodsimfit$simout %>%
+  ggplot(aes(x=IVAR,y=DV)) +
+  geom_line() +
+  geom_point(data=urinedat, aes(x=Time,y=UrineAmt)) +
+  xlab("Time (hr)") +
+  ylab("A0 (mg)") +
+  theme_certara()
+
+
 
 #7: Sequence Statement Examples ----
 # * 7.1 Initialize state variables ----
@@ -459,7 +475,8 @@ SimTableout <- covgenmodfit$SimTable %>%
 
 p11<-ggplot(SimTableout, aes(x=time, y=C,group=factor(id))) +
   geom_line(alpha=.05) +
-  facet_wrap(~SEX) +
+  #facet_wrap(~SEX) +
+  facet_wrap(~cut(WT,3)) +
   #scale_y_log10() +
   stat_summary(aes(group=NULL),fun=median,geom='line', colour = "red", size = 1.2, alpha=.6) +
   stat_summary(aes(group=NULL),fun = "quantile", fun.args = list(probs = c(0.05)),
