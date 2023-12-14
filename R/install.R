@@ -19,6 +19,8 @@ certara_packages <- function(include_self= FALSE, include_github = TRUE, include
             "Certara.ModelResults",
             "Certara.VPCResults",
             "Certara.RsNLME.ModelBuilder",
+            "Certara.RDarwin",
+            "Certara.DarwinReporter",
             "tidyvpc",
             "ggquickeda",
             "coveffectsplot")
@@ -40,9 +42,7 @@ certara_packages <- function(include_self= FALSE, include_github = TRUE, include
 
 certara_jfrog_deps <- function() {
 
-  pkgs <- c("Certara.NLME8",
-            "Certara.shinyAce.NLME",
-            "Certara.shinymeta.NLME")
+  pkgs <- c("Certara.NLME8")
 
   return(pkgs)
 }
