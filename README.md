@@ -28,6 +28,9 @@ install_certara_packages()
 check_certara_package_versions()
 ```
 
+## Modeling
+
+The `RsNLME` suite of packages use Certara's NLME-Engine for execution. Create, edit, and execute a Phoenix NLME model, directly from R!
 
 ### [RsNLME](https://certara.github.io/R-RsNLME/index.html) <a href = "https://certara.github.io/R-RsNLME/index.html"><img src='vignettes/img/RsNLME.png' style = "float:right; height: 150px;" align="right" height="150" /></a>
 
@@ -61,6 +64,31 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 
 <br/>
 
+## Machine Learning Model Development Tools
+
+### [RDarwin](https://certara.github.io/R-Darwin/index.html) <a href = "https://certara.github.io/R-Darwin/index.html"><img src='vignettes/img/RDarwin.png' align="left" height="150"  style = "float:left; height:150px; padding-right: 10px;"/></a>
+
+[`Certara.RDarwin`](https://certara.github.io/R-Darwin/index.html) is an R package designed to facilitate the usage of [pyDarwin](https://certara.github.io/pyDarwin/html/index.html) with the Certara NLME pharmacometric modeling engine from the R command line. The Python package, pyDarwin, is a powerful tool for using machine learning algorithms for model selection.
+
+<br/>
+
+---
+
+<br/>
+
+### [DarwinReporter](https://certara.github.io/R-DarwinReporter/index.html) <a href = "https://certara.github.io/R-DarwinReporter/index.html"><img src='vignettes/img/DarwinReporter.png' align="right" height="150"  style = "float:right; height:150px; padding-right: 10px;"/></a>
+
+[`Certara.DarwinReporter`](https://certara.github.io/R-DarwinReporter/index.html) is an R package that provides a Shiny application, in addition to various plotting and data summary functions, for analyzing results of a [pyDarwin](https://certara.github.io/pyDarwin/html/index.html) automated machine learning based model search.
+
+<br/>
+
+---
+
+<br/>
+
+
+## Diagnostic Plots and Tables
+
 ### [ModelResults](https://certara.github.io/R-model-results/index.html) <a href = "https://certara.github.io/R-model-results/index.html"><img src='vignettes/img/ModelResults.png' align="left" height="150"  style = "float:left; height:150px; padding-right: 10px;"/></a>
 
 [`Certara.ModelResults`](https://certara.github.io/R-model-results/index.html) is an R package and Shiny GUI used to generate, customize, and report model diagnostic plots and tables from NLME or NONMEM runs.
@@ -83,7 +111,21 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 
 <br/>
 
-### [VPCResults](https://certara.github.io/R-VPCResults/index.html) <a href = "https://certara.github.io/R-VPCResults/index.html"><img src='vignettes/img/VPCResults.png' align="left" height="150" style = "float:left; height: 150px; padding-right: 10px;"/></a>
+### [coveffectsplot](https://smouksassi.github.io/coveffectsplot/) <a href = "https://smouksassi.github.io/coveffectsplot/"><img src='vignettes/img/coveffectsplot.png' align="left" height="150" style = "float:left; height: 150px;"/></a>
+
+[`coveffectsplot`](https://github.com/smouksassi/coveffectsplot) is an R package that provide the function forest_plot and an accompanying Shiny application that facilitates the production of forest plots to visualize covariate effects as commonly used in pharmacometrics population PK/PD report
+
+Learn more about the package [here](https://github.com/smouksassi/coveffectsplot).
+
+<br/>
+
+---
+
+<br/>
+
+## Visual Predictive Check (VPC)
+
+### [VPCResults](https://certara.github.io/R-VPCResults/index.html) <a href = "https://certara.github.io/R-VPCResults/index.html"><img src='vignettes/img/VPCResults.png' align="right" height="150" style = "float:right; height: 150px; padding-right: 10px;"/></a>
 
 [`Certara.VPCResults`](https://certara.github.io/R-VPCResults/index.html) is an R package and Shiny application used to parameterize and plot a Visual Predictive Check (VPC).
 
@@ -97,7 +139,7 @@ Users are not limited by the GUI however, [`Certara.VPCResults`](https://certara
 
 <br/>
 
-### [tidyvpc](https://certara.github.io/tidyvpc/index.html) <a href = "https://certara.github.io/tidyvpc/index.html"><img src='vignettes/img/tidyvpc.png' align="right" height="150" style = "float:right; height: 150px;"/></a>
+### [tidyvpc](https://certara.github.io/tidyvpc/index.html) <a href = "https://certara.github.io/tidyvpc/index.html"><img src='vignettes/img/tidyvpc.png' align="left" height="150" style = "float:left; height: 150px;"/></a>
 
 The [`tidyvpc`](https://certara.github.io/tidyvpc/index.html) package is used to perform a Visual Predictive Check (VPC), while accounting for stratification, censoring, and prediction correction. 
 
@@ -109,7 +151,9 @@ Using piping from 'magrittr', the intuitive syntax gives users a flexible and po
 
 <br/>
 
-### [ggquickeda](https://smouksassi.github.io/ggquickeda/) <a href = "https://smouksassi.github.io/ggquickeda/"><img src='vignettes/img/ggquickeda.png' align="left" height="150" style = "float:left; height: 150px; padding-right: 10px;"/></a>
+## Exploratory Data Analysis (EDA)
+
+### [ggquickeda](https://smouksassi.github.io/ggquickeda/) <a href = "https://smouksassi.github.io/ggquickeda/"><img src='vignettes/img/ggquickeda.png' align="right" height="150" style = "float:right; height: 150px; padding-right: 10px;"/></a>
 
 [`ggquickeda`](https://github.com/smouksassi/ggquickeda) is an R Shiny app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`.
 
@@ -125,17 +169,7 @@ For a quick overview using an older version of the app head to this [YouTube Tut
 
 <br/>
 
-### [coveffectsplot](https://smouksassi.github.io/coveffectsplot/) <a href = "https://smouksassi.github.io/coveffectsplot/"><img src='vignettes/img/coveffectsplot.png' align="right" height="150" style = "float:right; height: 150px;"/></a>
-
-[`coveffectsplot`](https://github.com/smouksassi/coveffectsplot) is an R package that provide the function forest_plot and an accompanying Shiny application that facilitates the production of forest plots to visualize covariate effects as commonly used in pharmacometrics population PK/PD report
-
-Learn more about the package [here](https://github.com/smouksassi/coveffectsplot).
-
-<br/>
-
----
-
-<br/>
+## Other 
 
 ### [ggcertara](https://github.com/certara/ggcertara)
 

@@ -6,6 +6,8 @@ resource_files:
   - img/certara_circle.jpg
   - img/Certara_R_School.png
   - img/Certara.R.png
+  - img/RDarwin.png
+  - img/DarwinReporter.png
 vignette: >
   %\VignetteIndexEntry{Certara R School}
   %\VignetteEngine{knitr::rmarkdown}
@@ -36,16 +38,6 @@ Academic Institution:">Request RsNLME Academic License</a>
 
 Learn how to access [Certara.R School lesson files](https://github.com/certara/R-Certara/tree/master/inst/Certara_R_School) using [GitHub Desktop](https://desktop.github.com/) in the following [video](lesson_materials.html).
 
-
----
-
-<div style="text-align: center;">
-### [Watch Last Webinar: History and Advantages of the PML Language](lesson_12.html)
-</div>
-
-<center>
-<a class = "registration-button" href="https://certara.zoom.us/webinar/register/WN_UTXQwvzQSa-cvWNKE1bCxA" target="_blank">Register for Upcoming Webinar</a>
-</center>
 
 ---
 
@@ -129,6 +121,6 @@ Learn how to access [Certara.R School lesson files](https://github.com/certara/R
 
 ## [Lesson 13:  Hands-on Application of PML in R](lesson_13.html)
 
-* Upcoming Webinar Date: *12/13/2023 @10am EST*
+* Webinar Date: *12/13/2023 @10am EST*
 
 ---
