@@ -11,7 +11,7 @@ vignette: >
 
 <br/><br/>
 
-## RsNLME v1.2.0 <img src='img/RsNLME.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" />
+## RsNLME v1.2.0 <img src='img/RsNLME.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" alt="RsNLME package logo." />
 
 * Date: 2023/1/30
 * [Release Notes](https://certara.github.io/R-RsNLME/articles/release_notes.html#rsnlme-1-2-0---january-2023)
@@ -21,7 +21,7 @@ vignette: >
 <br/><br/>
 <br/><br/>
 
-## Pirana v23.11.1 <img src='img/pirana.png' height="100" align="right"  style = "float:right; height: 100px; padding: 5px; margin-top:10px;" />
+## Pirana v23.11.1 <img src='img/pirana.png' height="100" align="right"  style = "float:right; height: 100px; padding: 5px; margin-top:10px;" alt="Pirana software logo." />
 
 
 * Date: 2023/1/30
@@ -33,7 +33,7 @@ vignette: >
 <br/><br/>
 
 
-## tidyvpc v1.4.0 <img src='img/tidyvpc.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" />
+## tidyvpc v1.4.0 <img src='img/tidyvpc.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" alt="tidyvpc package logo." />
 
 * Date: 2022/10/27
 * [Release Notes](https://github.com/certara/tidyvpc/releases/tag/v1.4.0)
@@ -43,7 +43,7 @@ vignette: >
 <br/><br/>
 <br/><br/>
 
-## tidyvpc v1.3.0 <img src='img/tidyvpc.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" />
+## tidyvpc v1.3.0 <img src='img/tidyvpc.png' align="right" height="150" align="right"  style = "float:right; height: 150px; padding: 5px;" alt="tidyvpc package logo." />
 
 * Date: 2022/03/11
 * [Release Notes](https://github.com/certara/tidyvpc/releases/tag/v1.3.0)
@@ -53,7 +53,7 @@ vignette: >
 <br/><br/>
 <br/><br/>
 
-## Pirana v21.11.1 <img src='img/pirana.png' height="100" align="right"  style = "float:right; height: 100px; padding: 5px; margin-top:10px;" />
+## Pirana v21.11.1 <img src='img/pirana.png' height="100" align="right"  style = "float:right; height: 100px; padding: 5px; margin-top:10px;" alt="Pirana software logo." />
 
 
 * Date: 2021/11/01
@@ -65,7 +65,7 @@ vignette: >
 <br/><br/>
 
 
-## RsNLME v1.1.0 <img src='img/RsNLME.png' height="150"  align="right"  style = "float:right; height: 150px; padding: 5px;" />
+## RsNLME v1.1.0 <img src='img/RsNLME.png' height="150"  align="right"  style = "float:right; height: 150px; padding: 5px;" alt="RsNLME package logo." />
 
 * Date: 2021/11/01
 * [Release Notes](https://onlinehelp.certara.com/rsnlme/1.1/index.html#t=RsNLME_User_Guide%2FRsNLMEReleaseNotes%2FRsNLMEReleaseNotes.htm%23XREF_56808__RsNLME_1_1_Release_Notes6831)

@@ -1,11 +1,11 @@
 
-<div id="banner-container" style="background: url('https://www-cdn-images.certara.com/spai5/w_1920+q_lossy+ret_img+to_auto/https://www.certara.com/app/uploads/2022/01/Certara_Hero_R-speaks-RsNLME.png') no-repeat; background-size: cover; background-position: center;"><div class="container"><div id="banner-content"><h2 style = "color: #415364;">R Tools for Pharmacometrics</h2><h3 style = "color: #415364;">Learn about R packages and Shiny applications <br> developed by Certara </h3> <a href="https://www.certara.com/company/contact/?cta_btn=Contact+Certara" class="link-yellow-btn mt-4"></a></div></div></div>
+<div id="banner-container" style="background: url('https://www-cdn-images.certara.com/spai5/w_1920+q_lossy+ret_img+to_auto/https://www.certara.com/app/uploads/2022/01/Certara_Hero_R-speaks-RsNLME.png') no-repeat; background-size: cover; background-position: center;"><div class="container"><div id="banner-content"><h2>R Tools for Pharmacometrics</h2><h3>Learn about R packages and Shiny applications <br> developed by Certara </h3> <a href="https://www.certara.com/company/contact/?cta_btn=Contact+Certara" class="link-yellow-btn mt-4"></a></div></div></div>
 
 ---
 
-[![](https://www.r-pkg.org/badges/version/Certara.R?color=green)](https://cran.r-project.org/package=Certara.R)
+[![CRAN version](https://www.r-pkg.org/badges/version/Certara.R?color=green)](https://cran.r-project.org/package=Certara.R)
 
-<img src='vignettes/img/Certara.R.png' style = "float:left; height: 200px; padding: 10px;" />
+<img src='vignettes/img/Certara.R.png' style = "float:left; height: 200px; padding: 10px;" alt = "CertaraR package logo." />
 
 <br/>
 
@@ -32,7 +32,7 @@ check_certara_package_versions()
 
 The `RsNLME` suite of packages use Certara's NLME-Engine for execution. Create, edit, and execute a Phoenix NLME model, directly from R!
 
-### [RsNLME](https://certara.github.io/R-RsNLME/index.html) <a href = "https://certara.github.io/R-RsNLME/index.html"><img src='vignettes/img/RsNLME.png' style = "float:right; height: 150px;" align="right" height="150" /></a>
+### [RsNLME](https://certara.github.io/R-RsNLME/index.html) <a href = "https://certara.github.io/R-RsNLME/index.html"><img src='vignettes/img/RsNLME.png' style = "float:right; height: 150px;" align="right" height="150" alt="RsNLME package logo." /></a>
 
 [`Certara.RsNLME`](https://certara.github.io/R-RsNLME/index.html) uses [tidyverse](https://www.tidyverse.org/) syntax to build Non-Linear-Mixed-Effects (NLME) models in R. Create and execute NLME models using built-in R functions, or execute models with [PML](https://www.certara.com/training/pml-school/) code used in [Phoenix PK/PD Platform](https://www.certara.com/software/phoenix-pkpd/).
 
@@ -40,7 +40,7 @@ The `RsNLME` suite of packages use Certara's NLME-Engine for execution. Create, 
 
 <br/>
 
-### [RsNLME.ModelBuilder](https://certara.github.io/R-RsNLME-model-builder/index.html) <a href = "https://certara.github.io/R-RsNLME-model-builder/index.html"><img src='vignettes/img/ModelBuilder.png' align="left" height="150" style = "float:left; height:150px; padding-right: 10px;" /></a>
+### [RsNLME.ModelBuilder](https://certara.github.io/R-RsNLME-model-builder/index.html) <a href = "https://certara.github.io/R-RsNLME-model-builder/index.html"><img src='vignettes/img/ModelBuilder.png' align="left" height="150" style = "float:left; height:150px; padding-right: 10px;" alt="RsNLME.ModelBuilder package logo." /></a>
 
 [`Certara.RsNLME.ModelBuilder`](https://certara.github.io/R-RsNLME-model-builder/index.html) is an R package and Shiny application used to build an RsNLME model.
 
@@ -52,7 +52,7 @@ Use the GUI to select from various model building options and observe the PML up
 
 <br/>
 
-### [RsNLME.ModelExecutor](https://certara.github.io/R-RsNLME-model-executor/index.html) <a href = "https://certara.github.io/R-RsNLME-model-executor/index.html"><img src='vignettes/img/ModelExecutor.png' align="right" height="150" style = "float:right; height: 150px;" /></a>
+### [RsNLME.ModelExecutor](https://certara.github.io/R-RsNLME-model-executor/index.html) <a href = "https://certara.github.io/R-RsNLME-model-executor/index.html"><img src='vignettes/img/ModelExecutor.png' align="right" height="150" style = "float:right; height: 150px;" alt="RsNLME.ModelExecutor package logo." /></a>
 
 [`Certara.RsNLME.ModelExecutor`](https://certara.github.io/R-RsNLME-model-executor/index.html) is an R package and Shiny application used to execute an RsNLME model.
 
@@ -66,7 +66,7 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 
 ## Machine Learning Model Development Tools
 
-### [RDarwin](https://certara.github.io/R-Darwin/index.html) <a href = "https://certara.github.io/R-Darwin/index.html"><img src='vignettes/img/RDarwin.png' align="left" height="150"  style = "float:left; height:150px; padding-right: 10px;"/></a>
+### [RDarwin](https://certara.github.io/R-Darwin/index.html) <a href = "https://certara.github.io/R-Darwin/index.html"><img src='vignettes/img/RDarwin.png' align="left" height="150"  style = "float:left; height:150px; padding-right: 10px;" alt="DarwinReporter package logo." /></a>
 
 [`Certara.RDarwin`](https://certara.github.io/R-Darwin/index.html) is an R package designed to facilitate the usage of [pyDarwin](https://certara.github.io/pyDarwin/html/index.html) with the Certara NLME pharmacometric modeling engine from the R command line. The Python package, pyDarwin, is a powerful tool for using machine learning algorithms for model selection.
 
@@ -76,7 +76,7 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 
 <br/>
 
-### [DarwinReporter](https://certara.github.io/R-DarwinReporter/index.html) <a href = "https://certara.github.io/R-DarwinReporter/index.html"><img src='vignettes/img/DarwinReporter.png' align="right" height="150"  style = "float:right; height:150px; padding-right: 10px;"/></a>
+### [DarwinReporter](https://certara.github.io/R-DarwinReporter/index.html) <a href = "https://certara.github.io/R-DarwinReporter/index.html"><img src='vignettes/img/DarwinReporter.png' align="right" height="150"  style = "float:right; height:150px; padding-right: 10px;" alt="DarwinReporter package logo." /></a>
 
 [`Certara.DarwinReporter`](https://certara.github.io/R-DarwinReporter/index.html) is an R package that provides a Shiny application, in addition to various plotting and data summary functions, for analyzing results of a [pyDarwin](https://certara.github.io/pyDarwin/html/index.html) automated machine learning based model search.
 
@@ -89,7 +89,7 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 
 ## Diagnostic Plots and Tables
 
-### [ModelResults](https://certara.github.io/R-model-results/index.html) <a href = "https://certara.github.io/R-model-results/index.html"><img src='vignettes/img/ModelResults.png' align="left" height="150"  style = "float:left; height:150px; padding-right: 10px;"/></a>
+### [ModelResults](https://certara.github.io/R-model-results/index.html) <a href = "https://certara.github.io/R-model-results/index.html"><img src='vignettes/img/ModelResults.png' align="left" height="150"  style = "float:left; height:150px; padding-right: 10px;" alt="ModelResults package logo." /></a>
 
 [`Certara.ModelResults`](https://certara.github.io/R-model-results/index.html) is an R package and Shiny GUI used to generate, customize, and report model diagnostic plots and tables from NLME or NONMEM runs.
 
@@ -101,7 +101,7 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 
 <br/>
 
-### [XposeNLME](https://certara.github.io/R-Xpose-NLME/index.html) <a href = "https://certara.github.io/R-Xpose-NLME/index.html"><img src='vignettes/img/XposeNLME.png' align="right" height="150" style = "float:right; height: 150px;"/></a>
+### [XposeNLME](https://certara.github.io/R-Xpose-NLME/index.html) <a href = "https://certara.github.io/R-Xpose-NLME/index.html"><img src='vignettes/img/XposeNLME.png' align="right" height="150" style = "float:right; height: 150px;" alt="XposeNLME package logo." /></a>
 
 [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) is an R package used to creates `xpose` databases (`xpose_data`) for PML/NLME results. Additionally, [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) offers various covariate model diagnostic functions, not available in the `xpose` package.
 
@@ -111,7 +111,7 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 
 <br/>
 
-### [coveffectsplot](https://smouksassi.github.io/coveffectsplot/) <a href = "https://smouksassi.github.io/coveffectsplot/"><img src='vignettes/img/coveffectsplot.png' align="left" height="150" style = "float:left; height: 150px;"/></a>
+### [coveffectsplot](https://smouksassi.github.io/coveffectsplot/) <a href = "https://smouksassi.github.io/coveffectsplot/"><img src='vignettes/img/coveffectsplot.png' align="left" height="150" style = "float:left; height: 150px;" alt="coveffectsplot package logo." /></a>
 
 [`coveffectsplot`](https://github.com/smouksassi/coveffectsplot) is an R package that provide the function forest_plot and an accompanying Shiny application that facilitates the production of forest plots to visualize covariate effects as commonly used in pharmacometrics population PK/PD report
 
@@ -125,7 +125,7 @@ Learn more about the package [here](https://github.com/smouksassi/coveffectsplot
 
 ## Visual Predictive Check (VPC)
 
-### [VPCResults](https://certara.github.io/R-VPCResults/index.html) <a href = "https://certara.github.io/R-VPCResults/index.html"><img src='vignettes/img/VPCResults.png' align="right" height="150" style = "float:right; height: 150px; padding-right: 10px;"/></a>
+### [VPCResults](https://certara.github.io/R-VPCResults/index.html) <a href = "https://certara.github.io/R-VPCResults/index.html"><img src='vignettes/img/VPCResults.png' align="right" height="150" style = "float:right; height: 150px; padding-right: 10px;" alt="VPCResults package logo." /></a>
 
 [`Certara.VPCResults`](https://certara.github.io/R-VPCResults/index.html) is an R package and Shiny application used to parameterize and plot a Visual Predictive Check (VPC).
 
@@ -139,7 +139,7 @@ Users are not limited by the GUI however, [`Certara.VPCResults`](https://certara
 
 <br/>
 
-### [tidyvpc](https://certara.github.io/tidyvpc/index.html) <a href = "https://certara.github.io/tidyvpc/index.html"><img src='vignettes/img/tidyvpc.png' align="left" height="150" style = "float:left; height: 150px;"/></a>
+### [tidyvpc](https://certara.github.io/tidyvpc/index.html) <a href = "https://certara.github.io/tidyvpc/index.html"><img src='vignettes/img/tidyvpc.png' align="left" height="150" style = "float:left; height: 150px;" alt="tidyvpc package logo." /></a>
 
 The [`tidyvpc`](https://certara.github.io/tidyvpc/index.html) package is used to perform a Visual Predictive Check (VPC), while accounting for stratification, censoring, and prediction correction. 
 
@@ -153,7 +153,7 @@ Using piping from 'magrittr', the intuitive syntax gives users a flexible and po
 
 ## Exploratory Data Analysis (EDA)
 
-### [ggquickeda](https://smouksassi.github.io/ggquickeda/) <a href = "https://smouksassi.github.io/ggquickeda/"><img src='vignettes/img/ggquickeda.png' align="right" height="150" style = "float:right; height: 150px; padding-right: 10px;"/></a>
+### [ggquickeda](https://smouksassi.github.io/ggquickeda/) <a href = "https://smouksassi.github.io/ggquickeda/"><img src='vignettes/img/ggquickeda.png' align="right" height="150" style = "float:right; height: 150px; padding-right: 10px;" alt="ggquickeda package logo." /></a>
 
 [`ggquickeda`](https://github.com/smouksassi/ggquickeda) is an R Shiny app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`.
 

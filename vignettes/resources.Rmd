@@ -12,7 +12,7 @@ vignette: >
 
 <br/><br/>
 
-## Certara University <img src='img/certara_university.jpg' align="left" height="125"  style = "float:right; height: 125px; padding: 5px;" />
+## Certara University <img src='img/certara_university.jpg' align="left" height="125"  style = "float:right; height: 125px; padding: 5px;" alt="Certara University logo." />
 
 [Certara University](https://www.certara.com/training/certara-university/) provides public and on-site corporate training.  The format of the courses can either be online, live online, and in-person at your company’s site.
 
@@ -24,7 +24,7 @@ In addition, customized training courses or videos on modeling and simulation ca
 
 <br/><br/>
 
-## R/Pharma <img src='	https://rinpharma.com/media/logo_hu7da996d8ce7178f65929875a2132de7e_457633_300x300_fit_lanczos_2.png' align="right" height="125" style = "float:right; height: 125px; padding: 5px;"/>
+## R/Pharma <img src='	https://rinpharma.com/media/logo_hu7da996d8ce7178f65929875a2132de7e_457633_300x300_fit_lanczos_2.png' align="right" height="125" style = "float:right; height: 125px; padding: 5px;" alt="R in Pharma logo." />
 
 [R/Pharma](https://rinpharma.com/) is an organization focused on the use of R in the development of pharmaceuticals. Visit their [website](https://rinpharma.com/publication/) to discover recent webinars and publications about the usage of R in drug development.
 
@@ -34,7 +34,7 @@ In addition, customized training courses or videos on modeling and simulation ca
 
 <br/><br/>
 
-## RStudio Community <img src='https://community.rstudio.com/uploads/default/original/3X/f/3/f3dee137ae4175a718cafe9ddea2a950e080150b.png' align="left" height="75"style = "float:right; height: 75px; padding: 5px; margin-top:5px;"/>
+## RStudio Community <img src='https://community.rstudio.com/uploads/default/original/3X/f/3/f3dee137ae4175a718cafe9ddea2a950e080150b.png' align="left" height="75"style = "float:right; height: 75px; padding: 5px; margin-top:5px;" alt="RStudio Community logo." />
 
 The [RStudio Community](https://community.rstudio.com/) is a discussion board for asking questions about R, Shiny, and package development. If you have a question about a particular R code issue, we’d recommend starting by creating a reproducible example (or reprex). This will often help as the process of creating an example will help you think about your problem in a way that may help solve it, and will help to capture the problem in a way that will allow others to clearly understand the issue. 
 
@@ -46,7 +46,7 @@ See [here](https://www.tidyverse.org/help/) for more on creating a reprex.
 
 <br/><br/>
 
-## Stack Overflow <img src='https://miro.medium.com/max/2400/0*UEtwA2ask7vQYW06.png' align="right" height="125" style = "float:right; height: 125px; padding: 5px;"/>
+## Stack Overflow <img src='https://miro.medium.com/max/2400/0*UEtwA2ask7vQYW06.png' align="right" height="125" style = "float:right; height: 125px; padding: 5px;" alt="Stack Overflow logo." />
 
 [Stack Overflow](https://stackoverflow.com/) is a question-answer site which is one of the most trusted online community for developers. It has over 50+ Million visitors every month, 51000 registered reputed developers and over 19 million answers. You can find help from some of the best developers in the industry with expertise in their domains.
 

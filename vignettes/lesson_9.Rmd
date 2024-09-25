@@ -17,7 +17,7 @@ vignette: >
 
 ---
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 25px;"/></a>
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 25px;" alt="RsNLME package logo." /></a>
 
 In Lesson 9 we provide a case study of [`RsNLME`](https://certara.github.io/R-RsNLME/), demonstrating an end to end workflow using the suite of R packages and Shiny applications developed by Certara.
 
