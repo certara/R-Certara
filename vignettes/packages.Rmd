@@ -34,7 +34,7 @@ set.seed(1014)
 `Certara.R` provides a collection of R packages and Shiny applications designed for Pharmacometric workflows in R.  All Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio.
 
 
-## RsNLME <img src='img/RsNLME.png' align="right" height="200" />
+## RsNLME <img src='img/RsNLME.png' align="right" height="200" alt="RsNLME package logo." />
 
 [`Certara.RsNLME`](https://certara.github.io/R-RsNLME/index.html) uses [tidyverse](https://www.tidyverse.org/) syntax to build Non-Linear-Mixed-Effects (NLME) models in R. Create and execute NLME models using built-in R functions.
 
@@ -44,7 +44,7 @@ set.seed(1014)
 <br/><br/>
 
 
-## RsNLME.ModelBuilder <img src='img/ModelBuilder.png' align="left" height="200" style = "padding-right: 10px" />
+## RsNLME.ModelBuilder <img src='img/ModelBuilder.png' align="left" height="200" style = "padding-right: 10px" alt="RsNLME.ModelBuilder package logo." />
 
 [`Certara.RsNLME.ModelBuilder`](https://certara.github.io/R-RsNLME-model-builder/index.html) is an R package and Shiny application used to build an RsNLME model.
 
@@ -56,7 +56,7 @@ Use the GUI to select from various model building options and observe the PML up
 <br/><br/>
 
 
-## RsNLME.ModelExecutor <img src='img/ModelExecutor.png' align="right" height="200" />
+## RsNLME.ModelExecutor <img src='img/ModelExecutor.png' align="right" height="200" alt="RsNLME.ModelExecutor package logo." />
 
 [`Certara.RsNLME.ModelExecutor`](https://certara.github.io/R-RsNLME-model-executor/index.html) is an R package and Shiny application used to execute an RsNLME model.
 
@@ -68,7 +68,7 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 <br/><br/>
 
 
-## ModelResults <img src='img/ModelResults.png' align="left" height="200" style = "padding-right: 10px"/>
+## ModelResults <img src='img/ModelResults.png' align="left" height="200" style = "padding-right: 10px" alt="ModelResults package logo." />
 
 [`Certara.ModelResults`](https://certara.github.io/R-model-results/index.html) is an R package and Shiny GUI used to generate, customize, and report model diagnostic plots and tables from NLME or NONMEM runs.
 
@@ -80,7 +80,7 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 <br/><br/>
 
 
-## XposeNLME <img src='img/XposeNLME.png' align="right" height="200"/>
+## XposeNLME <img src='img/XposeNLME.png' align="right" height="200" alt="XposeNLME package logo." />
 
 [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) is an R package used to creates `xpose` databases (`xpose_data`) for PML/NLME results. Additionally, [`Certara.Xpose.NLME`](https://certara.github.io/R-Xpose-NLME/index.html) offers various covariate model diagnostic functions, not available in the `xpose` package.
 
@@ -90,7 +90,7 @@ Users are not limited by the GUI however, Certara.ModelResults will generate the
 <br/><br/>
 
 
-## VPCResults <img src='img/VPCResults.png' align="left" height="200" style = "padding-right: 10px"/>
+## VPCResults <img src='img/VPCResults.png' align="left" height="200" style = "padding-right: 10px" alt="VPCResults package logo." />
 
 [`Certara.VPCResults`](https://certara.github.io/R-VPCResults/index.html) is an R package and Shiny application used to parameterize and plot a Visual Predictive Check (VPC).
 
@@ -104,7 +104,7 @@ Users are not limited by the GUI however, [`Certara.VPCResults`](https://certara
 <br/><br/>
 
 
-## tidyvpc <img src='img/tidyvpc.png' align="right" height="200" />
+## tidyvpc <img src='img/tidyvpc.png' align="right" height="200" alt="tidyvpc package logo." />
 
 The [`tidyvpc`](https://certara.github.io/tidyvpc/index.html) package is used to perform a Visual Predictive Check (VPC), while accounting for stratification, censoring, and prediction correction. 
 

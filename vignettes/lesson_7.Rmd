@@ -17,7 +17,7 @@ vignette: >
 
 ---
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;" alt="RsNLME package logo."/></a>
 
 In Lesson 7, we will demonstrate how to run simulations with RsNLME models.
 

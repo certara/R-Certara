@@ -17,7 +17,7 @@ vignette: >
 
 ---
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;"/></a>
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 10px;" alt="RsNLME package logo." /></a>
 
 In Lesson 6, we will explore model refinement. You will learn how to create a new model with parameter estimates from a previously executed model. We will then add covariates into our new model and explore their impact using model diagnostic plots.
 

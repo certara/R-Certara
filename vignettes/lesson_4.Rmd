@@ -17,7 +17,7 @@ vignette: >
 
 ---
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 15px;"/></a>
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 15px;" alt="RsNLME package logo." /></a>
 
 In Lesson 4, we will introduce modeling capabilities with the [`RsNLME`](https://certara.github.io/R-RsNLME/index.html) package and show how we can leverage the [RsNLME Model Builder](https://certara.github.io/R-RsNLME-model-builder/index.html) Shiny GUI to create our models in R and learn the RsNLME model building syntax, then extend our workflow to the R command line.
 

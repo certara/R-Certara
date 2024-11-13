@@ -17,7 +17,7 @@ vignette: >
 
 ---
 
-<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 25px;"/></a>
+<a href = "https://certara.github.io/R-RsNLME/index.html"><img src='img/RsNLME.png'  align="left" style = "height: 150px; padding-right: 25px;" alt="RsNLME package logo." /></a>
 
 Lesson 10, we will provide a brief overview of RsNLME workflows that we've covered in previous lessons, and demonstrate best practices for organizing your project (e.g., directory structure, scripts, and run output folders) to ensure reproducibility and traceability of your results.
 

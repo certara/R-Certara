@@ -1,102 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Certara_R_School.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_0.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_1.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_10.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_11.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_12.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_13.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_2.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_3.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_4.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_5.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_6.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_7.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_8.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_9.html</loc>
-  </url>
-  <url>
-    <loc>/articles/lesson_materials.html</loc>
-  </url>
-  <url>
-    <loc>/articles/news.html</loc>
-  </url>
-  <url>
-    <loc>/articles/packages.html</loc>
-  </url>
-  <url>
-    <loc>/articles/pml_library.html</loc>
-  </url>
-  <url>
-    <loc>/articles/resources.html</loc>
-  </url>
-  <url>
-    <loc>/articles/rsnlme_tutorial.html</loc>
-  </url>
-  <url>
-    <loc>/articles/webinars.html</loc>
-  </url>
-  <url>
-    <loc>/articles/why_learn_r.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/certara_packages.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_certara_package_versions.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_installed_certara_packages.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/install_certara_packages.html</loc>
-  </url>
-  <url>
-    <loc>/reference/remove_certara_packages.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://github.com/certara/R-Certara/404.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/Certara_R_School.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/index.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_0.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_1.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_10.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_11.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_12.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_13.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_2.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_3.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_4.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_5.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_6.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_7.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_8.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_9.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/lesson_materials.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/news.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/packages.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/pml_library.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/resources.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/rsnlme_tutorial.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/webinars.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/articles/why_learn_r.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/authors.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/index.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/reference/certara_packages.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/reference/check_certara_package_versions.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/reference/check_installed_certara_packages.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/reference/index.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/reference/install_certara_packages.html</loc></url>
+<url><loc>https://github.com/certara/R-Certara/reference/remove_certara_packages.html</loc></url>
 </urlset>
+

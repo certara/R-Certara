@@ -1,6 +1,11 @@
 template:
-  params:
+  bootstrap: 5
+  light-switch: true
+  bslib:
     bootswatch: united
+    pkgdown-navbar-bg: "#e95420"
+    navbar-light-color: "#fff"
+url: https://github.com/certara/R-Certara
 
 reference:
   - title: Installation
@@ -18,6 +23,7 @@ reference:
 navbar:
   structure:
     left:  [home, reference, pml, articles, webinars, tutorials, resources, news]
+    right: [search, github, lightswitch]
     navbar:
   components:
     home: ~
@@ -34,7 +40,7 @@ navbar:
       text: Tutorials
       menu:
       - text: RsNLME
-        href: articles/rsnlme_tutorial.html
+        href: https://certara.shinyapps.io/Tutorial_RsNLME/
     resources:
       text: Resources
       href: articles/resources.html
