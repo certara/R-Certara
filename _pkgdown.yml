@@ -40,7 +40,7 @@ navbar:
       text: Tutorials
       menu:
       - text: RsNLME
-        href: articles/rsnlme_tutorial.html
+        href: https://certara.shinyapps.io/Tutorial_RsNLME/
     resources:
       text: Resources
       href: articles/resources.html

@@ -1,5 +1,5 @@
-pandoc: '2.18'
-pkgdown: 2.0.9
+pandoc: 3.1.1
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   Certara_R_School: Certara_R_School.html
@@ -25,5 +25,7 @@ articles:
   rsnlme_tutorial: rsnlme_tutorial.html
   webinars: webinars.html
   why_learn_r: why_learn_r.html
-last_built: 2024-05-17T12:57Z
-
+last_built: 2024-11-13T02:49Z
+urls:
+  reference: https://github.com/certara/R-Certara/reference
+  article: https://github.com/certara/R-Certara/articles
