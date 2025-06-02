@@ -90,9 +90,9 @@ Use the GUI to add additional output tables, specify engine parameters, select v
 
 The `Simcyp` R package supports R script interactions with the [Simcyp™ PBPK Simulator](https://www.certara.com/software/simcyp-pbpk/), a propriety software used for modeling and simulation for pharmaceutical and other applications in life sciences. This package allows users to load and modify workspaces, run the physiologically based pharmacokinetics models (PBPK) developed in Simcyp™ and interrogate results. To use this package, the user must have a Simcyp™ Simulator license. 
 
-Example Simcyp™ R scripts can be found [here](https://github.com/certara/Simcyp-R-Scripts).
+To request access to the latest `Simcyp` R package, please contact us at simcyp.support@certara.com.
 
-Contact simcyp.support@certara.com to learn more.
+Example Simcyp™ R scripts can be found [here](https://github.com/certara/Simcyp-R-Scripts).
 
 ### [Certara.SimcypVBE](https://certara.github.io/R-SimcypVBE/index.html)
 
