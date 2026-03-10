@@ -157,6 +157,8 @@ Users are not limited by the GUI however, [`Certara.VPCResults`](https://certara
 
 <br/>
 
+
+
 ### [tidyvpc](https://certara.github.io/tidyvpc/index.html) <a href = "https://certara.github.io/tidyvpc/index.html"><img src='vignettes/img/tidyvpc.png' align="left" height="150" style = "float:left; height: 150px;" alt="tidyvpc package logo." /></a>
 
 The [`tidyvpc`](https://certara.github.io/tidyvpc/index.html) package is used to perform a Visual Predictive Check (VPC), while accounting for stratification, censoring, and prediction correction. 
@@ -185,7 +187,17 @@ For a quick overview using an older version of the app head to this [YouTube Tut
 
 ---
 
+## Data Management
+
+### [Certara.IntegralR](https://certara.github.io/R-Integral/index.html)
+
+[`Certara.IntegralR`](https://certara.github.io/R-Integral/index.html) is an R interface to Certara’s [Integral](https://www.certara.com/integral-data-repository/) data repository, enabling programmatic access to pharmacometric study data, models, and metadata.
+
+It allows scientists to integrate Integral directly into reproducible R workflows for data retrieval, analysis, and automation across PK/PD modeling pipelines.
+
 <br/>
+
+---
 
 ## Other 
 
