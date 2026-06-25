@@ -1,44 +1,36 @@
 Package: Certara.R
-Title: Easily Install Pharmacometric Packages and Shiny Applications Developed by Certara
-Version: 1.1.0
+Title: Certara Pharmacometrics R Ecosystem and MCP Server
+Version: 2.0.0
 Authors@R: c(
       person("James", "Craig", email = "james.craig@certara.com", role = c("aut", "cre")),
+      person("Michael", "Tomashevskiy", email = "michael.tomashevskiy@certara.com", role = "aut"),
       person("Certara USA, Inc.", role = c("cph","fnd"))
       )
-Description: A convenient set of wrapper functions to install
-    pharmacometric packages and Shiny applications developed by Certara
-    PMX and Integrated Drug Development (iDD). The functions ensure the
-    successful installation of packages from non-standard repositories.
+Description: Meta-package for the Certara pharmacometrics R ecosystem.
+    Attaching 'Certara.R' loads the suite of Certara modeling, simulation,
+    and reporting packages, and the package hosts the federated Certara
+    Model Context Protocol (MCP) server that exposes knowledge-base and
+    tool providers contributed by member packages to AI coding assistants.
 URL: https://github.com/certara/R-Certara
 BugReports: https://github.com/certara/R-Certara/issues
-Depends: R (>= 4.0)
+Depends:
+    R (>= 4.0),
+    Certara.RsNLME (>= 3.2.0)
 License: LGPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+Imports:
+    btw (>= 1.2.0),
+    mcptools (>= 0.2.0),
+    ellmer (>= 0.4.0),
+    jsonlite,
+    digest,
+    utils
 Suggests:
     knitr,
-    rmarkdown
-Imports:
-    batchtools  (>= 0.9.9),
-    data.table,
-    dplyr,
-    DT,
-    ggplot2,
-    htmltools,
-    jsonlite,
-    magrittr,
-    methods,
-    plotly,
-    reshape,
-    remotes,
-    rlang,
-    shiny,
-    shinyjs,
-    shinyWidgets,
-    shinymaterial,
-    shinyjqui,
-    sortable,
-    ssh,
-    utils,
-    xml2
+    rmarkdown,
+    testthat (>= 3.0.0),
+    withr
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0

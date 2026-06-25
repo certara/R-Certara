@@ -1,0 +1,7 @@
+{
+  "schema_version": "9.9.9",
+  "package": "BadToolPkg",
+  "tools": [
+    { "name": "nope", "description": "incompatible schema", "handler": "nope" }
+  ]
+}

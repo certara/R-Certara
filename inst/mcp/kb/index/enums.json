@@ -1,0 +1,7 @@
+{
+  "param_style": ["log-normal", "normal", "logit"],
+  "error_model": ["additive", "multiplicative", "combined", "power", "log-additive"],
+  "absorption": ["intravenous", "first-order", "gamma", "weibull", "inverse-gaussian"],
+  "elimination": ["linear", "michaelis-menten", "linear-plus-michaelis-menten"],
+  "distribution": ["normal", "lognorm", "beta", "betamean", "binomial", "chisq", "constant", "exponential", "gamma", "invgamma", "logistic", "negbin", "poisson", "studentt", "uniform", "weibull", "MVN", "MVT"]
+}

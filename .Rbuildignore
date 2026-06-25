@@ -17,6 +17,8 @@
 ^pkgdown$
 ^_pkgdown\.yml$
 ^vignettes$
-^inst$
+^inst/Certara_R_School$
 
 
+^\.positai$
+^\.claude$

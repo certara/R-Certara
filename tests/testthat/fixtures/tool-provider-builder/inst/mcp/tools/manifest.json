@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "package": "Certara.R",
+  "builder": ".certara_host_tools"
+}

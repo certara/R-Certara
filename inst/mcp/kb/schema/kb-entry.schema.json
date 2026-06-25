@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://certara.github.io/R-RsNLME/mcp/kb-entry.schema.json",
+  "title": "Certara MCP KB entry",
+  "description": "One knowledge-base record. Stored one-per-line in inst/mcp/kb/*.jsonl. Generated from inst/mcp/kb/sources/*.md; never hand-edited.",
+  "schema_version": "1.0.0",
+  "type": "object",
+  "required": ["id", "package", "type", "title", "summary"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable, globally unique id, conventionally '<package>.<type-area>.<slug>'."
+    },
+    "package": { "type": "string" },
+    "package_version": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": [
+        "guidance_chapter",
+        "guidance_topic",
+        "playbook",
+        "decision",
+        "function_doc",
+        "vignette_section",
+        "pml_topic",
+        "format_topic",
+        "workflow_recipe",
+        "example",
+        "troubleshooting",
+        "anti_pattern"
+      ]
+    },
+    "title": { "type": "string" },
+    "summary": { "type": "string" },
+    "details_md": { "type": "string" },
+    "axis": {
+      "type": "string",
+      "enum": ["guidance", "reference", "remediation"],
+      "description": "Retrieval axis for ranking. Guidance entries are the primary navigable layer."
+    },
+    "chapter_order": {
+      "type": "integer",
+      "description": "guidance_chapter ordering within the bible (1-99)."
+    },
+    "parent": {
+      "type": "string",
+      "description": "guidance_topic only: id of the owning guidance_chapter."
+    },
+    "guidance_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "External authority pointers (e.g. 'FDA section V.B'). Required for guidance-axis types. The URL lives in source.url."
+    },
+    "steps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ordered, machine-navigable ids of playbooks/reference entries that execute this guidance."
+    },
+    "intended_use_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["exploratory", "dose_selection", "labeling", "pediatric", "er_input"]
+      },
+      "description": "Intended-use levels this entry/check applies to. Empty means all."
+    },
+    "checks": {
+      "type": "array",
+      "description": "Structured pre-flight checklist. Each item is auto-verifiable (mapped to a tool output) or a human-judgment call.",
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "verifiable_by"],
+        "properties": {
+          "id": { "type": "string" },
+          "text": { "type": "string" },
+          "verifiable_by": {
+            "type": "string",
+            "enum": ["fit_health", "vpc", "bootstrap", "cond_number", "data_summary", "human"]
+          }
+        }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "description": "Used when a regulator/industry expectation outruns the RsNLME wrapper. States the honest best-available path.",
+      "properties": {
+        "guidance_expectation": { "type": "string" },
+        "supported_path": { "type": "string" },
+        "advanced_or_manual": { "type": "string" },
+        "not_exposed": { "type": "string" }
+      }
+    },
+    "usage": { "type": "string" },
+    "arguments": { "type": "object" },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code"],
+        "properties": {
+          "code": { "type": "string" },
+          "runnable": { "type": "boolean" },
+          "language": { "type": "string" }
+        }
+      }
+    },
+    "keywords": { "type": "array", "items": { "type": "string" } },
+    "symbols": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Exact PML tokens / function names this entry documents; powers lookup_pml_symbol()."
+    },
+    "applies_to": {
+      "type": "object",
+      "description": "Context scoping for retrieval. Empty arrays mean 'applies broadly'.",
+      "properties": {
+        "engine": { "type": "array", "items": { "type": "string" } },
+        "route": { "type": "array", "items": { "type": "string" } },
+        "model_type": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "related": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ids of related entries. Must resolve to existing entries (no dangling refs)."
+    },
+    "error_signature": {
+      "type": ["string", "null"],
+      "description": "anti_pattern only: normalized engine (TDL5) error text this entry remediates."
+    },
+    "symptom": { "type": "string", "description": "anti_pattern only." },
+    "fix": { "type": "string", "description": "anti_pattern only." },
+    "provenance": {
+      "type": "object",
+      "description": "Source-of-record traceability. Mandatory for factual entry types.",
+      "properties": {
+        "source_file": { "type": "string" },
+        "symbol": { "type": "string" },
+        "anchor": { "type": "string" },
+        "accessed": { "type": "string", "description": "guidance: ISO date the authority text was last consulted." },
+        "guidance_revision": { "type": "string", "description": "guidance: the edition the entry reflects (e.g. 'FDA Feb 2022')." }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "url": { "type": "string" }
+      }
+    }
+  }
+}

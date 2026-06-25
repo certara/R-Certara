@@ -1,0 +1,11 @@
+{
+  "package": "Certara.Fixture",
+  "primary_guidance_entry": "Certara.Fixture.guidance.toc",
+  "rules": [
+    { "id": "providers_first", "text": "OVERRIDDEN host rule from the fixture provider." },
+    { "id": "fixture_domain", "text": "Fixture domain rule contributed by the provider." }
+  ],
+  "session_start": ["Load the fixture domain context."],
+  "prerequisites": ["Fixture engine license."],
+  "workflows": { "phases": ["fixture_setup", "fixture_run"] }
+}

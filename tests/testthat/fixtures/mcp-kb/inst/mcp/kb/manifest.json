@@ -1,0 +1,8 @@
+{
+  "package": "Certara.KBFixture",
+  "schema_version": "1.0.0",
+  "package_version": "0.0.1",
+  "files": [
+    { "path": "Certara.KBFixture.jsonl" }
+  ]
+}

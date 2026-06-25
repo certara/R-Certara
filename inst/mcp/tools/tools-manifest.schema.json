@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://certara.com/mcp/tools-manifest.schema.json",
+  "title": "Certara MCP tool-provider manifest",
+  "description": "Contract a provider package ships at inst/mcp/tools/manifest.json so the Certara.R MCP host can expose its tools. A manifest is either declarative (lists tools + handlers) or builder-based (names an exported function that returns ellmer tools).",
+  "type": "object",
+  "required": ["schema_version", "package"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Manifest schema version. The host loads manifests sharing its MAJOR version whose MINOR is not newer."
+    },
+    "package": {
+      "type": "string",
+      "description": "Provider package name that exports the handlers/builder."
+    },
+    "builder": {
+      "type": "string",
+      "description": "Builder mode: name of an exported function in `package` that returns a list of ellmer tool() objects. Mutually exclusive with `tools`."
+    },
+    "tools": {
+      "type": "array",
+      "description": "Declarative mode: one entry per tool. Mutually exclusive with `builder`.",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "handler"],
+        "properties": {
+          "name": { "type": "string", "description": "Tool name exposed to the MCP client." },
+          "description": { "type": "string", "description": "LLM-facing operational contract: purpose, when-to-use, when-NOT, return semantics. Keep compact and discriminative (deep docs belong in the KB, not here)." },
+          "group": { "type": "string", "description": "Optional semantic group label (used by launch profiles and tool retrieval)." },
+          "gated": {
+            "type": "boolean",
+            "default": false,
+            "description": "Surfacing flag only: marks a tool whose handler enforces a confirmation/plan gate. The host uses this to set client approval prompts and to list the tool as gated; it adds no enforcement itself."
+          },
+          "precondition": { "type": "string", "description": "What must hold / which tool must run before this one (machine-readable sequencing hint; not enforced)." },
+          "unlocks": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Tool names this one typically enables next (sequencing hint surfaced in capabilities and tool retrieval)."
+          },
+          "idempotent": { "type": "boolean", "description": "Whether repeated identical calls are safe (no cumulative side effect)." },
+          "side_effects": { "type": "boolean", "description": "Whether the tool writes files, launches jobs, or mutates state (vs read-only)." },
+          "parallel_safe": { "type": "boolean", "description": "Whether the tool is safe to invoke concurrently with others." },
+          "latency_class": {
+            "type": "string",
+            "enum": ["control_plane", "launches_job", "blocking_watch"],
+            "description": "control_plane = fast in-process; launches_job = spawns an async child and returns; blocking_watch = blocks server-side up to a budget."
+          },
+          "risk_tier": {
+            "type": "string",
+            "enum": ["read_only", "side_effecting", "gated_launch"],
+            "description": "Coarse risk label for client approval policy and observability."
+          },
+          "failure_modes": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Known failure modes the agent should recognize and how to recover."
+          },
+          "handler": {
+            "type": "string",
+            "description": "Name of the exported function in `package` that implements the tool."
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["string", "integer", "number", "boolean", "array"],
+                  "description": "Mapped to the corresponding ellmer::type_*()."
+                },
+                "required": { "type": "boolean", "default": false },
+                "description": { "type": "string" },
+                "items": {
+                  "type": "string",
+                  "enum": ["string", "integer", "number", "boolean"],
+                  "description": "Element type when `type` is 'array'."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "oneOf": [
+    { "required": ["builder"] },
+    { "required": ["tools"] }
+  ]
+}
