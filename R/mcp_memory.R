@@ -4,7 +4,7 @@
 # stored under the per-user app dir. OFF by default until enable_memory().
 
 .memory_dir <- function() {
-  dir <- file.path(tools::R_user_dir("Certara.RsNLME", "data"), "mcp-memory")
+  dir <- file.path(tools::R_user_dir("Certara.R", "data"), "mcp-memory")
   dir.create(dir, showWarnings = FALSE, recursive = TRUE)
   dir
 }
@@ -43,7 +43,10 @@
 enable_memory <- function(redact = NULL) {
   cfg <- .memory_config()
   cfg$enabled <- TRUE
-  if (!is.null(redact)) cfg$redact <- as.list(redact)
+  if (!is.null(redact)) {
+    .memory_validate_redact(redact)
+    cfg$redact <- as.list(redact)
+  }
   jsonlite::write_json(cfg, .memory_config_path(), auto_unbox = TRUE)
   invisible(cfg)
 }
@@ -72,6 +75,24 @@ disable_memory <- function() {
   x
 }
 
+.memory_validate_redact <- function(patterns) {
+  for (pat in patterns) {
+    if (!is.character(pat) || length(pat) != 1 || !nzchar(pat)) {
+      stop("Each redact pattern must be a non-empty character string.",
+           call. = FALSE)
+    }
+    tryCatch(
+      suppressWarnings(grepl(pat, "", perl = TRUE)),
+      error = function(e) stop(
+        sprintf("Invalid redact regex pattern: '%s' (%s)",
+                pat, conditionMessage(e)),
+        call. = FALSE
+      )
+    )
+  }
+  invisible(NULL)
+}
+
 .memory_require_enabled <- function() {
   if (!.memory_enabled()) {
     stop(
@@ -95,7 +116,20 @@ disable_memory <- function() {
   }
   lines <- readLines(path, warn = FALSE)
   lines <- lines[nzchar(trimws(lines))]
-  lapply(lines, function(l) jsonlite::fromJSON(l, simplifyVector = TRUE))
+  recs <- lapply(lines, function(l) {
+    tryCatch(
+      jsonlite::fromJSON(l, simplifyVector = TRUE),
+      error = function(e) {
+        warning(
+          sprintf("Skipping unparsable memory record in '%s': %s",
+                  path, conditionMessage(e)),
+          call. = FALSE
+        )
+        NULL
+      }
+    )
+  })
+  Filter(Negate(is.null), recs)
 }
 
 .memory_new_id <- function() {
@@ -143,6 +177,58 @@ record_lesson <- function(lesson,
     provenance = provenance %||% NULL
   )
   list(recorded = TRUE, id = .memory_append(.memory_lessons_path(), rec))
+}
+
+#' Record a quantitative run fingerprint
+#'
+#' @param summary Short free-text summary of the run (model, outcome, key metrics).
+#' @param scope `"global"` or a context tag (model type / task / data shape).
+#' @param provenance Optional list (e.g. job_id, package, tool).
+#' @return A list with the stored `id`.
+#' @examples
+#' \dontrun{
+#' enable_memory()
+#' record_run("FOCE-ELS fit converged; OFV 1234.5")
+#' }
+#' @keywords internal
+#' @export
+record_run <- function(summary, scope = "global", provenance = NULL) {
+  .memory_require_enabled()
+  rec <- list(
+    kind = "run",
+    summary = .memory_redact(summary),
+    scope = scope,
+    provenance = provenance %||% NULL
+  )
+  list(recorded = TRUE, id = .memory_append(.memory_runs_path(), rec))
+}
+
+#' Deactivate a lesson without deleting it
+#'
+#' Marks a lesson inactive so [get_lessons()] omits it unless
+#' `include_superseded = TRUE`. History is preserved (unlike
+#' [delete_memory_record()]).
+#'
+#' @param id Lesson record id returned by [record_lesson()].
+#' @return A list with `deactivated` (logical) and `id`.
+#' @examples
+#' \dontrun{
+#' enable_memory()
+#' id <- record_lesson("obsolete note")$id
+#' deactivate_lesson(id)
+#' }
+#' @keywords internal
+#' @export
+deactivate_lesson <- function(id) {
+  .memory_require_enabled()
+  recs <- .memory_read(.memory_lessons_path())
+  hit <- which(vapply(recs, function(r) identical(r$id, id), logical(1)))
+  if (!length(hit)) {
+    return(list(deactivated = FALSE, id = id))
+  }
+  recs[[hit[1]]]$active <- FALSE
+  .memory_rewrite(.memory_lessons_path(), recs)
+  list(deactivated = TRUE, id = id)
 }
 
 #' Set a default user preference

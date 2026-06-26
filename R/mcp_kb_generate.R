@@ -258,11 +258,35 @@
   idx
 }
 
+# Coerce chapter_order to integer; non-numeric or NA values sort last (999L).
+.kb_chapter_order <- function(chapter_order) {
+  if (is.null(chapter_order) || !length(chapter_order)) {
+    return(999L)
+  }
+  if (length(chapter_order) != 1L) {
+    warning(
+      "chapter_order is unparseable or ambiguous; sorting chapter last (999).",
+      call. = FALSE
+    )
+    return(999L)
+  }
+  co <- suppressWarnings(as.integer(chapter_order[[1L]]))
+  if (is.na(co)) {
+    warning(
+      "chapter_order is unparseable or ambiguous; sorting chapter last (999).",
+      call. = FALSE
+    )
+    return(999L)
+  }
+  co
+}
+
 # Ordered guidance chapter list + parent/child graph. Powers the guidance-first
 # table of contents and lets guide_pharmacometrics() resolve a chapter's topics.
 .kb_build_guidance_index <- function(entries) {
   chapters <- Filter(function(e) identical(e$type, "guidance_chapter"), entries)
-  ord <- order(vapply(chapters, function(e) e$chapter_order %||% 999L, integer(1)))
+  ord <- order(vapply(chapters, function(e) .kb_chapter_order(e$chapter_order),
+                      integer(1)))
   chapters <- chapters[ord]
   lapply(chapters, function(ch) {
     kids <- Filter(function(e) {
@@ -331,8 +355,9 @@
 #'
 #' Reads `inst/mcp/kb/sources/*.md`, validates entries, and writes
 #' `inst/mcp/kb/<package>.jsonl`, `inst/mcp/kb/index/symbols.json` + `enums.json`, and
-#' `inst/mcp/kb/manifest.json`. Deterministic: re-running on unchanged sources
-#' reproduces byte-identical output.
+#' `inst/mcp/kb/manifest.json`. Re-running on unchanged sources reproduces
+#' byte-identical JSONL and `index/*.json` artifacts; `manifest.json` also
+#' carries a generation timestamp (`generated`).
 #'
 #' @param pkg_root Path to the package root (containing `inst/mcp/kb`).
 #' @param package Package name to stamp on entries/manifest.
@@ -509,6 +534,3 @@ generate_certara_kb <- function(pkg_root,
   }
   paste(parts, collapse = "-")
 }
-
-# Null-coalescing helper (kept local to avoid depending on rlang at runtime).
-`%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a

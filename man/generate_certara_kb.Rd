@@ -33,8 +33,9 @@ Invisibly, the list of generated entries.
 \description{
 Reads \verb{inst/mcp/kb/sources/*.md}, validates entries, and writes
 \verb{inst/mcp/kb/<package>.jsonl}, \code{inst/mcp/kb/index/symbols.json} + \code{enums.json}, and
-\code{inst/mcp/kb/manifest.json}. Deterministic: re-running on unchanged sources
-reproduces byte-identical output.
+\code{inst/mcp/kb/manifest.json}. Re-running on unchanged sources reproduces
+byte-identical JSONL and \verb{index/*.json} artifacts; \code{manifest.json} also
+carries a generation timestamp (\code{generated}).
 }
 \examples{
 \dontrun{

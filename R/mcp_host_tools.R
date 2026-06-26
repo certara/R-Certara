@@ -209,6 +209,21 @@
       )
     ),
     .ctool(
+      function(id) deactivate_lesson(id),
+      "deactivate_lesson",
+      "Deactivate a lesson without deleting it (history preserved).",
+      arguments = list(id = .ts("Lesson record id.", required = TRUE))
+    ),
+    .ctool(
+      function(summary, scope = "global") record_run(summary, scope),
+      "record_run",
+      "Record a quantitative run fingerprint for future sessions.",
+      arguments = list(
+        summary = .ts("Short summary of the run.", required = TRUE),
+        scope = .ts("'global' or a context tag.")
+      )
+    ),
+    .ctool(
       function(key, value, scope = "global", level = "hard") {
         set_preference(key, value, scope, level)
       },

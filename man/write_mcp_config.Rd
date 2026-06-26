@@ -31,15 +31,10 @@ private entry in \verb{~/.claude.json}); it is skipped with a warning for
 
 \item{btw_groups}{Which general-purpose \code{btw} R tool groups to expose to the
 agent alongside the Certara tools; the chosen groups are baked into the
-launch command. The default \code{c("docs", "pkg")} provides:
-\itemize{
-\item \code{"docs"} - read R documentation for any installed package (help
-pages, help-topic listings, vignettes, release notes), so the agent
-can look up function usage on demand.
-\item \code{"pkg"} - R package development actions (document, check, test,
-coverage, load-all).
-}
-Two groups enable working against a live session bridged with
+launch command. The default \code{"docs"} provides read-only R documentation
+lookup (help pages, help-topic listings, vignettes, release notes). Add
+\code{"pkg"} for package-development actions (document, check, test, coverage,
+load-all). Two groups enable working against a live session bridged with
 \code{btw::btw_mcp_session()} (set \code{session_tools = TRUE} as well): \code{"env"}
 inspects that session's objects (loaded data frames, fitted models) and
 \code{"run"} exposes \code{btw_tool_run_r}, which executes R code in that session's

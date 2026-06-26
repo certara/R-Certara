@@ -96,9 +96,9 @@ test_that("codex writes user config and emits a command + TOML snippet", {
   expect_true(file.exists(file.path(home, ".codex", "AGENTS.md")))
   txt <- readLines(file.path(home, ".codex", "config.toml"), warn = FALSE)
   expect_true(any(grepl("tool_timeout_sec = 900", txt, fixed = TRUE)))
-  expect_true(any(grepl('default_tools_approval_mode = "approve"', txt, fixed = TRUE)))
   # No tool providers are installed in the host test env, so no provider marks a
-  # tool gated -> no per-tool prompt tables are emitted (only the default mode).
+  # tool gated -> no blanket approve-all and no per-tool prompt tables.
+  expect_false(any(grepl('default_tools_approval_mode = "approve"', txt, fixed = TRUE)))
   expect_false(any(grepl("[mcp_servers.certara-r.tools.", txt, fixed = TRUE)))
   agents <- readLines(file.path(home, ".codex", "AGENTS.md"), warn = FALSE)
   expect_true(any(grepl("Rscript is available", agents, fixed = TRUE)))
@@ -139,7 +139,7 @@ test_that("codex replaces an unmanaged server block", {
   expect_identical(sum(grepl("^\\[mcp_servers\\.certara-r\\]$", cfg)), 1L)
   expect_true(any(grepl("# BEGIN certara-r MCP config", cfg, fixed = TRUE)))
   expect_true(any(grepl("tool_timeout_sec = 900", cfg, fixed = TRUE)))
-  expect_true(any(grepl('default_tools_approval_mode = "approve"', cfg, fixed = TRUE)))
+  expect_false(any(grepl('default_tools_approval_mode = "approve"', cfg, fixed = TRUE)))
   expect_false(any(grepl("old-Rscript", cfg, fixed = TRUE)))
   expect_false(any(grepl("old_tool", cfg, fixed = TRUE)))
   expect_true(any(grepl("[mcp_servers.other]", cfg, fixed = TRUE)))
@@ -469,8 +469,8 @@ test_that("codex writes MCP approval settings when tool_allowlist is TRUE", {
   )
   cfg <- readLines(file.path(home, ".codex", "config.toml"), warn = FALSE)
   expect_true(any(grepl("tool_timeout_sec = 900", cfg, fixed = TRUE)))
-  expect_true(any(grepl('default_tools_approval_mode = "approve"', cfg, fixed = TRUE)))
-  # Without an installed provider declaring a gated tool, no prompt table exists.
+  # Without an installed provider declaring a gated tool, Codex prompts for all.
+  expect_false(any(grepl('default_tools_approval_mode = "approve"', cfg, fixed = TRUE)))
   expect_false(any(grepl('approval_mode = "prompt"', cfg, fixed = TRUE)))
 })
 
@@ -686,4 +686,24 @@ test_that("claude-desktop falls back to APPDATA when no MSIX package exists", {
                      normalizePath(file.path(appdata, "Claude"), mustWork = FALSE))
     expect_false(.claude_desktop_msix_active())
   })
+})
+
+test_that("unknown btw_groups is rejected", {
+  proj <- file.path(tempdir(), paste0("mcpcfg_btw_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  expect_error(
+    write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                     btw_groups = "evil_injection"),
+    "Unknown btw_groups"
+  )
+})
+
+test_that("valid btw_groups including pkg still writes config", {
+  proj <- file.path(tempdir(), paste0("mcpcfg_btwok_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                   btw_groups = c("docs", "pkg"))
+  launch <- jsonlite::read_json(
+    file.path(proj, ".cursor", "mcp.json"))$mcpServers[["certara-r"]]$args[[2]]
+  expect_match(launch, "c\\('docs', 'pkg'\\)")
 })

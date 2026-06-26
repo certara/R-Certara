@@ -19,15 +19,10 @@
 #'   `"cursor"`, which has no local tier, and is irrelevant to `"codex"`.
 #' @param btw_groups Which general-purpose `btw` R tool groups to expose to the
 #'   agent alongside the Certara tools; the chosen groups are baked into the
-#'   launch command. The default `c("docs", "pkg")` provides:
-#'   \itemize{
-#'     \item `"docs"` - read R documentation for any installed package (help
-#'       pages, help-topic listings, vignettes, release notes), so the agent
-#'       can look up function usage on demand.
-#'     \item `"pkg"` - R package development actions (document, check, test,
-#'       coverage, load-all).
-#'   }
-#'   Two groups enable working against a live session bridged with
+#'   launch command. The default `"docs"` provides read-only R documentation
+#'   lookup (help pages, help-topic listings, vignettes, release notes). Add
+#'   `"pkg"` for package-development actions (document, check, test, coverage,
+#'   load-all). Two groups enable working against a live session bridged with
 #'   `btw::btw_mcp_session()` (set `session_tools = TRUE` as well): `"env"`
 #'   inspects that session's objects (loaded data frames, fitted models) and
 #'   `"run"` exposes `btw_tool_run_r`, which executes R code in that session's
@@ -147,6 +142,7 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   client <- match.arg(client, choices_client, several.ok = TRUE)
   scope <- match.arg(scope, choices_scope, several.ok = TRUE)
   tool_profile <- match.arg(tool_profile)
+  .validate_btw_groups(btw_groups)
   if (!is.null(job_watch_wait_seconds)) {
     job_watch_wait_seconds <- suppressWarnings(as.numeric(job_watch_wait_seconds))
     if (length(job_watch_wait_seconds) != 1L || is.na(job_watch_wait_seconds)) {
@@ -179,6 +175,9 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
         next
       }
       path <- .cursor_config_path(sc, project_dir)
+      if (isTRUE(tool_allowlist)) {
+        .assert_json_parsable(.cursor_permissions_path(project_dir, scope = sc))
+      }
       existed <- isTRUE(.json_has_server(path, server_name))
       .merge_json_mcp(path, server_name, cursor_server_block)
       message(sprintf("Cursor (%s scope): %s '%s' in %s",
@@ -220,6 +219,9 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     claude_budget <- .mcp_client_watch_seconds("claude-code", job_watch_wait_seconds)
     claude_args <- client_args("claude-code")
     for (sc in scope) {
+      if (isTRUE(tool_allowlist)) {
+        .assert_json_parsable(.claude_settings_path(sc, project_dir))
+      }
       if (sc == "project") {
         path <- file.path(project_dir, ".mcp.json")
         existed <- isTRUE(.json_has_server(path, server_name))
@@ -311,9 +313,12 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   }
   if ("codex" %in% client) {
     codex_args <- client_args("codex")
-    snippet <- .codex_snippet(server_name, command, codex_args, tool_allowlist)
+    gated <- .mcp_gated_tool_names()
+    snippet <- .codex_snippet(server_name, command, codex_args, tool_allowlist,
+                               gated = gated)
     config_written <- .write_codex_mcp_config(
-      .codex_config_path(), server_name, command, codex_args, tool_allowlist
+      .codex_config_path(), server_name, command, codex_args, tool_allowlist,
+      gated = gated
     )
     guidance_written <- .write_codex_agents_guidance(
       .codex_agents_path(), command
@@ -331,10 +336,20 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
                     server_name, config_written))
     message(sprintf("  User guidance: %s", guidance_written))
     if (isTRUE(tool_allowlist)) {
-      message(paste(
-        "  MCP tool approvals: default approve for this server, with",
-        "start_nlme_job and cleanup_mcp_runs left as prompt-gated tools."
-      ))
+      if (length(gated)) {
+        gated_msg <- paste0(
+          paste(gated, collapse = " and "), " left as prompt-gated tools."
+        )
+        message(paste(
+          "  MCP tool approvals: default approve for this server, with",
+          gated_msg
+        ))
+      } else {
+        message(paste(
+          "  MCP tool approvals: Codex will prompt for all tools",
+          "(no provider tools marked gated)."
+        ))
+      }
     }
     actions[[length(actions) + 1]] <- c(
       list(client = "codex", toml = snippet,
@@ -414,6 +429,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
         next
       }
       path <- .cursor_config_path(sc, project_dir)
+      .assert_json_parsable(.cursor_permissions_path(project_dir, scope = sc))
       removed <- .unmerge_json_mcp(path, server_name)
       rule_removed <- NULL
       permissions_removed <- NULL
@@ -436,6 +452,10 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   }
   if ("claude-code" %in% client) {
     for (sc in scope) {
+      .assert_json_parsable(.claude_settings_path(sc, project_dir))
+      if (sc == "project") {
+        .assert_json_parsable(file.path(project_dir, ".mcp.json"))
+      }
       permissions_removed <- .unmerge_claude_permissions(
         .claude_settings_path(sc, project_dir), server_name
       )
@@ -550,11 +570,33 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   sprintf("%s:*", server_name)
 }
 
+.read_json_or_stop <- function(path) {
+  tryCatch(
+    jsonlite::read_json(path, simplifyVector = FALSE),
+    error = function(e) {
+      stop(
+        sprintf(
+          "Refusing to proceed: could not read '%s' (%s). Fix or remove it, then retry.",
+          path, conditionMessage(e)
+        ),
+        call. = FALSE
+      )
+    }
+  )
+}
+
+# Validate-only preflight: stop on corrupt JSON before any mutating write.
+.assert_json_parsable <- function(path) {
+  if (file.exists(path)) {
+    .read_json_or_stop(path)
+  }
+  invisible(path)
+}
+
 .merge_cursor_permissions <- function(path, server_name) {
   entry <- .cursor_mcp_allowlist_entry(server_name)
   existing <- if (file.exists(path)) {
-    tryCatch(jsonlite::read_json(path, simplifyVector = FALSE),
-             error = function(e) list())
+    .read_json_or_stop(path)
   } else {
     list()
   }
@@ -574,8 +616,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     return(FALSE)
   }
   entry <- .cursor_mcp_allowlist_entry(server_name)
-  existing <- tryCatch(jsonlite::read_json(path, simplifyVector = FALSE),
-                       error = function(e) list())
+  existing <- .read_json_or_stop(path)
   allow <- unlist(existing$mcpAllowlist %||% list(), use.names = FALSE)
   if (!entry %in% allow) {
     return(FALSE)
@@ -620,8 +661,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
 .merge_claude_permissions <- function(path, server_name) {
   entry <- .claude_mcp_allowlist_entry(server_name)
   existing <- if (file.exists(path)) {
-    tryCatch(jsonlite::read_json(path, simplifyVector = FALSE),
-             error = function(e) list())
+    .read_json_or_stop(path)
   } else {
     list()
   }
@@ -642,8 +682,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     return(FALSE)
   }
   entry <- .claude_mcp_allowlist_entry(server_name)
-  existing <- tryCatch(jsonlite::read_json(path, simplifyVector = FALSE),
-                       error = function(e) list())
+  existing <- .read_json_or_stop(path)
   allow <- unlist(existing$permissions$allow %||% list(), use.names = FALSE)
   if (!entry %in% allow) {
     return(FALSE)
@@ -718,10 +757,19 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     return(lines)
   }
   b <- b[1]
-  e <- which(lines == end & seq_along(lines) >= b)
-  e <- if (length(e)) e[1] else length(lines)
   before <- if (b > 1) lines[seq_len(b - 1)] else character(0)
-  after <- if (e < length(lines)) lines[(e + 1):length(lines)] else character(0)
+  e <- which(lines == end & seq_along(lines) >= b)
+  if (!length(e)) {
+    warning(
+      "Managed block begin marker found but end marker is missing; ",
+      "removing only the begin line to preserve user content below.",
+      call. = FALSE
+    )
+    after <- if (b < length(lines)) lines[(b + 1):length(lines)] else character(0)
+  } else {
+    e <- e[1]
+    after <- if (e < length(lines)) lines[(e + 1):length(lines)] else character(0)
+  }
   while (length(before) && !nzchar(before[length(before)])) {
     before <- before[-length(before)]
   }
@@ -747,6 +795,11 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
       rule_lines <- c(rule_lines, paste0("- **", label, ".** ", caps$rules[[id]]))
     }
   } else {
+    warning(
+      "certara_mcp_capabilities() failed or returned no rules; ",
+      "CLAUDE.md guidance will reference the capabilities tool only.",
+      call. = FALSE
+    )
     rule_lines <- "- See `certara_mcp_capabilities()$rules`."
   }
   c(
@@ -928,6 +981,27 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
                                  "LocalCache", "Roaming", "Claude"))
       pkgs <- pkgs[dir.exists(pkgs)]
       if (length(pkgs)) {
+        if (length(pkgs) > 1) {
+          mtimes <- file.info(pkgs)$mtime
+          if (all(is.na(mtimes))) {
+            pkgs <- sort(pkgs)
+            warning(
+              "Multiple Claude Desktop MSIX config directories found; ",
+              "could not determine modification times; using first by name: ",
+              pkgs[1], "\n",
+              "Candidates: ", paste(pkgs, collapse = ", "),
+              call. = FALSE
+            )
+          } else {
+            pkgs <- pkgs[order(mtimes, decreasing = TRUE, na.last = TRUE)]
+            warning(
+              "Multiple Claude Desktop MSIX config directories found; ",
+              "using the most recently modified: ", pkgs[1], "\n",
+              "Candidates: ", paste(pkgs, collapse = ", "),
+              call. = FALSE
+            )
+          }
+        }
         return(pkgs[1])
       }
     }
@@ -995,8 +1069,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   if (!file.exists(path)) {
     return(FALSE)
   }
-  existing <- tryCatch(jsonlite::read_json(path, simplifyVector = FALSE),
-                       error = function(e) list())
+  existing <- .read_json_or_stop(path)
   !is.null(existing$mcpServers[[server_name]])
 }
 
@@ -1004,8 +1077,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
 .merge_json_mcp <- function(path, server_name, server_block) {
   dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
   existing <- if (file.exists(path)) {
-    tryCatch(jsonlite::read_json(path, simplifyVector = FALSE),
-             error = function(e) list())
+    .read_json_or_stop(path)
   } else {
     list()
   }
@@ -1023,8 +1095,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   if (!file.exists(path)) {
     return(FALSE)
   }
-  existing <- tryCatch(jsonlite::read_json(path, simplifyVector = FALSE),
-                       error = function(e) list())
+  existing <- .read_json_or_stop(path)
   if (is.null(existing$mcpServers) ||
       is.null(existing$mcpServers[[server_name]])) {
     return(FALSE)
@@ -1110,8 +1181,20 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   }
 }
 
+.codex_prompt_tables <- function(server_name, gated = .mcp_gated_tool_names()) {
+  if (!length(gated)) {
+    return(character(0))
+  }
+  unlist(lapply(gated, function(t) c(
+    "",
+    sprintf("[mcp_servers.%s.tools.%s]", server_name, t),
+    'approval_mode = "prompt"'
+  )), use.names = FALSE)
+}
+
 .codex_managed_block <- function(server_name, command, args,
-                                 tool_allowlist = TRUE) {
+                                 tool_allowlist = TRUE,
+                                 gated = .mcp_gated_tool_names()) {
   c(
     .codex_marker(server_name)$begin,
     sprintf("[mcp_servers.%s]", server_name),
@@ -1125,16 +1208,13 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     # NOTE: default_tools_approval_mode and per-tool [..tools.<t>] approval_mode
     # are recent Codex config keys (openai/codex#16501); a Codex too old to know
     # them ignores the approvals (tools stay prompt-gated) rather than breaking
-    # the server entry. Only emitted when tool_allowlist = TRUE. The prompt-gated
-    # tools are discovered from provider manifests (gated: true), so the host
-    # stays provider-agnostic instead of hard-coding NLME tool names.
+    # the server entry. Only emitted when tool_allowlist = TRUE and at least one
+    # gated tool is discovered; otherwise Codex falls back to prompting for all.
     if (isTRUE(tool_allowlist)) {
-      prompt_tables <- unlist(lapply(.mcp_gated_tool_names(), function(t) c(
-        "",
-        sprintf("[mcp_servers.%s.tools.%s]", server_name, t),
-        'approval_mode = "prompt"'
-      )), use.names = FALSE)
-      c('default_tools_approval_mode = "approve"', prompt_tables)
+      prompt_tables <- .codex_prompt_tables(server_name, gated)
+      if (length(prompt_tables)) {
+        c('default_tools_approval_mode = "approve"', prompt_tables)
+      } else character(0)
     } else character(0),
     .codex_marker(server_name)$end
   )
@@ -1150,12 +1230,14 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
 }
 
 .write_codex_mcp_config <- function(path, server_name, command, args,
-                                    tool_allowlist = TRUE) {
+                                    tool_allowlist = TRUE,
+                                    gated = .mcp_gated_tool_names()) {
   markers <- .codex_marker(server_name)
   lines <- if (file.exists(path)) readLines(path, warn = FALSE) else character(0)
   kept <- .strip_marked_block(lines, markers$begin, markers$end)
   kept <- .strip_codex_mcp_tables(kept, server_name)
-  block <- .codex_managed_block(server_name, command, args, tool_allowlist)
+  block <- .codex_managed_block(server_name, command, args, tool_allowlist,
+                                gated = gated)
   new_lines <- if (length(kept) && any(nzchar(kept))) c(kept, "", block) else block
   dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
   writeLines(new_lines, path, useBytes = TRUE)
@@ -1259,19 +1341,25 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   TRUE
 }
 
-.codex_snippet <- function(server_name, command, args, tool_allowlist = TRUE) {
+.codex_snippet <- function(server_name, command, args, tool_allowlist = TRUE,
+                           gated = .mcp_gated_tool_names()) {
   args_toml <- .toml_string_array(args)
+  allowlist_toml <- ""
+  if (isTRUE(tool_allowlist)) {
+    prompt_tables <- .codex_prompt_tables(server_name, gated)
+    if (length(prompt_tables)) {
+      allowlist_toml <- paste0(
+        'default_tools_approval_mode = "approve"\n',
+        paste(prompt_tables, collapse = "\n"),
+        "\n"
+      )
+    }
+  }
   paste0(
     sprintf("[mcp_servers.%s]\n", server_name),
     sprintf('command = "%s"\n', gsub("\\\\", "\\\\\\\\", command)),
     sprintf("args = [%s]\n", args_toml),
     "tool_timeout_sec = 900\n",
-    if (isTRUE(tool_allowlist)) paste0(
-      'default_tools_approval_mode = "approve"', "\n\n",
-      sprintf("[mcp_servers.%s.tools.start_nlme_job]\n", server_name),
-      'approval_mode = "prompt"', "\n\n",
-      sprintf("[mcp_servers.%s.tools.cleanup_mcp_runs]\n", server_name),
-      'approval_mode = "prompt"', "\n"
-    ) else ""
+    allowlist_toml
   )
 }

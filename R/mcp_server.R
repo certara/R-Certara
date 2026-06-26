@@ -41,9 +41,9 @@
 #' requests.
 #'
 #' @param btw_groups Which general-purpose `btw` R tool groups to expose
-#'   alongside the Certara tools (default `c("docs", "pkg")`). `"docs"` lets the
-#'   agent read R documentation; `"pkg"` adds package-development actions. For a
-#'   live session bridged with `btw::btw_mcp_session()` (needs
+#'   alongside the Certara tools (default `"docs"`). `"docs"` lets the agent read
+#'   R documentation; add `"pkg"` for package-development actions. For a live
+#'   session bridged with `btw::btw_mcp_session()` (needs
 #'   `session_tools = TRUE`), `"env"` exposes read-only object inspection and
 #'   `"run"` exposes `btw_tool_run_r`. Other groups: `"files"`, `"git"`,
 #'   `"github"`, `"ide"`, `"cran"`, `"web"`, `"sessioninfo"`. Use `character(0)`
@@ -95,6 +95,7 @@ launch_certara_mcp <- function(btw_groups = "docs",
   # client spawns (see write_mcp_config()), not something a user runs at the R
   # prompt. Fail early with an actionable message instead of mcptools' terse
   # "not intended for interactive use".
+  .validate_btw_groups(btw_groups)
   if (interactive()) {
     stop("launch_certara_mcp() starts the stdio MCP server and must run ",
          "non-interactively - as the command an MCP client launches, e.g.\n",

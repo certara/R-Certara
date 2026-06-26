@@ -16,9 +16,9 @@ launch_certara_mcp(
 }
 \arguments{
 \item{btw_groups}{Which general-purpose \code{btw} R tool groups to expose
-alongside the Certara tools (default \code{c("docs", "pkg")}). \code{"docs"} lets the
-agent read R documentation; \code{"pkg"} adds package-development actions. For a
-live session bridged with \code{btw::btw_mcp_session()} (needs
+alongside the Certara tools (default \code{"docs"}). \code{"docs"} lets the agent read
+R documentation; add \code{"pkg"} for package-development actions. For a live
+session bridged with \code{btw::btw_mcp_session()} (needs
 \code{session_tools = TRUE}), \code{"env"} exposes read-only object inspection and
 \code{"run"} exposes \code{btw_tool_run_r}. Other groups: \code{"files"}, \code{"git"},
 \code{"github"}, \code{"ide"}, \code{"cran"}, \code{"web"}, \code{"sessioninfo"}. Use \code{character(0)}

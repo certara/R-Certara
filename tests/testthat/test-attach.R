@@ -6,7 +6,9 @@ test_that("certara_attach returns a named logical vector", {
 })
 
 test_that("certara_attach attaches the hard Depends Certara.RsNLME", {
+  skip_if_not_installed("Certara.RsNLME")
   res <- certara_attach()
-  # Certara.RsNLME is a hard Depends, so it must always attach.
+  # When run from source without the hard Depends installed, skip rather than
+  # fail spuriously; R CMD check installs Depends so this assertion runs there.
   expect_true(res[["Certara.RsNLME"]])
 })

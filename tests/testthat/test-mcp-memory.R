@@ -61,3 +61,42 @@ test_that("redaction scrubs configured patterns", {
   expect_false(grepl("CompoundX", txt))
   expect_match(txt, "redacted")
 })
+
+test_that("invalid redact regex is rejected at enable time", {
+  local_memory()
+  expect_error(enable_memory(redact = "("), "Invalid redact regex")
+})
+
+test_that("corrupt JSONL lines are skipped with a warning", {
+  local_memory()
+  enable_memory()
+  record_lesson("good lesson")
+  cat("{not valid json}\n", file = .memory_lessons_path(), append = TRUE)
+  expect_warning(ls <- get_lessons(), "Skipping unparsable memory record")
+  expect_length(ls, 1)
+  expect_match(ls[[1]]$text, "good lesson")
+})
+
+test_that("deactivate_lesson hides from default get_lessons", {
+  local_memory()
+  enable_memory()
+  id <- record_lesson("obsolete note")$id
+  expect_length(get_lessons(), 1)
+  res <- deactivate_lesson(id)
+  expect_true(isTRUE(res$deactivated))
+  expect_length(get_lessons(), 0)
+  all <- get_lessons(include_superseded = TRUE)
+  expect_length(all, 1)
+  expect_false(isTRUE(all[[1]]$active))
+})
+
+test_that("record_run round-trips through list_memory_records", {
+  local_memory()
+  enable_memory()
+  id <- record_run("FOCE-ELS fit converged; OFV 1234.5")$id
+  runs <- list_memory_records()$run_memory
+  expect_length(runs, 1)
+  expect_identical(runs[[1]]$id, id)
+  expect_match(runs[[1]]$summary, "FOCE-ELS")
+  expect_identical(runs[[1]]$kind, "run")
+})
