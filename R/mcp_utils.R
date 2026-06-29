@@ -3,6 +3,11 @@
 # Null-coalescing helper (kept local to avoid depending on rlang at runtime).
 `%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
 
+# Non-empty length-1 character (JSON scalar string after jsonlite::fromJSON).
+.is_scalar_string <- function(x) {
+  is.character(x) && length(x) == 1L && nzchar(x)
+}
+
 # ISO-8601 local timestamp, used in memory records and other audit fields.
 .mcp_now <- function() format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
 

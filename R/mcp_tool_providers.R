@@ -29,7 +29,7 @@ mcp_tools_schema_version <- function() {
       problems <- c(problems, sprintf("missing/invalid manifest field '%s'", f))
     }
   }
-  has_builder <- !is.null(manifest$builder) && nzchar(manifest$builder %||% "")
+  has_builder <- .is_scalar_string(manifest$builder)
   has_tools <- !is.null(manifest$tools) && length(manifest$tools) > 0
   if (has_builder && has_tools) {
     problems <- c(problems, "manifest sets both 'builder' and 'tools' (use one)")
@@ -100,7 +100,7 @@ mcp_tools_schema_version <- function() {
     # The same package can be discovered twice (installed + dev_root); keep one.
     if (manifest$package %in% seen_pkg) next
     seen_pkg <- c(seen_pkg, manifest$package)
-    mode <- if (nzchar(manifest$builder %||% "")) "builder" else "declarative"
+    mode <- if (.is_scalar_string(manifest$builder)) "builder" else "declarative"
     providers[[length(providers) + 1]] <- list(
       package = manifest$package,
       manifest = manifest,
@@ -116,6 +116,9 @@ mcp_tools_schema_version <- function() {
 .mcp_arg_type <- function(spec) {
   required <- isTRUE(spec$required)
   desc <- spec$description %||% ""
+  if (!is.character(spec$type) || length(spec$type) != 1L) {
+    stop(sprintf("unsupported argument type '%s'", spec$type %||% "<NA>"))
+  }
   switch(spec$type,
     string = ellmer::type_string(desc, required = required),
     integer = ellmer::type_integer(desc, required = required),

@@ -18,3 +18,9 @@ test_that("the host registers no NLME provider tools itself", {
                      "interpret_run", "compare_nlme_jobs",
                      "list_builtin_model_constructors") %in% nms))
 })
+
+test_that("search_certara_kb MCP tool exposes axis", {
+  tools <- .certara_host_tools("knowledge")
+  search <- Filter(function(t) identical(t@name, "search_certara_kb"), tools)[[1]]
+  expect_true("axis" %in% names(formals(search)))
+})

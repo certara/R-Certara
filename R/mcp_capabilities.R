@@ -89,8 +89,7 @@
     } else {
       for (i in seq_along(frag$rules)) {
         r <- frag$rules[[i]]
-        if (is.null(r$id) || !nzchar(r$id %||% "") ||
-            is.null(r$text) || !nzchar(r$text %||% "")) {
+        if (!.is_scalar_string(r$id) || !.is_scalar_string(r$text)) {
           problems <- c(problems, sprintf("rules[%d] needs id + text", i))
         }
       }

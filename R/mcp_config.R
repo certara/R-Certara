@@ -571,12 +571,16 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
 }
 
 .read_json_or_stop <- function(path) {
+  if (!file.exists(path)) {
+    stop(sprintf("Refusing to proceed: '%s' does not exist.", path),
+         call. = FALSE)
+  }
   tryCatch(
     jsonlite::read_json(path, simplifyVector = FALSE),
     error = function(e) {
       stop(
         sprintf(
-          "Refusing to proceed: could not read '%s' (%s). Fix or remove it, then retry.",
+          "Refusing to proceed: '%s' contains invalid JSON (%s). Fix or remove it, then retry.",
           path, conditionMessage(e)
         ),
         call. = FALSE

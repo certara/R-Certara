@@ -325,7 +325,8 @@
   by_id <- list()
   for (e in entries) by_id[[e$id]] <- e
   chapters <- Filter(function(e) identical(e$type, "guidance_chapter"), entries)
-  ord <- order(vapply(chapters, function(e) e$chapter_order %||% 999L, integer(1)))
+  ord <- order(vapply(chapters, function(e) .kb_chapter_order(e$chapter_order),
+                      integer(1)))
   chapters <- chapters[ord]
   lapply(chapters, function(ch) {
     rel <- unlist(ch$related, use.names = FALSE)

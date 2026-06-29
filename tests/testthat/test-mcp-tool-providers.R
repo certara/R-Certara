@@ -50,4 +50,27 @@ test_that(".mcp_arg_type maps known types and rejects unknown ones", {
   expect_false(is.null(.mcp_arg_type(list(type = "integer"))))
   expect_false(is.null(.mcp_arg_type(list(type = "array", items = "string"))))
   expect_error(.mcp_arg_type(list(type = "weird")), "unsupported")
+  expect_error(.mcp_arg_type(list(type = 1)), "unsupported argument type")
+  expect_error(.mcp_arg_type(list()), "unsupported argument type")
+})
+
+test_that(".mcp_validate_tools_manifest rejects non-scalar-string builder values", {
+  base <- list(package = "P", schema_version = "1.0.0")
+  prob_arr <- .mcp_validate_tools_manifest(c(base, list(builder = list("fn"))))
+  prob_obj <- .mcp_validate_tools_manifest(c(base, list(builder = list(fn = "x"))))
+  expect_true(any(grepl("either 'builder' or 'tools'", prob_arr)))
+  expect_true(any(grepl("either 'builder' or 'tools'", prob_obj)))
+})
+
+test_that("discovery skips manifests whose builder is not a scalar string", {
+  tmp <- tempfile("tp_badbuilder_")
+  mdir <- file.path(tmp, "inst", "mcp", "tools")
+  dir.create(mdir, recursive = TRUE)
+  writeLines(
+    '{"package":"BadBuilder","schema_version":"1.0.0","builder":["not","scalar"]}',
+    file.path(mdir, "manifest.json")
+  )
+  disc <- .mcp_discover_tool_providers(dev_roots = tmp)
+  reasons <- vapply(disc$skipped, function(s) s$reason, character(1))
+  expect_true(any(grepl("either 'builder' or 'tools'", reasons)))
 })

@@ -79,10 +79,10 @@
   list(
     .ctool(
       function(query, package = NULL, type = NULL, model_type = NULL,
-               route = NULL, engine = NULL, limit = 5) {
+               route = NULL, engine = NULL, axis = NULL, limit = 5) {
         search_certara_kb(query, package = package, type = type,
                           model_type = model_type, route = route,
-                          engine = engine, limit = limit)
+                          engine = engine, axis = axis, limit = limit)
       },
       "search_certara_kb",
       paste(
@@ -99,6 +99,10 @@
         model_type = .ts("Optional scope filter (pk, pd)."),
         route = .ts("Optional route scope filter."),
         engine = .ts("Optional engine scope filter."),
+        axis = .ts(paste(
+          "Optional retrieval-axis filter (guidance, reference, remediation);",
+          "boosts guidance ordering."
+        )),
         limit = .ti("Max results (default 5).")
       )
     ),
