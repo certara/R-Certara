@@ -71,6 +71,27 @@
         "to attach a live session. Call this when unsure where objects live or",
         "why btw_tool_run_r / env tools are missing."
       )
+    ),
+    .ctool(
+      function(path = NULL) mcp_repro_path(path),
+      "certara_repro_script",
+      paste(
+        "Get the path of the reproducible R script that records the exact code",
+        "run by MCP tools this session, or set it by passing 'path' (which",
+        "resets the script). Report this path so the analysis can be audited",
+        "and re-run by hand."
+      ),
+      arguments = list(
+        path = .ts("Optional new path for the reproducible R script.")
+      )
+    ),
+    .ctool(
+      function() mcp_repro_info(),
+      "get_certara_repro_script",
+      paste(
+        "Return the path and full contents of the reproducible R script that",
+        "records every recorded MCP tool action this session."
+      )
     )
   )
 }

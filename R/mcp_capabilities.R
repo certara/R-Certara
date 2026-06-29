@@ -16,6 +16,18 @@
   )
 }
 
+# Reproducible-script behavior contract (generic; a core host capability).
+.rule_repro_script <- function() {
+  paste(
+    "Reproducible script: the host records the exact R code run by MCP tools",
+    "into a single runnable .R script this session. Tools that create objects,",
+    "tables, or plots append their code; re-running the script reproduces the",
+    "analysis by hand. Report the script path (certara_repro_script) so the",
+    "user can audit and QC the work; fetch its contents with",
+    "get_certara_repro_script."
+  )
+}
+
 # Memory-and-sources behavior contract (generic; applies to every provider).
 .rule_memory_and_sources <- function() {
   paste(
@@ -208,6 +220,7 @@ certara_mcp_capabilities <- function(dev_roots = character(0)) {
 
   host_rules <- list(
     providers_first = .rule_providers_first(),
+    repro_script = .rule_repro_script(),
     memory_and_sources = .rule_memory_and_sources()
   )
   # Provider rules override host rules of the same id (more specific wins).
