@@ -8,17 +8,12 @@ template:
 url: https://github.com/certara/R-Certara
 
 reference:
-  - title: Installation
-    desc: Use these functions to easily install/uninstall R packages developed by Certara
+  - title: Ecosystem
+    desc: Attach the Certara pharmacometrics R suite and inspect its membership
     contents:
-    - install_certara_packages
-    - remove_certara_packages
+    - certara_attach
     - certara_packages
-  - title: Check Packages
-    desc: Use these functions to validate installation of R packages developed by Certara
-    contents:
-    - check_installed_certara_packages
-    - check_certara_package_versions
+    - certara_core_packages
 
 navbar:
   structure:

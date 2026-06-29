@@ -1,0 +1,7 @@
+{
+  "certara_session_status": ["Certara.R.fn.certara_session_status", "Certara.R.mcp.setup_troubleshooting"],
+  "certara_mcp_capabilities": ["Certara.R.fn.certara_session_status", "Certara.R.mcp.setup_troubleshooting"],
+  "launch_certara_mcp": ["Certara.R.fn.certara_session_status"],
+  "write_mcp_config": ["Certara.R.fn.certara_session_status", "Certara.R.mcp.setup_troubleshooting"],
+  "list_mcp_runs": ["Certara.R.mcp.setup_troubleshooting"]
+}

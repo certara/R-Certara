@@ -21,11 +21,20 @@
 ``` r
 install.packages("Certara.R")
 
+# Attaches the Certara pharmacometrics ecosystem
 library(Certara.R)
+```
 
-install_certara_packages()
+`Certara.R` also hosts the federated Certara MCP server, which exposes
+knowledge-base and tool providers from member packages to AI coding
+assistants. Configure a client and launch the server with:
 
-check_certara_package_versions()
+``` r
+# Write the server config for Cursor / Claude Code / Codex
+write_mcp_config("cursor")
+
+# (started automatically by the client; can also be run directly)
+launch_certara_mcp()
 ```
 
 ## Modeling

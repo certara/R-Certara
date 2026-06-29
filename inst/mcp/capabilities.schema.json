@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://certara.com/mcp/capabilities.schema.json",
+  "title": "Certara MCP capability fragment",
+  "description": "Contract a provider package ships at inst/mcp/capabilities.json. The Certara.R MCP host merges these fragments into certara_mcp_capabilities(): rules concatenate (provider wins on duplicate id), session_start and prerequisites concatenate, and the host picks the first non-null primary_guidance_entry.",
+  "type": "object",
+  "required": ["package"],
+  "properties": {
+    "package": {
+      "type": "string",
+      "description": "Provider package name."
+    },
+    "rules": {
+      "type": "array",
+      "description": "Agent-behavior rules contributed by this provider.",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "properties": {
+          "id": { "type": "string", "description": "Stable rule id. A duplicate id from a provider overrides the host's generic rule of the same id." },
+          "text": { "type": "string" }
+        }
+      }
+    },
+    "primary_guidance_entry": {
+      "type": "string",
+      "description": "KB entry id the agent should read first for this provider's domain."
+    },
+    "workflows": {
+      "type": "object",
+      "description": "Optional task-phase overlay specific to this provider's domain."
+    },
+    "session_start": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Instructions the agent should run at session start."
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Runtime/licensing prerequisites for this provider's tools."
+    }
+  }
+}
