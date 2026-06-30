@@ -92,6 +92,80 @@
         "Return the path and full contents of the reproducible R script that",
         "records every recorded MCP tool action this session."
       )
+    ),
+    .ctool(
+      function(dir = NULL) {
+        if (!is.null(dir)) mcp_session_project_dir(dir)
+        list(
+          project_dir = mcp_session_project_dir(),
+          scripts_dir = mcp_session_scripts_dir(),
+          figures_dir = mcp_session_figures_dir(),
+          reports_dir = mcp_session_reports_dir(),
+          models_dir = mcp_session_models_dir()
+        )
+      },
+      "certara_session_project_dir",
+      paste(
+        "Get or set the session project root so reproducible scripts, figures,",
+        "report Rmd, and saved models co-locate under scripts/, figures/,",
+        "reports/, and models/. Set 'dir' once at project start before",
+        "diagnostics and reporting; after that, do not ask the user where to put",
+        "QC artifacts unless they request a different layout."
+      ),
+      arguments = list(
+        dir = .ts("Optional project root directory to pin for this session.")
+      )
+    ),
+    .ctool(
+      function(path = NULL) {
+        if (!is.null(path)) mcp_report_path(path)
+        mcp_report_info()
+      },
+      "certara_report_rmd",
+      paste(
+        "Get the path and section summary of the modeling report Rmd accumulated",
+        "this session, or set a new path by passing 'path' (resets contents)."
+      ),
+      arguments = list(
+        path = .ts("Optional new path for the report Rmd.")
+      )
+    ),
+    .ctool(
+      function() mcp_report_info(),
+      "get_certara_report_rmd",
+      paste(
+        "Return the path and full contents of the modeling report Rmd that",
+        "accumulates figures and tables from MCP tools this session."
+      )
+    ),
+    .ctool(
+      function(markdown, section = "methods") {
+        mcp_report_text(markdown, section)
+        mcp_report_info()
+      },
+      "add_certara_report_note",
+      paste(
+        "Append or replace narrative markdown in a report section (Methods,",
+        "Results, etc.). Use after diagnostics to document human judgment."
+      ),
+      arguments = list(
+        markdown = .ts("Markdown text to insert.", required = TRUE),
+        section = .ts("Section id (e.g. methods, results.parameters).")
+      )
+    ),
+    .ctool(
+      function(output = "html") {
+        out <- render_certara_report(output)
+        list(rendered = !is.null(out), output_path = out %||% NA_character_)
+      },
+      "render_certara_report",
+      paste(
+        "Render the accumulated report Rmd to HTML (requires rmarkdown and",
+        "pandoc). Returns the output path when successful."
+      ),
+      arguments = list(
+        output = .ts("Output format (default html).")
+      )
     )
   )
 }

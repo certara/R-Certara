@@ -129,8 +129,9 @@ launch_certara_mcp <- function(btw_groups = "docs",
   .mcp_set_launch_config(btw_groups = btw_groups, session_tools = session_tools,
                          job_watch_wait_seconds = job_watch_wait_seconds,
                          tool_profile = tool_profile)
-
-  # Warm the KB index once at startup so the first tool call is not penalized.
+  mcp_repro_reset()
+  mcp_report_reset()
+  mcp_session_paths_reset()
   invisible(tryCatch(
     .kb_build_index(dev_roots = dev_roots, refresh = TRUE),
     error = function(e) {
