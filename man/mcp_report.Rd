@@ -32,9 +32,12 @@ mcp_report_read()
 mcp_report_info()
 }
 \arguments{
-\item{path}{Absolute or relative path to the saved figure PNG.}
+\item{path}{For \code{mcp_report_path()}, an optional new report path (resets
+contents); for \code{mcp_report_figure()}, the absolute or relative path to
+the saved figure PNG.}
 
-\item{title}{Section heading text.}
+\item{title}{For \code{mcp_report_init()}, the report title for the YAML
+header; for \code{mcp_report_section()}, the section heading text.}
 
 \item{project_dir}{Ignored when session project root is set; kept for API
 compatibility.}
@@ -49,7 +52,10 @@ compatibility.}
 
 \item{section}{Target section id.}
 
-\item{key}{Figure key (default = file stem); replaces prior figure on re-run.}
+\item{key}{Optional key for replace-in-place on re-call; for
+\code{mcp_report_figure()} it defaults to the figure file's stem when
+omitted, and for \code{mcp_report_text()}/\code{mcp_report_chunk()} omitting it
+always appends a new item instead of replacing one.}
 
 \item{caption}{Figure caption.}
 

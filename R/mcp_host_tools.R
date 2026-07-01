@@ -139,18 +139,21 @@
       )
     ),
     .ctool(
-      function(markdown, section = "methods") {
-        mcp_report_text(markdown, section)
+      function(markdown, section = "methods", key = NULL) {
+        mcp_report_text(markdown, section, key = key)
         mcp_report_info()
       },
       "add_certara_report_note",
       paste(
         "Append or replace narrative markdown in a report section (Methods,",
-        "Results, etc.). Use after diagnostics to document human judgment."
+        "Results, etc.). Use after diagnostics to document human judgment.",
+        "Pass the same 'key' on a later call to replace this note in place",
+        "instead of appending a duplicate."
       ),
       arguments = list(
         markdown = .ts("Markdown text to insert.", required = TRUE),
-        section = .ts("Section id (e.g. methods, results.parameters).")
+        section = .ts("Section id (e.g. methods, results.parameters)."),
+        key = .ts("Optional key; reusing it replaces this note in place.")
       )
     ),
     .ctool(

@@ -42,13 +42,10 @@ mcp_session_project_dir <- function(dir = NULL) {
     for (sub in c("scripts", "figures", "reports", "models")) {
       dir.create(file.path(dir, sub), showWarnings = FALSE, recursive = TRUE)
     }
-    # Re-point repro + report under the new root.
-    if (exists("mcp_repro_path", mode = "function")) {
-      mcp_repro_path(file.path(mcp_session_scripts_dir(), "certara_mcp_repro.R"))
-    }
-    if (exists("mcp_report_path", mode = "function")) {
-      mcp_report_path(file.path(mcp_session_reports_dir(), "modeling_report.Rmd"))
-    }
+    # Re-point repro + report under the new root. Both live in this same
+    # package, so call them directly rather than guarding with exists().
+    mcp_repro_path(file.path(mcp_session_scripts_dir(), "certara_mcp_repro.R"))
+    mcp_report_path(file.path(mcp_session_reports_dir(), "modeling_report.Rmd"))
   }
   .mcp_session_paths_state$project_dir
 }

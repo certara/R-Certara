@@ -51,7 +51,9 @@ mcp_report_reset <- function() {
 }
 
 #' @rdname mcp_report
-#' @param path Optional new report path (resets contents).
+#' @param path For `mcp_report_path()`, an optional new report path (resets
+#'   contents); for `mcp_report_figure()`, the absolute or relative path to
+#'   the saved figure PNG.
 #' @export
 mcp_report_path <- function(path = NULL) {
   .mcp_report_ensure()
@@ -81,7 +83,8 @@ mcp_report_path <- function(path = NULL) {
 }
 
 #' @rdname mcp_report
-#' @param title Report title for the YAML header.
+#' @param title For `mcp_report_init()`, the report title for the YAML
+#'   header; for `mcp_report_section()`, the section heading text.
 #' @param project_dir Ignored when session project root is set; kept for API
 #'   compatibility.
 #' @param stem Filename stem (default `modeling`).
@@ -126,7 +129,6 @@ mcp_report_init <- function(title, project_dir = NULL, stem = "modeling") {
 
 #' @rdname mcp_report
 #' @param id Section identifier.
-#' @param title Section heading text.
 #' @param level Heading level (1 or 2).
 #' @export
 mcp_report_section <- function(id, title, level = 2L) {
@@ -160,7 +162,10 @@ mcp_report_section <- function(id, title, level = 2L) {
 #' @rdname mcp_report
 #' @param markdown Markdown text to insert.
 #' @param section Target section id.
-#' @param key Optional key for replace-in-place on re-call.
+#' @param key Optional key for replace-in-place on re-call; for
+#'   `mcp_report_figure()` it defaults to the figure file's stem when
+#'   omitted, and for `mcp_report_text()`/`mcp_report_chunk()` omitting it
+#'   always appends a new item instead of replacing one.
 #' @export
 mcp_report_text <- function(markdown, section, key = NULL) {
   .mcp_report_auto_init()
@@ -176,6 +181,13 @@ mcp_report_text <- function(markdown, section, key = NULL) {
   abs_path <- normalizePath(path, winslash = "/", mustWork = FALSE)
   a_parts <- strsplit(report_dir, "/", fixed = TRUE)[[1]]
   b_parts <- strsplit(abs_path, "/", fixed = TRUE)[[1]]
+  is_drive <- function(part) grepl("^[A-Za-z]:$", part %||% "")
+  if (is_drive(a_parts[1]) && is_drive(b_parts[1]) &&
+      !identical(a_parts[1], b_parts[1])) {
+    # Different Windows drive letters: no "../" sequence can cross volumes,
+    # so fall back to an absolute path that knitr can still resolve.
+    return(abs_path)
+  }
   n <- min(length(a_parts), length(b_parts))
   i <- 1L
   while (i <= n && identical(a_parts[i], b_parts[i])) i <- i + 1L
@@ -186,10 +198,8 @@ mcp_report_text <- function(markdown, section, key = NULL) {
 }
 
 #' @rdname mcp_report
-#' @param path Absolute or relative path to the saved figure PNG.
 #' @param caption Figure caption.
 #' @param width Optional width in inches for include_graphics.
-#' @param key Figure key (default = file stem); replaces prior figure on re-run.
 #' @export
 mcp_report_figure <- function(path, caption, section, width = NULL,
                               key = NULL) {

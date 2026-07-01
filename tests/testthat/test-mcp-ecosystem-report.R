@@ -42,7 +42,7 @@ test_that("GOF and VPC figures co-locate in one report Rmd", {
   txt <- mcp_report_read()
   expect_match(txt, "Goodness-of-fit")
   expect_match(txt, "Visual predictive")
-  expect_equal(lengths(gregexpr("include_graphics", txt))[[1]], 2L)
+  expect_equal(count_matches("include_graphics", txt), 2L)
   mcp_report_text("Methods narrative.", section = "methods", key = "m1")
   expect_match(mcp_report_read(), "Methods narrative")
   repro <- mcp_repro_read()

@@ -55,8 +55,23 @@ test_that("re-running figure with same key does not duplicate", {
   mcp_report_figure(fig, "VPC", section = "diagnostics.vpc", key = "vpc1")
   mcp_report_figure(fig, "VPC updated", section = "diagnostics.vpc", key = "vpc1")
   txt <- mcp_report_read()
-  expect_equal(lengths(gregexpr("include_graphics", txt))[[1]], 1L)
+  expect_equal(count_matches("include_graphics", txt), 1L)
   expect_match(txt, "VPC updated")
+})
+
+test_that("figure path falls back to absolute when on a different Windows drive", {
+  mcp_report_reset()
+  mcp_session_paths_reset()
+  root <- file.path(tempdir(), "mcp_fig_cross_drive")
+  on.exit({
+    unlink(root, recursive = TRUE)
+    mcp_report_reset()
+    mcp_session_paths_reset()
+  }, add = TRUE)
+  mcp_session_project_dir(root)
+  mcp_report_init("Cross drive")
+  rel <- Certara.R:::.mcp_report_rel_path("D:/other_volume/figures/vpc.png")
+  expect_equal(rel, "D:/other_volume/figures/vpc.png")
 })
 
 test_that("sections render in registry order regardless of insertion order", {
@@ -97,7 +112,13 @@ test_that("report_rmd and vpc_two_step are host capability rules", {
 })
 
 test_that("render_certara_report warns without rmarkdown", {
-  skip_if(requireNamespace("rmarkdown", quietly = TRUE))
+  local_mocked_bindings(
+    requireNamespace = function(pkg, quietly = FALSE) {
+      if (identical(pkg, "rmarkdown")) return(FALSE)
+      base::requireNamespace(pkg, quietly = quietly)
+    },
+    .package = "base"
+  )
   mcp_report_reset()
   mcp_report_init("No render")
   expect_warning(render_certara_report(), "rmarkdown")
