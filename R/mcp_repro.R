@@ -65,7 +65,12 @@ mcp_repro_path <- function(path = NULL) {
     .mcp_repro_state$libraries <- character(0)
     .mcp_repro_state$body <- character(0)
   } else if (is.null(.mcp_repro_state$path)) {
-    .mcp_repro_state$path <- file.path(tempdir(), "certara_mcp_repro.R")
+    scripts_dir <- mcp_session_scripts_dir()
+    if (!is.null(scripts_dir)) {
+      .mcp_repro_state$path <- file.path(scripts_dir, "certara_mcp_repro.R")
+    } else {
+      .mcp_repro_state$path <- file.path(tempdir(), "certara_mcp_repro.R")
+    }
   }
   .mcp_repro_state$path
 }

@@ -9,33 +9,38 @@
 
 <br/>
 
-`Certara.R` provides a collection of packages and Shiny applications designed for Pharmacometric workflows in R. Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio. [Learn more](https://certara.github.io/R-Certara/articles/why_learn_r.html)
+`Certara.R` is the meta-package for the Certara pharmacometrics R ecosystem: `library(Certara.R)` attaches the installed suite (RsNLME, Shiny apps, reporting tools, and more). It also hosts the optional federated Certara Model Context Protocol (MCP) server, which exposes knowledge-base and tool providers from member packages to AI coding assistants (Cursor, Claude Code, Codex, and Claude Desktop). Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio. [Learn more](https://certara.github.io/R-Certara/articles/why_learn_r.html)
 
 <br/>
 <br/>
 <br/>
 <br/>
 
-### Installation and Running Information
+### Installation
+
+#### Ecosystem
 
 ``` r
-install.packages("Certara.R")
-
-# Attaches the Certara pharmacometrics ecosystem
-library(Certara.R)
+install.packages("Certara.R")   # pulls in Certara.RsNLME (>= 3.2.0)
+library(Certara.R)              # attaches installed member packages
 ```
 
-`Certara.R` also hosts the federated Certara MCP server, which exposes
-knowledge-base and tool providers from member packages to AI coding
-assistants. Configure a client and launch the server with:
+Additional suite packages are attached when installed; missing packages are skipped.
+
+#### AI assistant / MCP (optional)
+
+Modeling and reporting do not require MCP. To connect an AI coding assistant:
 
 ``` r
-# Write the server config for Cursor / Claude Code / Codex
-write_mcp_config("cursor")
-
-# (started automatically by the client; can also be run directly)
+write_mcp_config(client = "cursor", scope = "project")
+# Client starts the server automatically; or run manually:
 launch_certara_mcp()
 ```
+
+- Supported clients: Cursor, Claude Code, Codex, and Claude Desktop
+- First MCP call in a session: `certara_mcp_capabilities()`
+- MCP sessions can emit audit-ready R scripts for QC
+- Deeper setup and troubleshooting: `?write_mcp_config` and [inst/mcp/WORKFLOW.md](inst/mcp/WORKFLOW.md)
 
 ## Modeling
 

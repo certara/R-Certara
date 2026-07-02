@@ -22,9 +22,30 @@
     "Reproducible script: the host records the exact R code run by MCP tools",
     "into a single runnable .R script this session. Tools that create objects,",
     "tables, or plots append their code; re-running the script reproduces the",
-    "analysis by hand. Report the script path (certara_repro_script) so the",
-    "user can audit and QC the work; fetch its contents with",
+    "analysis by hand. Set certara_session_project_dir at project start so the",
+    "script lands under scripts/. Report the script path (certara_repro_script)",
+    "so the user can audit and QC the work; fetch its contents with",
     "get_certara_repro_script."
+  )
+}
+
+.rule_report_rmd <- function() {
+  paste(
+    "Report Rmd: plot and table MCP tools register figures and numeric output",
+    "into a single modeling report Rmd (certara_report_rmd). Set",
+    "certara_session_project_dir first so figures/ and reports/ co-locate.",
+    "Add narrative with add_certara_report_note; render with",
+    "render_certara_report when rmarkdown and pandoc are available."
+  )
+}
+
+.rule_vpc_two_step <- function() {
+  paste(
+    "VPC two-step: run VPC simulation with Certara.RsNLME (start_nlme_vpcmodel,",
+    "collect_nlme_job), then build and plot with tidyvpc MCP tools",
+    "(tidyvpc_load_from_dir, tidyvpc_build_vpc, tidyvpc_plot_vpc). Use",
+    "summarize_vpc for a fast numeric check without plotting. Figures register",
+    "in the report Rmd and code appends to the reproducible script."
   )
 }
 
@@ -221,6 +242,8 @@ certara_mcp_capabilities <- function(dev_roots = character(0)) {
   host_rules <- list(
     providers_first = .rule_providers_first(),
     repro_script = .rule_repro_script(),
+    report_rmd = .rule_report_rmd(),
+    vpc_two_step = .rule_vpc_two_step(),
     memory_and_sources = .rule_memory_and_sources()
   )
   # Provider rules override host rules of the same id (more specific wins).

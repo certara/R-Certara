@@ -68,6 +68,26 @@ behavior rules. The response includes `client_routing` with the same mapping.
 
 ## Watching a long job (tight loop, no narration)
 
+The single job-monitoring chain (the canonical sequence; do not invent another):
+
+```text
+start_nlme_* or start_nlme_job
+  -> wait_for_nlme_job until watch$terminal is TRUE
+  -> collect_nlme_job
+  -> get_project_workflow_status when the user asks "where are we?"
+```
+
+**Follow the `next_action` field.** Every job tool result carries one
+`next_action` directive — `{tool, args, reason, blocking}`, or `null` when no
+call applies — naming the exact next call. Call that tool with those args instead
+of re-deriving the step. When `requires_user_attention` is `true` (or
+`next_action` is `null` on a non-collected job), stop and tell the user.
+
+**Never poll outside MCP.** Do not start a Cursor shell monitor, `tail`
+`stdout.log`, or schedule a background polling task for an NLME job. `stdout.log`
+is a debug artifact, not the progress API; a shell timer that "succeeds" tells
+you nothing about the fit.
+
 After a `start_nlme_*` call returns a `job_id`, enter a **tight watch loop**:
 
 - Call `wait_for_nlme_job(job_id)` repeatedly with the **same** `job_id` and
@@ -77,11 +97,12 @@ After a `start_nlme_*` call returns a `job_id`, enter a **tight watch loop**:
   one call per 45s of wall time. Do **not** poll `get_nlme_job_status` in a loop
   — it does not block, so it costs more turns and more tokens.
 - While running, the response is **compact** by default (`state`, `pid_alive`,
-  `watch`, `progress`, `next_action`). Treat `pid_alive = FALSE` or a large
+  `watch`, `progress`, `next_action`, and `requires_user_attention` when set).
+  Treat `pid_alive = FALSE`, `requires_user_attention = true`, or a large
   `watch$progress_age_s` (no progress across several waits) as a **stalled or
   dead fit** — stop watching and tell the user instead of waiting blindly.
 - Only once `watch$terminal` is `TRUE` do you act: `collect_nlme_job(job_id)`
-  for results, then `get_fit_summary` / diagnostics.
+  for results (follow its `next_action`), then `get_fit_summary` / diagnostics.
 
 ## Which R am I acting on? (execution contexts)
 

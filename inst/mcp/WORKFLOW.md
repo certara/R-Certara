@@ -239,7 +239,11 @@ equally first-class execution paths - choose per the
    polling turns. If `watch$terminal` is `FALSE`, call it again to resume; don't
    pass `max_wait_seconds` unless asked. Use `get_nlme_job_status()` for a quick
    one-off snapshot (live `progress` - latest iteration, `-2LL`, theta - plus a
-   `stderr_tail`). Once terminal, `collect_nlme_job()`.
+   `stderr_tail`). Once terminal, `collect_nlme_job()`. Each job result carries a
+   single `next_action` directive naming the exact next call - follow it rather
+   than re-deriving the step, and stop when `requires_user_attention` is set. The
+   canonical chain and the no-shell-polling rule live in `certara-mcp-usage.mdc`;
+   never `tail stdout.log` or start a shell monitor for a job.
 5. **Judge the fit, then compare** - read `fit_health` (`data1_bytes`,
    `nlme_status`, `retcode`, scanned `err1.txt` reasons) and the structured
    `fit_summary` (estimates, OFV, convergence, `next_step` hint) - never
@@ -255,11 +259,13 @@ equally first-class execution paths - choose per the
    then `stepwiseSearch()` (or `shotgunSearch()`) - run via `scm_stepwise.R` /
    `scm_shotgun.R`. Use `Certara.RsNLME.workflow.choose_run_mode` to decide when
    covariate search vs. bootstrap vs. VPC is warranted.
-7. **Final fit + diagnostics** - VPC via `start_nlme_vpcmodel(fit_rds)` (or the
-   `vpc.R` script / `vpcmodel(fit$model)`) + tidyvpc; bootstrap via
-   `bootstrap.R`. GOF via Certara.Xpose.NLME / ggcertara. For the exact VPC
-   recipe retrieve `Certara.RsNLME.workflow.mmdl_fit_vpc` via
-   `explain_certara_workflow()`.
+7. **Final fit + diagnostics** - Set `certara_session_project_dir` at project
+   start so `scripts/`, `figures/`, and `reports/` co-locate. VPC: RsNLME
+   simulation (`start_nlme_vpcmodel`) then tidyvpc MCP tools
+   (`tidyvpc_load_from_dir` -> `tidyvpc_build_vpc` -> `tidyvpc_plot_vpc`);
+   numeric quick check: `summarize_vpc`. GOF via Certara.Xpose.NLME (plots
+   register in `certara_report_rmd`). Bootstrap via `bootstrap.R`. See
+   `Certara.RsNLME.workflow.vpc_tidyvpc` and `workflow.mmdl_fit_vpc`.
 8. **Export for handoff** - after a good fit, `write_mmdl()` produces the
    portable, shareable package (`.rds` is local workflow state only;
    `Certara.RsNLME.workflow.execution_contracts`).
@@ -269,10 +275,10 @@ equally first-class execution paths - choose per the
     modeling and simulation) report, call `guide_pharmacometrics("modeling
     report", intended_use)` first, then follow the standard section structure
     (`Certara.RsNLME.guidance.topic.modeling_report`) and the
-    `Certara.RsNLME.workflow.assemble_report` playbook, which populates each
-    section from the modeling log, `collect_nlme_job()` fit health,
-    `get_fit_summary()` parameter tables, the qualification (VPC/bootstrap)
-    artifacts, and the `write_mmdl()` handoff.
+    `Certara.RsNLME.workflow.assemble_report` playbook. The deliverable is a
+    `.Rmd` under `reports/` with figures under `figures/` (MCP plot tools and
+    `certara_report_rmd`); add narrative with `add_certara_report_note` and knit
+    with `render_certara_report` when pandoc is available.
 
 Heavy compute always runs in child processes (the `start_*`/`collect_*` tools or
 a vetted script via `start_nlme_job(file=)`), never inside a blocking MCP tool
