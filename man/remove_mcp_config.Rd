@@ -23,7 +23,10 @@ defaults to \code{"project"} only. \code{"local"} is Claude Code-only (a per-pro
 private entry in \verb{~/.claude.json}); it is skipped with a warning for
 \code{"cursor"}, which has no local tier, and is irrelevant to \code{"codex"}.}
 
-\item{server_name}{MCP server key (default \code{"certara-r"}).}
+\item{server_name}{MCP server key (default \code{"certara-r"}). Restricted to
+letters, digits, \code{-}, and \verb{_} (starting with a letter or digit), since it
+is written verbatim as a JSON key, a TOML table name, and inside an R
+string literal.}
 
 \item{project_dir}{Project root for project-scope files.}
 

@@ -698,6 +698,21 @@ test_that("unknown btw_groups is rejected", {
   )
 })
 
+test_that("server_name with unsafe characters is rejected", {
+  proj <- file.path(tempdir(), paste0("mcpcfg_badname_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  expect_error(
+    write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                     server_name = "my'server"),
+    "server_name.*must be a single"
+  )
+  expect_error(
+    write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                     server_name = "my server"),
+    "server_name.*must be a single"
+  )
+})
+
 test_that("valid btw_groups including pkg still writes config", {
   proj <- file.path(tempdir(), paste0("mcpcfg_btwok_", as.integer(Sys.time())))
   dir.create(proj, showWarnings = FALSE, recursive = TRUE)

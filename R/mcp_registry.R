@@ -55,7 +55,19 @@
   path <- .mcp_registry_path(pid)
   tmp <- paste0(path, ".tmp-", pid)
   jsonlite::write_json(record, tmp, auto_unbox = TRUE, null = "null")
-  file.rename(tmp, path)
+  # file.rename() silently fails to replace an existing destination on
+  # Windows (unlike POSIX rename()) - e.g. re-registering the same PID after
+  # .mcp_registry_prune() left a stale-but-not-yet-deleted file for it. Clear
+  # the target first, then confirm the rename actually happened rather than
+  # leaving a renamed-in-place tmp file and a stale/missing registry record.
+  if (file.exists(path)) {
+    unlink(path)
+  }
+  if (!isTRUE(file.rename(tmp, path))) {
+    unlink(tmp)
+    stop(sprintf("Failed to write MCP registry record to '%s'.", path),
+         call. = FALSE)
+  }
   invisible(record)
 }
 

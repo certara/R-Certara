@@ -52,6 +52,31 @@ test_that("unregistering removes the current process from the listing", {
   expect_false(isTRUE(.mcp_registry_unregister()))
 })
 
+test_that("re-registering the same PID overwrites the existing record", {
+  dir <- local_registry_dir()
+  .mcp_registry_register(server_name = "certara-r", btw_groups = "docs",
+                         session_tools = FALSE, job_watch_wait_seconds = 45,
+                         tool_profile = "core")
+  # Simulate a server restarting under the same PID (e.g. re-registering
+  # after .mcp_registry_prune() left the file in place): the destination
+  # already exists, which is the case file.rename() cannot overwrite on
+  # Windows without an explicit unlink() first.
+  expect_no_error(
+    .mcp_registry_register(server_name = "certara-r", btw_groups = c("docs", "pkg"),
+                           session_tools = TRUE, job_watch_wait_seconds = 600,
+                           tool_profile = "full")
+  )
+  out <- list_certara_mcp_servers()
+  expect_identical(nrow(out), 1L)
+  expect_identical(out$btw_groups, "docs, pkg")
+  expect_true(out$session_tools)
+  expect_identical(out$tool_profile, "full")
+  # No leftover temp file from the rename.
+  expect_length(Sys.glob(file.path(dir, "pid-*.json.tmp-*")), 0)
+
+  .mcp_registry_unregister()
+})
+
 test_that("a dead PID is reported only with include_stale = TRUE", {
   dir <- local_registry_dir()
   # A large-but-integer-range PID very unlikely to be a live process on the

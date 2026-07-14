@@ -281,9 +281,11 @@
 #'   all three (ignored by clients that are not scoped, i.e. Claude Desktop
 #'   and Codex, which are always reported at `"user"` scope).
 #' @param project_dir Project root to check for project-scope files.
-#' @param server_name Optional MCP server key to look for (default `"certara-r"`
-#'   convention if `NULL`: every configured entry is scanned instead, so a
-#'   server configured under a different name is still discovered).
+#' @param server_name Optional MCP server key to look for. When `NULL`
+#'   (default), every configured entry is scanned for a
+#'   [launch_certara_mcp()] call instead of assuming the `"certara-r"`
+#'   convention, so a server configured under a different name is still
+#'   discovered. When given, only that key is considered.
 #' @return A data frame with one row per client/scope combination checked (or
 #'   per matching entry, if more than one server invokes
 #'   [launch_certara_mcp()] in the same file): `client`, `scope`, `path`,

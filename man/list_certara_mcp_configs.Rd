@@ -21,9 +21,11 @@ and Codex, which are always reported at \code{"user"} scope).}
 
 \item{project_dir}{Project root to check for project-scope files.}
 
-\item{server_name}{Optional MCP server key to look for (default \code{"certara-r"}
-convention if \code{NULL}: every configured entry is scanned instead, so a
-server configured under a different name is still discovered).}
+\item{server_name}{Optional MCP server key to look for. When \code{NULL}
+(default), every configured entry is scanned for a
+\code{\link[=launch_certara_mcp]{launch_certara_mcp()}} call instead of assuming the \code{"certara-r"}
+convention, so a server configured under a different name is still
+discovered. When given, only that key is considered.}
 }
 \value{
 A data frame with one row per client/scope combination checked (or

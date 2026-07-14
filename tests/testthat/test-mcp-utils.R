@@ -18,3 +18,12 @@ test_that(".mcp_parse_json_arg keeps unparsable text as a best-effort raw object
   out <- .mcp_parse_json_arg("not json at all {")
   expect_equal(out, list(raw = "not json at all {"))
 })
+
+test_that(".mcp_parse_json_arg wraps a bare scalar as list(raw = ...)", {
+  expect_equal(.mcp_parse_json_arg(1), list(raw = 1))
+  expect_equal(.mcp_parse_json_arg(TRUE), list(raw = TRUE))
+})
+
+test_that(".mcp_parse_json_arg wraps a multi-element character vector without erroring", {
+  expect_equal(.mcp_parse_json_arg(c("a", "b")), list(raw = c("a", "b")))
+})
