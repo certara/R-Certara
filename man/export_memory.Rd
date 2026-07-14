@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcp_memory.R
 \name{export_memory}
 \alias{export_memory}
-\title{Export all memory records to a JSON file}
+\title{Export all per-user memory records to a JSON file}
 \usage{
 export_memory(path)
 }
@@ -13,11 +13,10 @@ export_memory(path)
 Invisibly \code{path}.
 }
 \description{
-Export all memory records to a JSON file
+Export all per-user memory records to a JSON file
 }
 \examples{
 \dontrun{
 export_memory(tempfile(fileext = ".json"))
 }
 }
-\keyword{internal}

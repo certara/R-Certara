@@ -48,3 +48,22 @@
                    if (.Platform$OS.type == "windows") "Rscript.exe" else "Rscript")
   normalizePath(bin, mustWork = FALSE)
 }
+
+# Parse an MCP tool argument that carries a JSON object/array as text (ellmer
+# has no generic MCP object/map type here, so structured arguments - e.g. a
+# provider's telemetry/session_provenance block passed to record_run() - are
+# passed as JSON text). Already-a-list values (e.g. an interactive R caller)
+# pass through unchanged; NULL/empty is NULL; unparsable text is kept as a
+# best-effort `{"raw": <text>}` object rather than dropped or erroring.
+.mcp_parse_json_arg <- function(x) {
+  if (is.null(x) || (is.character(x) && !nzchar(trimws(x %||% "")))) {
+    return(NULL)
+  }
+  if (!is.character(x)) {
+    return(x)
+  }
+  tryCatch(
+    jsonlite::fromJSON(x, simplifyVector = FALSE),
+    error = function(e) list(raw = x)
+  )
+}

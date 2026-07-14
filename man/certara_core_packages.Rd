@@ -17,4 +17,3 @@ installed are skipped gracefully by \code{\link[=certara_attach]{certara_attach(
 \examples{
 certara_core_packages()
 }
-\keyword{internal}

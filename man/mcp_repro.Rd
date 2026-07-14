@@ -58,3 +58,4 @@ mcp_repro_record(mcp_repro_call("lm", list(formula = mcp_repro_sym("y ~ x")),
                                 var = "fit"))
 cat(mcp_repro_read())
 }
+\keyword{internal}

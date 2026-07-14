@@ -8,21 +8,63 @@
 # subset at launch. Each profile names the host tool groups to include and the
 # provider group allowlist passed to discovery (NULL = all provider groups).
 # `meta` is always present so find_certara_tools / capabilities / session_status
-# stay reachable. Provider groups use the vocabulary providers expose via their
-# builder's `groups` arg (or a declarative tool's `group`); a provider that
-# offers none of the requested groups contributes nothing for that profile.
+# stay reachable.
+#
+# `provider_groups` is either a plain character vector (the same allowlist for
+# every provider) or a named list of per-package allowlists with an optional
+# "*" fallback - see .mcp_resolve_provider_group_request() in
+# mcp_tool_providers.R. A single flat vocabulary silently starves providers
+# that name their groups differently: Certara.RDarwin uses "environment" /
+# "authoring" / "preflight" / "execution" / "results" (not "knowledge" /
+# "data" / "comparison" / "interpretation"), and Certara.RsNLME's sequential-
+# LRT tools live in their own "qualification" group. Per-package entries below
+# give each provider its complete, safe tool lifecycle for a profile instead
+# of only the groups that happen to share a name with the default vocabulary.
+# Providers not listed explicitly (e.g. tidyvpc, Certara.Xpose.NLME) fall back
+# to "*", which already matches their own vocabulary.
 .mcp_tool_profiles <- function() {
   list(
-    full        = list(host = c("meta", "knowledge", "memory"), provider_groups = NULL),
-    core        = list(host = c("meta", "knowledge"),
-                       provider_groups = c("knowledge", "data")),
-    authoring   = list(host = c("meta", "knowledge"),
-                       provider_groups = c("knowledge", "data", "comparison")),
-    execution   = list(host = c("meta", "knowledge", "memory"),
-                       provider_groups = c("knowledge", "data", "execution")),
-    diagnostics = list(host = c("meta", "knowledge", "memory"),
-                       provider_groups = c("knowledge", "data", "execution",
-                                           "comparison", "interpretation"))
+    full = list(host = c("meta", "knowledge", "memory"), provider_groups = NULL),
+    # No job launches: read/validate/author only (Darwin preflight, no search).
+    core = list(
+      host = c("meta", "knowledge"),
+      provider_groups = list(
+        "*" = c("knowledge", "data"),
+        "Certara.RDarwin" = c("environment", "authoring", "preflight")
+      )
+    ),
+    # core + model comparison, still no job launches.
+    authoring = list(
+      host = c("meta", "knowledge"),
+      provider_groups = list(
+        "*" = c("knowledge", "data", "comparison"),
+        "Certara.RDarwin" = c("environment", "authoring", "preflight")
+      )
+    ),
+    # core + fit/search job launches, and (crucially) collecting their
+    # results: Darwin's "results" tools (collect/explain/propose) and
+    # RsNLME's "qualification" tools (sequential-LRT session orchestration)
+    # so a launched job can actually be followed through to a decision.
+    execution = list(
+      host = c("meta", "knowledge", "memory"),
+      provider_groups = list(
+        "*" = c("knowledge", "data", "execution"),
+        "Certara.RsNLME" = c("knowledge", "data", "execution", "qualification"),
+        "Certara.RDarwin" = c("environment", "authoring", "preflight",
+                              "execution", "results")
+      )
+    ),
+    # execution + comparison + interpretation.
+    diagnostics = list(
+      host = c("meta", "knowledge", "memory"),
+      provider_groups = list(
+        "*" = c("knowledge", "data", "execution", "comparison", "interpretation"),
+        "Certara.RsNLME" = c("knowledge", "data", "execution", "comparison",
+                             "interpretation", "qualification"),
+        "Certara.RDarwin" = c("environment", "authoring", "preflight",
+                              "execution", "results")
+      )
+    )
   )
 }
 
@@ -81,7 +123,6 @@
 #' # The client runs the equivalent of:
 #' #   Rscript -e 'Certara.R::launch_certara_mcp(tool_profile = "core")'
 #' }
-#' @keywords internal
 #' @export
 launch_certara_mcp <- function(btw_groups = "docs",
                                session_tools = FALSE,
@@ -155,6 +196,21 @@ launch_certara_mcp <- function(btw_groups = "docs",
   # Index the assembled catalog so find_certara_tools() retrieves over exactly
   # what this server exposes (not a stale or fuller set).
   .mcp_set_tool_index(.mcp_build_tool_index(tools))
+
+  # Runtime registry: prune entries left by crashed/killed servers, then
+  # register this process so list_certara_mcp_servers() can discover it from
+  # interactive R. Best-effort - a registry failure must never block the
+  # server from starting.
+  tryCatch({
+    .mcp_registry_prune()
+    .mcp_registry_register(server_name = server_name, btw_groups = btw_groups,
+                           session_tools = session_tools,
+                           job_watch_wait_seconds = job_watch_wait_seconds,
+                           tool_profile = tool_profile)
+  }, error = function(e) {
+    message("Certara MCP: runtime registry unavailable: ", conditionMessage(e))
+  })
+  on.exit(.mcp_registry_unregister(), add = TRUE)
 
   mcptools::mcp_server(tools = tools, session_tools = session_tools)
 }

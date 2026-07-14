@@ -57,14 +57,12 @@
 
 #' Report the Certara MCP session and execution context
 #'
-#' Answers "which R is this acting on, and what can it reach?" for the calling
-#' agent. Returns the server's runtime launch options (whether the live-session
-#' bridge is enabled, which `btw` tool groups are active), the resulting
-#' capabilities (live R code execution, environment inspection), a description
-#' of the three R execution contexts, and the exact steps to bridge an
-#' interactive session. Designed to remove the recurring confusion about the
-#' server process vs. a live `btw::btw_mcp_session()` session vs. a job child
-#' process.
+#' Answers "which R is this acting on, and what can it reach?" when
+#' troubleshooting the MCP server. Returns the server's runtime launch options
+#' (whether the live-session bridge is enabled, which `btw` tool groups are
+#' active), the resulting capabilities (live R code execution, environment
+#' inspection), a description of the three R execution contexts, and the exact
+#' steps to bridge an interactive session.
 #'
 #' Values are reported as `NA` when called outside a running server (for example
 #' in tests), because the launch options are recorded only at
@@ -78,7 +76,6 @@
 #' @examples
 #' st <- certara_session_status()
 #' st$execution_contexts
-#' @keywords internal
 #' @export
 certara_session_status <- function() {
   cfg <- .mcp_launch_config()

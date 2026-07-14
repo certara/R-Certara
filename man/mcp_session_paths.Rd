@@ -2,16 +2,13 @@
 % Please edit documentation in R/mcp_session_paths.R
 \name{mcp_session_paths}
 \alias{mcp_session_paths}
-\alias{mcp_session_project_dir}
 \alias{mcp_session_scripts_dir}
 \alias{mcp_session_figures_dir}
 \alias{mcp_session_reports_dir}
 \alias{mcp_session_models_dir}
 \alias{mcp_session_paths_reset}
-\title{Session project root for MCP deliverables}
+\title{MCP session output directories}
 \usage{
-mcp_session_project_dir(dir = NULL)
-
 mcp_session_scripts_dir()
 
 mcp_session_figures_dir()
@@ -22,21 +19,11 @@ mcp_session_models_dir()
 
 mcp_session_paths_reset()
 }
-\arguments{
-\item{dir}{Optional new project root (single non-empty path). Setting it
-re-points the repro script and report Rmd and creates the subdirectories.}
-}
 \value{
-The active project root, or \code{NULL} when unset.
+The corresponding output directory, or \code{NULL} when the session
+project root is unset. \code{mcp_session_paths_reset()} returns invisibly.
 }
 \description{
-Get or set the session project root. When set, reproducible scripts,
-figures, report Rmd files, and saved models are written under
-\verb{<dir>/scripts/}, \verb{<dir>/figures/}, \verb{<dir>/reports/}, and \verb{<dir>/models/}
-respectively.
-}
-\examples{
-mcp_session_project_dir(tempdir())
-mcp_session_figures_dir()
+Internal path helpers used by MCP tools and provider packages.
 }
 \keyword{internal}

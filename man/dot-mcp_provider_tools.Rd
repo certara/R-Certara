@@ -17,8 +17,13 @@
 include (default: all discovered).}
 
 \item{provider_groups}{Optional launch-profile group allowlist (default
-\code{NULL} = all): filters declarative tools by their \code{group} and is passed to
-builders that accept a \code{groups} argument.}
+\code{NULL} = all). Either a plain character vector applied to every provider
+(filters declarative tools by their \code{group} and is passed to builders
+that accept a \code{groups} argument), or a named list of per-package
+allowlists with an optional \code{"*"} fallback (resolved internally by
+\code{.mcp_resolve_provider_group_request()}) - lets a profile give each
+provider its own group vocabulary instead of one list assumed to mean the
+same thing everywhere.}
 }
 \value{
 A list with \code{tools} (flat list of ellmer ToolDefs) and \code{skipped}

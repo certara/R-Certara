@@ -43,7 +43,7 @@ scaffold_provider_kb <- function(pkg_root, package, overwrite = FALSE) {
   message(
     "Scaffolded ", package, " KB sources at ", src_dir, ".\n",
     "Edit the source markdown, then run:\n",
-    sprintf("  Certara.RsNLME::generate_certara_kb('%s', '%s')",
+    sprintf("  Certara.R::generate_certara_kb('%s', '%s')",
             pkg_root, package)
   )
   invisible(src_dir)

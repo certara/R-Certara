@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcp_memory.R
 \name{clear_memory}
 \alias{clear_memory}
-\title{Clear all memory records}
+\title{Clear all per-user memory records}
 \usage{
 clear_memory()
 }
@@ -10,11 +10,10 @@ clear_memory()
 Invisibly \code{TRUE}.
 }
 \description{
-Clear all memory records
+Clear all per-user memory records
 }
 \examples{
 \dontrun{
 clear_memory()
 }
 }
-\keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcp_memory.R
 \name{delete_memory_record}
 \alias{delete_memory_record}
-\title{Delete a single memory record by id}
+\title{Delete a single per-user memory record by id}
 \usage{
 delete_memory_record(id)
 }
@@ -13,11 +13,10 @@ delete_memory_record(id)
 Logical: whether a record was removed.
 }
 \description{
-Delete a single memory record by id
+Delete a single per-user memory record by id
 }
 \examples{
 \dontrun{
 delete_memory_record("mem-20260101120000-abcd")
 }
 }
-\keyword{internal}

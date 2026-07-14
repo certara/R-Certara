@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcp_memory.R
 \name{list_memory_records}
 \alias{list_memory_records}
-\title{List all memory records (inspect)}
+\title{List all per-user memory records}
 \usage{
 list_memory_records()
 }
@@ -10,11 +10,10 @@ list_memory_records()
 A list with \code{run_memory}, \code{lessons}, \code{preferences}, and \code{enabled}.
 }
 \description{
-List all memory records (inspect)
+List all per-user memory records
 }
 \examples{
 \dontrun{
 list_memory_records()
 }
 }
-\keyword{internal}

@@ -7,7 +7,6 @@
 #' @return Character vector of package names.
 #' @examples
 #' certara_core_packages()
-#' @keywords internal
 #' @export
 certara_core_packages <- function() {
   certara_packages(include_github = FALSE, include_JFROG_deps = FALSE)

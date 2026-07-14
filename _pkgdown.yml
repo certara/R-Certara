@@ -14,6 +14,29 @@ reference:
     - certara_attach
     - certara_packages
     - certara_core_packages
+  - title: MCP setup and diagnostics
+    desc: Configure, run, and troubleshoot the Certara MCP server
+    contents:
+    - write_mcp_config
+    - remove_mcp_config
+    - launch_certara_mcp
+    - certara_session_status
+    - list_certara_mcp_servers
+    - list_certara_mcp_configs
+  - title: Memory controls
+    desc: Manage the local, opt-in memory used by Certara MCP tools
+    contents:
+    - enable_memory
+    - disable_memory
+    - list_memory_records
+    - export_memory
+    - delete_memory_record
+    - clear_memory
+  - title: Reports and outputs
+    desc: Choose the project output location and render the accumulated report
+    contents:
+    - mcp_session_project_dir
+    - render_certara_report
 
 navbar:
   structure:

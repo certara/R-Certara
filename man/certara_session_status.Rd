@@ -12,14 +12,12 @@ A structured list with \code{server}, \code{session_tools_enabled},
 \code{execution_contexts}, \code{connect_live_session}, and \code{next_steps}.
 }
 \description{
-Answers "which R is this acting on, and what can it reach?" for the calling
-agent. Returns the server's runtime launch options (whether the live-session
-bridge is enabled, which \code{btw} tool groups are active), the resulting
-capabilities (live R code execution, environment inspection), a description
-of the three R execution contexts, and the exact steps to bridge an
-interactive session. Designed to remove the recurring confusion about the
-server process vs. a live \code{btw::btw_mcp_session()} session vs. a job child
-process.
+Answers "which R is this acting on, and what can it reach?" when
+troubleshooting the MCP server. Returns the server's runtime launch options
+(whether the live-session bridge is enabled, which \code{btw} tool groups are
+active), the resulting capabilities (live R code execution, environment
+inspection), a description of the three R execution contexts, and the exact
+steps to bridge an interactive session.
 }
 \details{
 Values are reported as \code{NA} when called outside a running server (for example
@@ -34,4 +32,3 @@ st$execution_contexts
 \code{\link[=certara_mcp_capabilities]{certara_mcp_capabilities()}}, \code{\link[=launch_certara_mcp]{launch_certara_mcp()}},
 \code{\link[=write_mcp_config]{write_mcp_config()}}
 }
-\keyword{internal}

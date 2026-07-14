@@ -25,11 +25,14 @@ Imports:
     ellmer (>= 0.4.0),
     jsonlite,
     digest,
+    ps,
     utils
 Suggests:
+    Certara.Xpose.NLME,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
+    tidyvpc,
     withr
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3

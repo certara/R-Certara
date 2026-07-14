@@ -6,6 +6,13 @@
 #   - builder: the manifest names an exported function returning ellmer tools
 #     (used by Certara.RsNLME, whose tool set is built programmatically).
 # A broken or schema-incompatible manifest is skipped and reported, never fatal.
+#
+# A manifest may also declare an optional `status_hook`: the name of an
+# exported `function(project_dir)` returning that provider's own project
+# status. It is unrelated to `builder`/`tools` (a manifest can set either,
+# both, or neither) and is validated only when present (see
+# .mcp_call_status_hook() in mcp_project_status.R, which is what actually
+# resolves and calls it - discovery here just carries the field through).
 
 #' Tool-manifest schema version implemented by this build.
 #' @examples
@@ -183,14 +190,43 @@ mcp_tools_schema_version <- function() {
   })
 }
 
+# Resolve one provider's group allowlist from a profile's `provider_groups`.
+# Three shapes, kept distinct so existing (pre-per-provider-mapping) callers
+# are unaffected:
+#   - NULL: no filtering (every group the provider offers) - unchanged.
+#   - a plain character vector: the same allowlist for every provider - the
+#     original behavior, still exactly what a caller gets if it passes one.
+#   - a named list: per-package allowlists (character vector, or NULL for "no
+#     filtering"), keyed by package name, with an optional `"*"` fallback for
+#     packages that have no explicit entry. This is what lets each provider
+#     keep its own group vocabulary (e.g. Certara.RDarwin's
+#     "environment"/"authoring"/"preflight"/"execution"/"results" vs.
+#     Certara.RsNLME's "knowledge"/"data"/.../"qualification") instead of being
+#     silently starved by a single flat allowlist tuned for a different
+#     provider's naming.
+.mcp_resolve_provider_group_request <- function(provider_groups, package) {
+  if (is.null(provider_groups) || !is.list(provider_groups)) {
+    return(provider_groups)
+  }
+  if (package %in% names(provider_groups)) {
+    return(provider_groups[[package]])
+  }
+  provider_groups[["*"]] %||% NULL
+}
+
 #' Aggregate tools from all discovered tool providers
 #'
 #' @param dev_roots Optional dev source-tree roots.
 #' @param providers Optional character vector of provider package names to
 #'   include (default: all discovered).
 #' @param provider_groups Optional launch-profile group allowlist (default
-#'   `NULL` = all): filters declarative tools by their `group` and is passed to
-#'   builders that accept a `groups` argument.
+#'   `NULL` = all). Either a plain character vector applied to every provider
+#'   (filters declarative tools by their `group` and is passed to builders
+#'   that accept a `groups` argument), or a named list of per-package
+#'   allowlists with an optional `"*"` fallback (resolved internally by
+#'   `.mcp_resolve_provider_group_request()`) - lets a profile give each
+#'   provider its own group vocabulary instead of one list assumed to mean the
+#'   same thing everywhere.
 #' @return A list with `tools` (flat list of ellmer ToolDefs) and `skipped`
 #'   (records with a reason, including providers that failed to build).
 #' @keywords internal
@@ -202,7 +238,8 @@ mcp_tools_schema_version <- function() {
   skipped <- disc$skipped
   for (p in disc$providers) {
     if (!is.null(providers) && !(p$package %in% providers)) next
-    built <- tryCatch(.mcp_build_provider_tools(p, provider_groups), error = function(e) e)
+    pkg_groups <- .mcp_resolve_provider_group_request(provider_groups, p$package)
+    built <- tryCatch(.mcp_build_provider_tools(p, pkg_groups), error = function(e) e)
     if (inherits(built, "error")) {
       skipped[[length(skipped) + 1]] <- list(
         package = p$package, manifest_path = p$manifest_path,
