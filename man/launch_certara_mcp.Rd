@@ -73,4 +73,3 @@ write_mcp_config("cursor")
 #   Rscript -e 'Certara.R::launch_certara_mcp(tool_profile = "core")'
 }
 }
-\keyword{internal}

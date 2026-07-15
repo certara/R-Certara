@@ -316,13 +316,12 @@ get_user_preferences <- function(context = NULL) {
 
 # ---- lifecycle controls -----------------------------------------------------
 
-#' List all memory records (inspect)
+#' List all per-user memory records
 #' @return A list with `run_memory`, `lessons`, `preferences`, and `enabled`.
 #' @examples
 #' \dontrun{
 #' list_memory_records()
 #' }
-#' @keywords internal
 #' @export
 list_memory_records <- function() {
   list(
@@ -333,14 +332,13 @@ list_memory_records <- function() {
   )
 }
 
-#' Export all memory records to a JSON file
+#' Export all per-user memory records to a JSON file
 #' @param path Destination file path.
 #' @return Invisibly `path`.
 #' @examples
 #' \dontrun{
 #' export_memory(tempfile(fileext = ".json"))
 #' }
-#' @keywords internal
 #' @export
 export_memory <- function(path) {
   jsonlite::write_json(list_memory_records(), path, auto_unbox = TRUE,
@@ -348,14 +346,13 @@ export_memory <- function(path) {
   invisible(path)
 }
 
-#' Delete a single memory record by id
+#' Delete a single per-user memory record by id
 #' @param id Record id.
 #' @return Logical: whether a record was removed.
 #' @examples
 #' \dontrun{
 #' delete_memory_record("mem-20260101120000-abcd")
 #' }
-#' @keywords internal
 #' @export
 delete_memory_record <- function(id) {
   removed <- FALSE
@@ -371,13 +368,12 @@ delete_memory_record <- function(id) {
   removed
 }
 
-#' Clear all memory records
+#' Clear all per-user memory records
 #' @return Invisibly `TRUE`.
 #' @examples
 #' \dontrun{
 #' clear_memory()
 #' }
-#' @keywords internal
 #' @export
 clear_memory <- function() {
   for (path in c(.memory_runs_path(), .memory_lessons_path(),

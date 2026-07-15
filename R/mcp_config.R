@@ -44,7 +44,10 @@
 #' @param tool_profile Curated tool subset baked into the launch command, to
 #'   keep the tool list focused: `"full"` (default), `"core"`, `"authoring"`,
 #'   `"execution"`, or `"diagnostics"`. See [launch_certara_mcp()].
-#' @param server_name MCP server key (default `"certara-r"`).
+#' @param server_name MCP server key (default `"certara-r"`). Restricted to
+#'   letters, digits, `-`, and `_` (starting with a letter or digit), since it
+#'   is written verbatim as a JSON key, a TOML table name, and inside an R
+#'   string literal.
 #' @param project_dir Project root for project-scope files.
 #' @param tool_allowlist When `TRUE`, pre-authorize the Certara MCP tools so they
 #'   run without per-tool approval prompts, using each requested client's native
@@ -143,6 +146,7 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   scope <- match.arg(scope, choices_scope, several.ok = TRUE)
   tool_profile <- match.arg(tool_profile)
   .validate_btw_groups(btw_groups)
+  .validate_server_name(server_name)
   if (!is.null(job_watch_wait_seconds)) {
     job_watch_wait_seconds <- suppressWarnings(as.numeric(job_watch_wait_seconds))
     if (length(job_watch_wait_seconds) != 1L || is.na(job_watch_wait_seconds)) {

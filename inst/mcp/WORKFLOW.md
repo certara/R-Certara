@@ -42,6 +42,23 @@ The generated command runs `Certara.R::launch_certara_mcp()` with an absolute
 `Rscript` path. The default is `btw_groups = "docs"`; pass a `tool_profile`
 (e.g. `"core"`) to expose a focused tool subset.
 
+### Tool profiles
+
+| Profile | Host groups | Provider tools included |
+|---------|-------------|--------------------------|
+| `full` | meta, knowledge, memory | Every group every provider offers. |
+| `core` | meta, knowledge | Read/author/validate only - no job launches (no `start_*`, no `start_darwin_search`). |
+| `authoring` | meta, knowledge | `core` + model comparison, still no job launches. |
+| `execution` | meta, knowledge, memory | `core` + fit/search job launches **and** their results/qualification tools (Darwin `collect_darwin_search`/`explain_darwin_fitness`/`propose_darwin_qualification`; RsNLME's sequential-LRT `qualification` tools) - a launched job can always be followed through to a decision. |
+| `diagnostics` | meta, knowledge, memory | `execution` + comparison + interpretation. |
+
+Each provider names its own tool groups (Certara.RDarwin's differ from
+Certara.RsNLME's), so a profile maps provider groups **per package** rather
+than one flat list assumed to mean the same thing everywhere - otherwise a
+provider whose vocabulary does not happen to overlap the default one would be
+silently reduced to a partial, unusable tool set under every profile but
+`full`.
+
 Project-scope Cursor setup also writes `.cursor/rules/certara-mcp-usage.mdc`
 with the correct `CallMcpTool` server id.
 
@@ -165,9 +182,11 @@ map.
 | diagnostics | `get_fit_summary`, `interpret_parameters`, `interpret_run` |
 | vpc | `start_nlme_vpcmodel`, `summarize_vpc` |
 | covariate_search | `start_nlme_job`, `compare_nlme_jobs` |
+| darwin_search (Certara.RDarwin) | `check_darwin_prereqs`, `scaffold_darwin_project`, `validate_darwin_search`, `start_darwin_search`, `wait_for_darwin_job`, `collect_darwin_search`, `explain_darwin_fitness`, `propose_darwin_qualification` |
+| qualification (Certara.RsNLME) | `check_ofv_parity`, `validate_sequential_lrt`, `start_sequential_lrt`, `advance_sequential_lrt`, `get_sequential_lrt_status`, `collect_sequential_lrt`, `stop_sequential_lrt`, `list_sequential_lrt_sessions` |
 | report_qc | `get_fit_summary`, `compare_nlme_jobs`, `summarize_vpc`, `interpret_parameters`, `list_nlme_artifacts` |
 | knowledge (any phase) | `search_certara_kb`, `get_certara_kb_entry`, `find_certara_examples`, `explain_certara_workflow`, `lookup_pml_symbol`, `list_pml_enums` |
-| job_management (any phase) | `wait_for_nlme_job`, `get_nlme_job_status`, `collect_nlme_job`, `get_fit_summary`, `list_nlme_artifacts`, `list_mcp_runs`, `cleanup_mcp_runs` |
+| job_management (any phase) | `wait_for_nlme_job`, `get_nlme_job_status`, `collect_nlme_job`, `get_fit_summary`, `list_nlme_artifacts`, `list_mcp_runs`, `cleanup_mcp_runs`, `get_certara_project_status` |
 | memory (any phase) | `get_user_preferences`, `get_lessons`, `record_lesson`, `set_preference`, `list_memory_records` |
 
 ### Default end-to-end PK/PD workflow
@@ -286,6 +305,69 @@ call. Scripts launched this way must `library(Certara.RsNLME)`, sandbox their
 output, and fit with `runInBackground = FALSE`
 (`Certara.RsNLME.workflow.mcp_script_runner`; anti-pattern `blocking_rscript`).
 
+### Darwin (pyDarwin) hybrid qualification and sequential LRT
+
+When a search over structure/token space is warranted, `Certara.RDarwin`
+(pyDarwin) and `Certara.RsNLME`'s own SCM/FABE covariate search are
+complementary, not competing (`Certara.RDarwin.workflow.overview`). The
+hybrid path is deliberately **two stages, with two separate approvals** -
+never a single automatic pipeline:
+
+1. **Stage A - structural-anchor qualification (Certara.RDarwin).**
+   `check_darwin_prereqs` -> author/import a project -> `validate_darwin_search`
+   -> `start_darwin_search` -> `wait_for_darwin_job` -> `collect_darwin_search`
+   / `explain_darwin_fitness`. The search winner is a **search winner, not an
+   automatically qualified final model** - it must clear
+   `darwin_default_acceptance_gates()` (convergence, covariance step,
+   correlation, condition number) before use. When the winner alone does not
+   settle the question, `propose_darwin_qualification()` recovers top-K
+   candidates' control text (from `key_models`, then `models.json`, then a
+   surviving temp run dir - never fabricated; a candidate with none of the
+   three is reported `unrecoverable` with a reason) so the user can pick
+   **one** to refit as a structural anchor.
+   - **Non-nesting caveat:** Darwin's top-K candidates are almost never
+     nested models - each token/search-space gene is an independent
+     categorical choice, so two candidates routinely differ on several axes
+     at once. **Never** run a likelihood-ratio test across
+     `explain_darwin_fitness()`/`collect_darwin_search()`'s candidates; rank
+     them only by fitness + acceptance gates
+     (`Certara.RDarwin.workflow.hybrid_qualification`).
+2. **Stage B - anchored sequential LRT (Certara.RsNLME).** Refit the chosen
+   anchor (`start_nlme_fitmodel`/`start_nlme_fit`,
+   `model_stage = "structural_anchor"`), then reconcile Darwin's recorded
+   `ofv` (never `fitness` - see `ofv_not_fitness_for_likelihood_work`) against
+   the RsNLME refit's `-2LL` with `check_ofv_parity()` **before** any nested
+   testing. Only then does a genuinely nested, session-approved sequential
+   LRT make sense: `validate_sequential_lrt` -> `start_sequential_lrt`
+   (**one** `user_confirmed = TRUE` approves the whole envelope - anchor,
+   ordered add/remove operations, alpha_add/alpha_remove, distributions,
+   `host_resources$max_concurrent_fits`, and `fit_budget`; the session only
+   adapts *within* it) -> `advance_sequential_lrt` repeatedly -> once final,
+   `collect_sequential_lrt` for the decisions ledger and telemetry.
+   `advance_sequential_lrt` pauses with `requires_user_attention = TRUE` on
+   OFV-parity failure, a failed reference fit, an altered `plan.json`, an
+   off-plan candidate, or exhausted budget - resolve with the user before
+   `force_continue = TRUE`. `list_sequential_lrt_sessions` /
+   `get_project_workflow_status` surface any paused session so it is not
+   silently forgotten.
+3. **Downstream, still user-gated.** Once a session is final,
+   `collect_sequential_lrt()$downstream_proposals` may suggest VPC, the
+   opt-in `qpc_score` (a **secondary**, informational predictive-check
+   metric - never an automatic acceptance gate; see
+   `tidyvpc.workflow.qpc_scoring`), AIC/BIC re-confirmation against the
+   original Darwin candidates, bootstrap, or a constrained Darwin rerun -
+   none of these launch automatically. Feed `collect_sequential_lrt()`'s
+   `telemetry`/`session_provenance` block to `record_run()`'s `provenance`
+   argument to benchmark this adaptive workflow against a fixed pyDarwin run
+   under matched fit budgets.
+
+Use `get_certara_project_status()` (this host) instead of a single provider's
+own status tool when a project spans more than one provider (a Darwin search
+feeding an RsNLME qualification/LRT) - it merges each discovered provider's
+own status hook (Darwin's run registry, RsNLME's
+`get_project_workflow_status()`, which already includes sequential-LRT
+session state) without assuming they share a shape.
+
 ## Troubleshooting setup
 
 Setup friction is mostly an environment problem (a `repos = NULL` source install
@@ -294,7 +376,25 @@ The common symptoms and fixes are collected for agents in the KB entry
 `Certara.R.mcp.setup_troubleshooting` and for humans in the package
 troubleshooting vignette. Start with `certara_mcp_capabilities()` and
 `certara_session_status()` to see what is actually wired. There is no automated
-"doctor" tool - the checklist plus those two tools is the supported path.
+"doctor" MCP tool - the checklist plus those two tools is the supported path
+from inside a running server.
+
+From the R console (before or outside a running server), two read-only
+functions distinguish "configured" from "running":
+
+```r
+# What is written to client config files right now?
+Certara.R::list_certara_mcp_configs()
+
+# What Certara MCP server processes has this machine actually started?
+Certara.R::list_certara_mcp_servers()
+```
+
+A server configured but never listed as running usually means the client has
+not been reloaded since `write_mcp_config()`; a server listed as running with
+options that do not match the config was likely started before the last
+`write_mcp_config()` call and needs a client reload to pick up the new launch
+command.
 
 ## Concurrency note
 

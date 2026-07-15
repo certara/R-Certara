@@ -341,7 +341,6 @@ mcp_report_info <- function() {
 #' @param output Output format passed to `rmarkdown::render()` (default `html`).
 #' @return Invisibly the rendered output path, or `NULL` when rmarkdown/pandoc
 #'   is unavailable.
-#' @keywords internal
 #' @export
 render_certara_report <- function(output = "html") {
   if (!requireNamespace("rmarkdown", quietly = TRUE)) {

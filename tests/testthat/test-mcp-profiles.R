@@ -8,9 +8,33 @@ test_that(".mcp_resolve_profile returns specs and rejects unknown profiles", {
                c("full", "core", "authoring", "execution", "diagnostics"),
                ignore.order = TRUE)
   expect_null(.mcp_resolve_profile("full")$provider_groups)        # full = no filter
-  expect_true("data" %in% .mcp_resolve_profile("core")$provider_groups)
+  expect_true("data" %in% .mcp_resolve_profile("core")$provider_groups[["*"]])
   expect_false("memory" %in% .mcp_resolve_profile("core")$host)    # core drops memory
   expect_error(.mcp_resolve_profile("nope"))
+})
+
+test_that("provider_groups gives Certara.RDarwin and Certara.RsNLME their own vocabulary", {
+  exec_groups <- .mcp_resolve_profile("execution")$provider_groups
+  expect_true("results" %in% exec_groups[["Certara.RDarwin"]])
+  expect_false("results" %in% exec_groups[["*"]])
+  expect_true("qualification" %in% exec_groups[["Certara.RsNLME"]])
+  expect_false("qualification" %in% exec_groups[["*"]])
+  # A provider with no explicit entry falls back to "*".
+  expect_identical(
+    .mcp_resolve_provider_group_request(exec_groups, "tidyvpc"),
+    exec_groups[["*"]]
+  )
+})
+
+test_that(".mcp_resolve_provider_group_request supports all three provider_groups shapes", {
+  expect_null(.mcp_resolve_provider_group_request(NULL, "Certara.RsNLME"))
+  expect_identical(.mcp_resolve_provider_group_request(c("data", "execution"), "Certara.RsNLME"),
+                   c("data", "execution"))
+  named <- list("*" = c("data"), "Certara.RDarwin" = c("results"))
+  expect_identical(.mcp_resolve_provider_group_request(named, "Certara.RDarwin"), "results")
+  expect_identical(.mcp_resolve_provider_group_request(named, "tidyvpc"), "data")
+  no_fallback <- list("Certara.RDarwin" = c("results"))
+  expect_null(.mcp_resolve_provider_group_request(no_fallback, "tidyvpc"))
 })
 
 test_that("host tool groups filter correctly and always keep meta tools", {

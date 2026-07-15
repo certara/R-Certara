@@ -159,10 +159,43 @@ in any phase. `certara_mcp_capabilities()$workflows` carries the same map.
 | diagnostics | `get_fit_summary`, `interpret_parameters`, `interpret_run` |
 | vpc | `start_nlme_vpcmodel`, `summarize_vpc` |
 | covariate_search | `start_nlme_job`, `compare_nlme_jobs` |
+| darwin_search (Certara.RDarwin) | `check_darwin_prereqs`, `scaffold_darwin_project`, `validate_darwin_search`, `start_darwin_search`, `wait_for_darwin_job`, `collect_darwin_search`, `explain_darwin_fitness`, `propose_darwin_qualification` |
+| qualification (Certara.RsNLME) | `check_ofv_parity`, `validate_sequential_lrt`, `start_sequential_lrt`, `advance_sequential_lrt`, `get_sequential_lrt_status`, `collect_sequential_lrt`, `stop_sequential_lrt`, `list_sequential_lrt_sessions` |
 | report_qc | `get_fit_summary`, `compare_nlme_jobs`, `summarize_vpc`, `interpret_parameters`, `list_nlme_artifacts` |
 | knowledge (any phase) | `search_certara_kb`, `get_certara_kb_entry`, `find_certara_examples`, `explain_certara_workflow`, `lookup_pml_symbol`, `list_pml_enums` |
-| job_management (any phase) | `wait_for_nlme_job`, `get_nlme_job_status`, `collect_nlme_job`, `get_fit_summary`, `list_nlme_artifacts`, `list_mcp_runs`, `cleanup_mcp_runs` |
+| job_management (any phase) | `wait_for_nlme_job`, `get_nlme_job_status`, `collect_nlme_job`, `get_fit_summary`, `list_nlme_artifacts`, `list_mcp_runs`, `cleanup_mcp_runs`, `get_certara_project_status` |
 | memory (any phase) | `get_user_preferences`, `get_lessons`, `record_lesson`, `set_preference`, `list_memory_records` |
+
+## Darwin (pyDarwin) hybrid qualification and sequential LRT
+
+Two stages, **two separate approvals** - never a single automatic pipeline:
+
+1. **Stage A (Certara.RDarwin) - pick one qualified structural anchor.**
+   `start_darwin_search` -> `wait_for_darwin_job` -> `collect_darwin_search` /
+   `explain_darwin_fitness` (winner must clear
+   `darwin_default_acceptance_gates()`) -> optionally
+   `propose_darwin_qualification()` for top-K recovered candidates. **Never**
+   run an LRT across Darwin's top-K candidates - they are not generally
+   nested models; rank them only by fitness + acceptance gates.
+2. **Stage B (Certara.RsNLME) - refine the anchor with a nested LRT.** Refit
+   the chosen anchor (`model_stage = "structural_anchor"`), reconcile
+   Darwin's `ofv` (never `fitness`) against the refit `-2LL` with
+   `check_ofv_parity()`, then `validate_sequential_lrt` ->
+   `start_sequential_lrt` (one `user_confirmed = TRUE` approves the whole
+   plan - anchor, operations, alphas, `fit_budget`,
+   `host_resources$max_concurrent_fits`) -> `advance_sequential_lrt`
+   repeatedly -> `collect_sequential_lrt` once final. It pauses with
+   `requires_user_attention = TRUE` on OFV-parity failure, a failed reference
+   fit, an altered plan, an off-plan candidate, or exhausted budget - resolve
+   with the user before `force_continue = TRUE`.
+3. **Downstream stays gated.** VPC, the opt-in `qpc_score` (secondary,
+   informational - never an acceptance gate), AIC/BIC re-confirmation,
+   bootstrap, or a constrained Darwin rerun are only ever proposed, never
+   auto-launched. Pass `collect_sequential_lrt()$telemetry` as `record_run()`'s
+   `provenance` to benchmark against a fixed pyDarwin run.
+
+Use `get_certara_project_status()` over a single provider's status tool when a
+project spans providers (Darwin search feeding an RsNLME qualification/LRT).
 
 ## Choosing an entry point (model-agnostic)
 

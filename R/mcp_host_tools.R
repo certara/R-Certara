@@ -73,6 +73,24 @@
       )
     ),
     .ctool(
+      function(project_dir = ".") get_certara_project_status(project_dir),
+      "get_certara_project_status",
+      paste(
+        "Merged cross-provider project status: calls every discovered",
+        "provider's own status hook (e.g. Certara.RDarwin's search runs,",
+        "Certara.RsNLME's jobs/VPCs/sequential-LRT sessions) and reports each",
+        "under its own package key, plus a best-effort next_gated_phase hint.",
+        "Call this before get_project_workflow_status when a project may",
+        "involve more than one provider (e.g. a Darwin search feeding an",
+        "RsNLME qualification/LRT); for an RsNLME-only project",
+        "get_project_workflow_status alone is equivalent and slightly",
+        "cheaper."
+      ),
+      arguments = list(
+        project_dir = .ts("Project root (default '.').")
+      )
+    ),
+    .ctool(
       function(path = NULL) mcp_repro_path(path),
       "certara_repro_script",
       paste(
@@ -317,12 +335,25 @@
       arguments = list(id = .ts("Lesson record id.", required = TRUE))
     ),
     .ctool(
-      function(summary, scope = "global") record_run(summary, scope),
+      function(summary, scope = "global", provenance = NULL) {
+        record_run(summary, scope, provenance = .mcp_parse_json_arg(provenance))
+      },
       "record_run",
-      "Record a quantitative run fingerprint for future sessions.",
+      paste(
+        "Record a quantitative run fingerprint for future sessions and",
+        "cross-run benchmarking. Pass 'provenance' for structured details -",
+        "e.g. the telemetry/session_provenance block returned by a provider",
+        "tool such as Certara.RsNLME's collect_sequential_lrt() or",
+        "Certara.RDarwin's search collectors - so MCP-adaptive workflows can",
+        "later be compared against fixed pyDarwin runs under matched budgets."
+      ),
       arguments = list(
         summary = .ts("Short summary of the run.", required = TRUE),
-        scope = .ts("'global' or a context tag.")
+        scope = .ts("'global' or a context tag."),
+        provenance = .ts(paste(
+          "Optional structured provenance as JSON text (object or array),",
+          "e.g. a provider tool's telemetry/session_provenance block."
+        ))
       )
     ),
     .ctool(

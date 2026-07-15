@@ -59,7 +59,10 @@ post-setup checklist. \code{\link[=certara_session_status]{certara_session_statu
 keep the tool list focused: \code{"full"} (default), \code{"core"}, \code{"authoring"},
 \code{"execution"}, or \code{"diagnostics"}. See \code{\link[=launch_certara_mcp]{launch_certara_mcp()}}.}
 
-\item{server_name}{MCP server key (default \code{"certara-r"}).}
+\item{server_name}{MCP server key (default \code{"certara-r"}). Restricted to
+letters, digits, \code{-}, and \verb{_} (starting with a letter or digit), since it
+is written verbatim as a JSON key, a TOML table name, and inside an R
+string literal.}
 
 \item{project_dir}{Project root for project-scope files.}
 

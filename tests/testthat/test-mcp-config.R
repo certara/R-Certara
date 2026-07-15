@@ -698,6 +698,21 @@ test_that("unknown btw_groups is rejected", {
   )
 })
 
+test_that("server_name with unsafe characters is rejected", {
+  proj <- file.path(tempdir(), paste0("mcpcfg_badname_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  expect_error(
+    write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                     server_name = "my'server"),
+    "server_name.*must be a single"
+  )
+  expect_error(
+    write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                     server_name = "my server"),
+    "server_name.*must be a single"
+  )
+})
+
 test_that("valid btw_groups including pkg still writes config", {
   proj <- file.path(tempdir(), paste0("mcpcfg_btwok_", as.integer(Sys.time())))
   dir.create(proj, showWarnings = FALSE, recursive = TRUE)
@@ -706,4 +721,165 @@ test_that("valid btw_groups including pkg still writes config", {
   launch <- jsonlite::read_json(
     file.path(proj, ".cursor", "mcp.json"))$mcpServers[["certara-r"]]$args[[2]]
   expect_match(launch, "c\\('docs', 'pkg'\\)")
+})
+
+# ---- list_certara_mcp_configs() ---------------------------------------------
+
+test_that("list_certara_mcp_configs finds nothing in an empty project", {
+  proj <- file.path(tempdir(), paste0("cfglist_empty_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  home <- tempfile("cfglist_empty_home_")
+  dir.create(home)
+
+  withr::with_envvar(c(USERPROFILE = home, HOME = home), {
+    out <- list_certara_mcp_configs(client = "cursor", scope = "project",
+                                    project_dir = proj)
+  })
+  expect_s3_class(out, "data.frame")
+  expect_identical(nrow(out), 1L)
+  expect_identical(out$status, "not_configured")
+  expect_false(out$exists)
+  expect_false(out$configured)
+})
+
+test_that("list_certara_mcp_configs discovers a written cursor config", {
+  proj <- file.path(tempdir(), paste0("cfglist_cursor_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                   btw_groups = c("docs", "pkg"), session_tools = TRUE,
+                   tool_profile = "core")
+
+  out <- list_certara_mcp_configs(client = "cursor", scope = "project",
+                                  project_dir = proj)
+  expect_identical(nrow(out), 1L)
+  expect_identical(out$status, "configured")
+  expect_true(out$exists)
+  expect_true(out$configured)
+  expect_identical(out$server_key, "certara-r")
+  expect_identical(out$server_name, "certara-r")
+  expect_match(out$command, "Rscript")
+  expect_identical(out$btw_groups, "docs, pkg")
+  expect_true(out$session_tools)
+  expect_identical(out$tool_profile, "core")
+  expect_identical(out$job_watch_wait_seconds, 45)
+})
+
+test_that("list_certara_mcp_configs preserves an unrelated server and reports not_configured", {
+  proj <- file.path(tempdir(), paste0("cfglist_unrelated_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  cfg_path <- file.path(proj, ".cursor", "mcp.json")
+  dir.create(dirname(cfg_path), recursive = TRUE, showWarnings = FALSE)
+  jsonlite::write_json(list(mcpServers = list(browsermcp = list(command = "x"))),
+                       cfg_path, auto_unbox = TRUE)
+
+  out <- list_certara_mcp_configs(client = "cursor", scope = "project",
+                                  project_dir = proj)
+  expect_identical(nrow(out), 1L)
+  expect_identical(out$status, "not_configured")
+  expect_true(out$exists)
+  expect_false(out$configured)
+})
+
+test_that("list_certara_mcp_configs reports a corrupt config file without erroring", {
+  proj <- file.path(tempdir(), paste0("cfglist_corrupt_", as.integer(Sys.time())))
+  cfg_dir <- file.path(proj, ".cursor")
+  dir.create(cfg_dir, recursive = TRUE, showWarnings = FALSE)
+  writeLines("{not valid json", file.path(cfg_dir, "mcp.json"))
+
+  out <- expect_no_error(
+    list_certara_mcp_configs(client = "cursor", scope = "project",
+                             project_dir = proj)
+  )
+  expect_identical(out$status, "parse_error")
+  expect_true(out$exists)
+  expect_false(is.na(out$note))
+})
+
+test_that("list_certara_mcp_configs finds a custom server_name and misses under the default", {
+  proj <- file.path(tempdir(), paste0("cfglist_custom_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  write_mcp_config(client = "cursor", scope = "project", project_dir = proj,
+                   server_name = "rsnlme-mcp")
+
+  found <- list_certara_mcp_configs(client = "cursor", scope = "project",
+                                    project_dir = proj, server_name = "rsnlme-mcp")
+  expect_identical(found$status, "configured")
+  expect_identical(found$server_key, "rsnlme-mcp")
+  expect_identical(found$server_name, "rsnlme-mcp")
+
+  # Auto-detection (server_name = NULL) still finds it under its actual key.
+  auto <- list_certara_mcp_configs(client = "cursor", scope = "project",
+                                   project_dir = proj)
+  expect_identical(auto$status, "configured")
+  expect_identical(auto$server_key, "rsnlme-mcp")
+
+  # Looking for the default name explicitly finds nothing (it was never used).
+  missed <- list_certara_mcp_configs(client = "cursor", scope = "project",
+                                     project_dir = proj, server_name = "certara-r")
+  expect_identical(missed$status, "not_configured")
+})
+
+test_that("list_certara_mcp_configs reports Codex's managed config", {
+  home <- tempfile("cfglist_codex_home_")
+  dir.create(home)
+  withr::with_envvar(c(USERPROFILE = home, HOME = home), {
+    suppressMessages(write_mcp_config(client = "codex", scope = "project",
+                                      project_dir = tempdir()))
+    out <- list_certara_mcp_configs(client = "codex")
+  })
+  expect_identical(nrow(out), 1L)
+  expect_identical(out$client, "codex")
+  expect_identical(out$scope, "user")
+  expect_identical(out$status, "configured")
+  expect_match(out$command, "Rscript")
+  expect_identical(out$tool_profile, "full")
+  expect_identical(out$job_watch_wait_seconds, 600)
+})
+
+test_that("list_certara_mcp_configs reports Claude Code user/local as unsupported", {
+  proj <- file.path(tempdir(), paste0("cfglist_ccunsupported_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  out <- list_certara_mcp_configs(client = "claude-code",
+                                  scope = c("user", "local"),
+                                  project_dir = proj)
+  expect_identical(nrow(out), 2L)
+  expect_true(all(out$status == "unsupported"))
+  expect_true(all(!is.na(out$note)))
+})
+
+test_that("list_certara_mcp_configs reports cursor's nonexistent local scope as unsupported", {
+  proj <- file.path(tempdir(), paste0("cfglist_curlocal_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  out <- list_certara_mcp_configs(client = "cursor", scope = "local",
+                                  project_dir = proj)
+  expect_identical(nrow(out), 1L)
+  expect_identical(out$status, "unsupported")
+})
+
+test_that("list_certara_mcp_configs defaults to scanning every client and scope", {
+  proj <- file.path(tempdir(), paste0("cfglist_default_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  home <- tempfile("cfglist_default_home_")
+  dir.create(home)
+
+  withr::with_envvar(c(USERPROFILE = home, HOME = home), {
+    out <- list_certara_mcp_configs(project_dir = proj)
+  })
+  # 4 clients: cursor (project+user+local), claude-code (project+user+local),
+  # claude-desktop (user only), codex (user only) = 3 + 3 + 1 + 1 rows.
+  expect_identical(nrow(out), 8L)
+  expect_setequal(unique(out$client),
+                  c("cursor", "claude-code", "claude-desktop", "codex"))
+})
+
+test_that("list_certara_mcp_configs is read-only (no side effects)", {
+  proj <- file.path(tempdir(), paste0("cfglist_readonly_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  write_mcp_config(client = "cursor", scope = "project", project_dir = proj)
+  cfg_path <- file.path(proj, ".cursor", "mcp.json")
+  before <- readLines(cfg_path, warn = FALSE)
+
+  list_certara_mcp_configs(client = "cursor", scope = "project", project_dir = proj)
+  after <- readLines(cfg_path, warn = FALSE)
+  expect_identical(before, after)
 })

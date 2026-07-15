@@ -16,4 +16,3 @@ is unavailable.
 \description{
 Render the accumulated report Rmd
 }
-\keyword{internal}

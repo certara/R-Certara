@@ -24,12 +24,7 @@
 #' @return The active project root, or `NULL` when unset.
 #' @examples
 #' mcp_session_project_dir(tempdir())
-#' mcp_session_figures_dir()
-#' @keywords internal
-#' @name mcp_session_paths
-NULL
-
-#' @rdname mcp_session_paths
+#' mcp_session_project_dir()
 #' @export
 mcp_session_project_dir <- function(dir = NULL) {
   .mcp_session_paths_ensure()
@@ -49,6 +44,16 @@ mcp_session_project_dir <- function(dir = NULL) {
   }
   .mcp_session_paths_state$project_dir
 }
+
+#' MCP session output directories
+#'
+#' Internal path helpers used by MCP tools and provider packages.
+#'
+#' @return The corresponding output directory, or `NULL` when the session
+#'   project root is unset. `mcp_session_paths_reset()` returns invisibly.
+#' @keywords internal
+#' @name mcp_session_paths
+NULL
 
 #' @rdname mcp_session_paths
 #' @export
