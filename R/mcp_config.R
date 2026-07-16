@@ -69,9 +69,12 @@
 #' @param run For CLI-managed targets (Claude Code user/local scope), actually
 #'   execute the client CLI when it is on `PATH` instead of only printing the
 #'   command. Falls back to printing if the CLI is not found. Default `FALSE`.
-#'   Codex is configured by writing `~/.codex/config.toml` directly (the only way
-#'   to set per-tool approvals), so `run` does not invoke the Codex CLI; the
-#'   equivalent `codex mcp add` command is reported for reference.
+#'   Claude Code's `claude mcp add` refuses when the server name already exists,
+#'   so this path always remove-then-adds (soft-remove if absent) so a stale
+#'   launcher (e.g. an old `Certara.RsNLME::launch_certara_mcp` entry) is
+#'   replaced. Codex is configured by writing `~/.codex/config.toml` directly
+#'   (the only way to set per-tool approvals), so `run` does not invoke the
+#'   Codex CLI; the equivalent `codex mcp add` command is reported for reference.
 #' @param job_watch_wait_seconds Optional override for the per-call server-side
 #'   job-watch budget (seconds) baked into the launch command, used by
 #'   [wait_for_nlme_job()]. When `NULL` (the default) each client gets a sensible
@@ -245,10 +248,16 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
         # "user" and "local" are both managed by the claude CLI: user lives at
         # the top level of ~/.claude.json, local under the project key. Pass the
         # scope through explicitly rather than relying on the CLI default.
-        rec <- .cli_command(sprintf("Claude Code (%s scope)", sc), "claude",
-                            c("mcp", "add", "-s", sc, server_name, "--",
-                              command, claude_args),
-                            run)
+        # claude mcp add refuses if the name already exists, so remove-then-add
+        # (soft-remove) replaces stale launchers instead of leaving them broken.
+        rec <- .cli_claude_mcp_upsert(
+          sprintf("Claude Code (%s scope)", sc),
+          scope = sc,
+          server_name = server_name,
+          command = command,
+          server_args = claude_args,
+          run = run
+        )
       }
       permissions_written <- NULL
       if (isTRUE(tool_allowlist)) {
@@ -1119,8 +1128,9 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
 }
 
 # Run a client CLI when run = TRUE and the program is on PATH; otherwise print
-# the command for the user. Tokens with spaces/quotes are quoted so the printed
-# line is copy-pasteable and the executed args survive the shell intact.
+# the command for the user. Tokens with spaces/quotes are quoted only for the
+# printed line (copy-pasteable in a shell); system2() receives raw args because
+# it does not invoke a shell and embedded quotes become part of the argv value.
 .cli_command <- function(label, program, args, run) {
   args_fmt <- .quote_if_needed(args)
   pretty <- paste(program, paste(args_fmt, collapse = " "))
@@ -1134,7 +1144,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     return(list(command = pretty, ran = FALSE))
   }
   out <- tryCatch(
-    system2(program, args = args_fmt, stdout = TRUE, stderr = TRUE),
+    system2(program, args = args, stdout = TRUE, stderr = TRUE),
     error = function(e) structure(conditionMessage(e), status = 1L)
   )
   status <- attr(out, "status")
@@ -1142,7 +1152,74 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   message(sprintf("%s: %s\n  %s", label,
                   if (ok) "ran" else "command FAILED", pretty))
   if (length(out)) message(paste0("  ", out, collapse = "\n"))
-  list(command = pretty, ran = isTRUE(ok))
+  list(command = pretty, ran = isTRUE(ok), output = out)
+}
+
+# Claude Code user/local: `claude mcp add` errors if the server name already
+# exists, which leaves stale launch commands (e.g. Certara.RsNLME:: after the
+# host moved to Certara.R). Always remove-then-add; treat "not found" on remove
+# as success so a first-time install still works.
+.cli_claude_mcp_upsert <- function(label, scope, server_name, command,
+                                   server_args, run) {
+  remove_args <- c("mcp", "remove", "-s", scope, server_name)
+  add_args <- c("mcp", "add", "-s", scope, server_name, "--",
+                command, server_args)
+  remove_pretty <- paste("claude", paste(.quote_if_needed(remove_args),
+                                         collapse = " "))
+  add_pretty <- paste("claude", paste(.quote_if_needed(add_args),
+                                      collapse = " "))
+  combined <- paste(remove_pretty, add_pretty, sep = "\n")
+
+  if (!isTRUE(run)) {
+    message(sprintf(
+      paste0("%s - run (remove-then-add so an existing entry is replaced):\n",
+             "  %s\n  %s"),
+      label, remove_pretty, add_pretty
+    ))
+    return(list(command = combined, remove_command = remove_pretty,
+                add_command = add_pretty, ran = FALSE))
+  }
+  if (!nzchar(Sys.which("claude"))) {
+    message(sprintf(
+      paste0("%s: 'claude' not found on PATH - run manually:\n",
+             "  %s\n  %s"),
+      label, remove_pretty, add_pretty
+    ))
+    return(list(command = combined, remove_command = remove_pretty,
+                add_command = add_pretty, ran = FALSE))
+  }
+
+  rem_out <- tryCatch(
+    system2("claude", args = remove_args,
+            stdout = TRUE, stderr = TRUE),
+    error = function(e) structure(conditionMessage(e), status = 1L)
+  )
+  rem_status <- attr(rem_out, "status")
+  rem_ok <- is.null(rem_status) || identical(as.integer(rem_status), 0L)
+  rem_txt <- paste(rem_out, collapse = "\n")
+  rem_missing <- grepl("No MCP server named", rem_txt, fixed = TRUE)
+  if (!rem_ok && !rem_missing) {
+    message(sprintf("%s: remove FAILED\n  %s", label, remove_pretty))
+    if (length(rem_out)) message(paste0("  ", rem_out, collapse = "\n"))
+    return(list(command = combined, remove_command = remove_pretty,
+                add_command = add_pretty, ran = FALSE, output = rem_out))
+  }
+  message(sprintf(
+    "%s: %s\n  %s",
+    label,
+    if (rem_ok) "removed existing entry" else "no existing entry to remove",
+    remove_pretty
+  ))
+  if (length(rem_out)) message(paste0("  ", rem_out, collapse = "\n"))
+
+  add_rec <- .cli_command(label, "claude", add_args, run = TRUE)
+  list(
+    command = combined,
+    remove_command = remove_pretty,
+    add_command = add_rec$command,
+    ran = isTRUE(add_rec$ran),
+    output = add_rec$output
+  )
 }
 
 # Quote only the tokens that need it, so simple tokens (mcp, add, --) stay bare.
