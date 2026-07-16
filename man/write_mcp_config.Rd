@@ -87,7 +87,10 @@ Default \code{TRUE}.}
 \item{run}{For CLI-managed targets (Claude Code user/local scope), actually
 execute the client CLI when it is on \code{PATH} instead of only printing the
 command. Falls back to printing if the CLI is not found. Default \code{FALSE}.
-Codex is configured by writing \verb{~/.codex/config.toml} directly (the only way
+Claude Code's \verb{claude mcp add} refuses when the server name already exists,
+so this path always remove-then-adds (soft-remove if absent) so a stale
+launcher (e.g. an old \code{Certara.RsNLME::launch_certara_mcp} entry) is
+replaced. Codex is configured by writing \verb{~/.codex/config.toml} directly (the only way
 to set per-tool approvals), so \code{run} does not invoke the Codex CLI; the
 equivalent \verb{codex mcp add} command is reported for reference.}
 

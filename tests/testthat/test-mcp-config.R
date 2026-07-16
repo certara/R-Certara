@@ -193,7 +193,11 @@ test_that("claude-code user scope passes -s user to the CLI", {
       write_mcp_config(client = "claude-code", scope = "user")
     )
     cc <- Filter(function(a) identical(a$client, "claude-code"), add)[[1]]
+    # User/local scopes remove-then-add so a stale launcher is replaced.
+    expect_match(cc$command, "mcp remove -s user certara-r")
     expect_match(cc$command, "mcp add -s user certara-r")
+    expect_match(cc$remove_command, "mcp remove -s user certara-r")
+    expect_match(cc$add_command, "mcp add -s user certara-r")
 
     rm <- suppressMessages(
       remove_mcp_config(client = "claude-code", scope = "user")
@@ -211,7 +215,10 @@ test_that("claude-code local scope passes -s local to the CLI", {
   )
   cc <- Filter(function(a) identical(a$client, "claude-code"), add)[[1]]
   expect_identical(cc$scope, "local")
+  expect_match(cc$command, "mcp remove -s local certara-r")
   expect_match(cc$command, "mcp add -s local certara-r")
+  expect_match(cc$remove_command, "mcp remove -s local certara-r")
+  expect_match(cc$add_command, "mcp add -s local certara-r")
 
   rm <- suppressMessages(
     remove_mcp_config(client = "claude-code", scope = "local", project_dir = proj)
