@@ -1128,8 +1128,9 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
 }
 
 # Run a client CLI when run = TRUE and the program is on PATH; otherwise print
-# the command for the user. Tokens with spaces/quotes are quoted so the printed
-# line is copy-pasteable and the executed args survive the shell intact.
+# the command for the user. Tokens with spaces/quotes are quoted only for the
+# printed line (copy-pasteable in a shell); system2() receives raw args because
+# it does not invoke a shell and embedded quotes become part of the argv value.
 .cli_command <- function(label, program, args, run) {
   args_fmt <- .quote_if_needed(args)
   pretty <- paste(program, paste(args_fmt, collapse = " "))
@@ -1143,7 +1144,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     return(list(command = pretty, ran = FALSE))
   }
   out <- tryCatch(
-    system2(program, args = args_fmt, stdout = TRUE, stderr = TRUE),
+    system2(program, args = args, stdout = TRUE, stderr = TRUE),
     error = function(e) structure(conditionMessage(e), status = 1L)
   )
   status <- attr(out, "status")
@@ -1167,7 +1168,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
                                          collapse = " "))
   add_pretty <- paste("claude", paste(.quote_if_needed(add_args),
                                       collapse = " "))
-  combined <- paste(remove_pretty, "&&", add_pretty)
+  combined <- paste(remove_pretty, add_pretty, sep = "\n")
 
   if (!isTRUE(run)) {
     message(sprintf(
@@ -1189,7 +1190,7 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   }
 
   rem_out <- tryCatch(
-    system2("claude", args = .quote_if_needed(remove_args),
+    system2("claude", args = remove_args,
             stdout = TRUE, stderr = TRUE),
     error = function(e) structure(conditionMessage(e), status = 1L)
   )
