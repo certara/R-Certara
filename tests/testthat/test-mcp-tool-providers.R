@@ -56,6 +56,10 @@ test_that(".mcp_validate_tools_manifest rejects tools-only and tools+builder man
   prob_both <- .mcp_validate_tools_manifest(
     c(base, list(builder = "fn", tools = tools)))
   expect_true(any(grepl("'tools'|declarative", prob_both)))
+  # Empty tools array is still a leftover declarative field - reject it.
+  prob_empty <- .mcp_validate_tools_manifest(
+    c(base, list(builder = "fn", tools = list())))
+  expect_true(any(grepl("'tools'|declarative", prob_empty)))
 })
 
 test_that("discovery skips manifests whose builder is not a scalar string", {

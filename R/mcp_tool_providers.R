@@ -37,7 +37,9 @@ mcp_tools_schema_version <- function() {
   if (!.is_scalar_string(manifest$builder)) {
     problems <- c(problems, "manifest must set a scalar 'builder' export name")
   }
-  if (!is.null(manifest$tools) && length(manifest$tools) > 0) {
+  # Reject the key whenever present (including empty arrays): leftover
+  # declarative fields must fail loudly under the builder-only contract.
+  if (!is.null(manifest$tools)) {
     problems <- c(problems, paste(
       "manifest sets a 'tools' array; declarative tool manifests are no longer",
       "supported - expose tools via 'builder' only"))
