@@ -49,13 +49,14 @@ test_that("certara_session_status guides enabling the bridge when it is off", {
   expect_match(st$next_steps, "session_tools = TRUE")
 })
 
-test_that("capabilities advertise the execution_contexts block", {
+test_that("capabilities advertise the execution_contexts pointer", {
   on.exit(.kb_reset_index(), add = TRUE)
   cap <- certara_mcp_capabilities()
   expect_false(is.null(cap$execution_contexts))
+  # Long three-contexts essay was dropped; certara_session_status is the source
+  # of truth for the live wiring.
   expect_identical(cap$execution_contexts$status_tool, "certara_session_status")
-  expect_true(all(c("server_process", "live_session", "job_child") %in%
-                    names(cap$execution_contexts$contexts)))
+  expect_true(nzchar(cap$execution_contexts$note))
 })
 
 test_that("certara_session_status is registered among the host meta tools", {

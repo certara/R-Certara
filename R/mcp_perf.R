@@ -32,11 +32,10 @@
 # ---- light execution guards + audit -----------------------------------------
 # Proportionate to a first-party, single-user, stdio server: a loop/repeat guard
 # (mitigates the "overthinking loop" token-amplification failure) and an opt-in
-# call audit. Applied at the host .ctool chokepoint, so they cover the host's
-# own tools and declarative provider tools; builder-mode provider tools (e.g.
-# Certara.RsNLME) are timed/guarded by their own package, and the canonical
-# job-polling loop is already designed out via wait_for_nlme_job's server-side
-# blocking watch.
+# call audit. Applied at the host .ctool chokepoint, so they cover only the
+# host's own tools; builder-mode provider tools (e.g. Certara.RsNLME) are
+# timed/guarded by their own package, and the canonical job-polling loop is
+# already designed out via wait_for_nlme_job's server-side blocking watch.
 
 .mcp_loop_guard_on <- function() {
   !(tolower(Sys.getenv("CERTARA_MCP_LOOP_GUARD", "1")) %in% c("0", "false", "no"))

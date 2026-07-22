@@ -60,7 +60,7 @@ test_that(".mcp_invoke passes through normally and short-circuits a loop without
 })
 
 test_that("tool-provider discovery labels source provenance (installed vs dev_root)", {
-  root <- testthat::test_path("fixtures", "tool-provider")
+  root <- testthat::test_path("fixtures", "tool-provider-builder")
   disc <- .mcp_discover_tool_providers(dev_roots = root)
   src <- vapply(disc$providers, function(p) p$source %||% "", character(1))
   expect_true("dev_root" %in% src)

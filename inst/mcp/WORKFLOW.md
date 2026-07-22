@@ -93,14 +93,36 @@ Three R contexts are in play and are easy to confuse: the **server process**
 (control-plane tools), the **bridged live session** (`env` inspection + `run`
 code execution), and the **per-job child process** from `start_nlme_*`. The
 `certara_session_status` tool reports which features are active and how to
-attach a session; `certara_mcp_capabilities()$execution_contexts` carries the
-same map.
+attach a session; `certara_mcp_capabilities()$execution_contexts` is a short
+pointer to that tool, not a duplicate of its contexts map.
 
 ## 4. Reload the agent's MCP servers, then work
 
 The agent should call `certara_mcp_capabilities()` first to learn the
 concurrency policy (retry sequentially if parallel calls fail), the
-Certara-first rule, and to fetch preferences/lessons (if memory is enabled).
+Certara-first rule, the discovered tool/KB providers, the active tool profile,
+and the merged workflow phases (the canonical routing map). Then, if memory is
+enabled, fetch preferences/lessons.
+
+### When Certara MCP tools are unavailable
+
+If a Certara MCP call errors or a tool is missing:
+
+1. If the whole server is unreachable (no `certara-r` entry in the client's
+   MCP server list, or every call to it fails), diagnosis must start on the
+   client side — those symptoms mean `certara_session_status` and
+   `certara_mcp_capabilities` are unreachable too. Check the client's MCP
+   server list/config (e.g. `.cursor/mcp.json`) and reload/restart the client.
+2. Once the server itself responds, call `certara_session_status` and
+   `certara_mcp_capabilities` to diagnose a single missing/failing tool —
+   check the `user-certara-r` server key, the discovered providers, and the
+   active tool profile.
+3. Report the failure to the user (what you observed and what you tried).
+4. Do **not** silently fall back to ad-hoc file authoring or hand-written R
+   scripts as a substitute. Direct file authoring is only appropriate when the
+   user explicitly chooses that route.
+5. Fix the wiring (`Certara.R.mcp.setup_troubleshooting` KB entry) or wait for
+   the tools to return before resuming the workflow.
 
 ### Knowledge lookup (guidance first, then reference, then btw)
 
@@ -179,7 +201,7 @@ map.
 | data_inspection | `inspect_pk_dataset`, `inspect_textual_model` |
 | model_creation | `list_builtin_model_constructors`, `validate_pml`, `confirm_pml_structure`, `analyze_nonmem_control`, `draft_pml_from_nonmem`, `scaffold_mmdl_from_pml`, `validate_mmdl`, `validate_nlme_model`, `inspect_nlme_model`, `validate_fit_spec` |
 | fit_execution | `start_nlme_fit_spec`, `start_nlme_fitmodel`, `start_nlme_fit`, `start_nlme_job` |
-| diagnostics | `get_fit_summary`, `interpret_parameters`, `interpret_run` |
+| diagnostics | `get_fit_summary`, `interpret_parameters` |
 | vpc | `start_nlme_vpcmodel`, `summarize_vpc` |
 | covariate_search | `start_nlme_job`, `compare_nlme_jobs` |
 | darwin_search (Certara.RDarwin) | `check_darwin_prereqs`, `scaffold_darwin_project`, `validate_darwin_search`, `start_darwin_search`, `wait_for_darwin_job`, `collect_darwin_search`, `explain_darwin_fitness`, `propose_darwin_qualification` |
@@ -289,7 +311,8 @@ equally first-class execution paths - choose per the
    portable, shareable package (`.rds` is local workflow state only;
    `Certara.RsNLME.workflow.execution_contracts`).
 9. **Interpretation (optional)** - `interpret_parameters()` against literature
-   (cited), `interpret_run()` against your own history (opt-in memory).
+   (cited); host memory tools (`get_lessons` / `record_lesson`) against your
+   own history when memory is enabled.
 10. **Modeling report (on request)** - when the user asks for a modeling (or
     modeling and simulation) report, call `guide_pharmacometrics("modeling
     report", intended_use)` first, then follow the standard section structure
@@ -314,11 +337,11 @@ hybrid path is deliberately **two stages, with two separate approvals** -
 never a single automatic pipeline:
 
 1. **Stage A - structural-anchor qualification (Certara.RDarwin).**
-   `check_darwin_prereqs` -> author/import a project -> `validate_darwin_search`
-   -> `start_darwin_search` -> `wait_for_darwin_job` -> `collect_darwin_search`
-   / `explain_darwin_fitness`. The search winner is a **search winner, not an
-   automatically qualified final model** - it must clear
-   `darwin_default_acceptance_gates()` (convergence, covariance step,
+   `check_darwin_prereqs` -> `scaffold_darwin_project` (author/import) ->
+   `validate_darwin_search` -> `start_darwin_search` -> `wait_for_darwin_job`
+   -> `collect_darwin_search` / `explain_darwin_fitness`. The search winner is
+   a **search winner, not an automatically qualified final model** - it must
+   clear `darwin_default_acceptance_gates()` (convergence, covariance step,
    correlation, condition number) before use. When the winner alone does not
    settle the question, `propose_darwin_qualification()` recovers top-K
    candidates' control text (from `key_models`, then `models.json`, then a
@@ -332,6 +355,16 @@ never a single automatic pipeline:
      `explain_darwin_fitness()`/`collect_darwin_search()`'s candidates; rank
      them only by fitness + acceptance gates
      (`Certara.RDarwin.workflow.hybrid_qualification`).
+   - **Omega search:** describe the omega structure with
+     `scaffold_darwin_project(omega_search_blocks_json = ...)` and confirm
+     with `validate_darwin_search`. **Never** use an `OMEGA_COV` token axis -
+     pyDarwin does not support one; the omega decomposition is expressed
+     through the block spec plus the optional axes the scaffolder emits.
+   - **InnerAD:** pass `InnerAD` values as **quoted strings** (e.g.
+     `"InnerAD": "\"BLOCK(2)\""`); an unquoted token corrupts the template.
+   - **Post-run RSE + QPC (opt-in):** use the postprocessing recipe in the
+     `Certara.RDarwin.postprocessing.*` KB entries. It is opt-in and never a
+     Darwin acceptance gate.
 2. **Stage B - anchored sequential LRT (Certara.RsNLME).** Refit the chosen
    anchor (`start_nlme_fitmodel`/`start_nlme_fit`,
    `model_stage = "structural_anchor"`), then reconcile Darwin's recorded

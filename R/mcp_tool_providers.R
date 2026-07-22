@@ -1,18 +1,16 @@
 # Tool-provider discovery. Mirrors the KB federation in mcp_kb_index.R: scan
 # installed packages (and any dev_roots) for inst/mcp/tools/manifest.json, then
-# materialize each provider's tools as ellmer ToolDefs. Two manifest modes:
-#   - declarative: the manifest lists tools + handler names + argument types;
-#     the host binds each handler and maps argument types to ellmer::type_*.
-#   - builder: the manifest names an exported function returning ellmer tools
-#     (used by Certara.RsNLME, whose tool set is built programmatically).
-# A broken or schema-incompatible manifest is skipped and reported, never fatal.
+# materialize each provider's tools as ellmer ToolDefs.
+#
+# Only builder manifests are supported: the manifest names an exported function
+# that returns ellmer tools (Certara.RsNLME, Certara.RDarwin, tidyvpc,
+# Certara.Xpose.NLME). A broken or schema-incompatible manifest is skipped and
+# reported, never fatal.
 #
 # A manifest may also declare an optional `status_hook`: the name of an
 # exported `function(project_dir)` returning that provider's own project
-# status. It is unrelated to `builder`/`tools` (a manifest can set either,
-# both, or neither) and is validated only when present (see
-# .mcp_call_status_hook() in mcp_project_status.R, which is what actually
-# resolves and calls it - discovery here just carries the field through).
+# status. It is unrelated to `builder` and is validated only when present (see
+# .mcp_call_status_hook() in mcp_project_status.R).
 
 #' Tool-manifest schema version implemented by this build.
 #' @examples
@@ -36,13 +34,13 @@ mcp_tools_schema_version <- function() {
       problems <- c(problems, sprintf("missing/invalid manifest field '%s'", f))
     }
   }
-  has_builder <- .is_scalar_string(manifest$builder)
-  has_tools <- !is.null(manifest$tools) && length(manifest$tools) > 0
-  if (has_builder && has_tools) {
-    problems <- c(problems, "manifest sets both 'builder' and 'tools' (use one)")
+  if (!.is_scalar_string(manifest$builder)) {
+    problems <- c(problems, "manifest must set a scalar 'builder' export name")
   }
-  if (!has_builder && !has_tools) {
-    problems <- c(problems, "manifest must set either 'builder' or 'tools'")
+  if (!is.null(manifest$tools) && length(manifest$tools) > 0) {
+    problems <- c(problems, paste(
+      "manifest sets a 'tools' array; declarative tool manifests are no longer",
+      "supported - expose tools via 'builder' only"))
   }
   problems
 }
@@ -52,7 +50,7 @@ mcp_tools_schema_version <- function() {
 #' @param dev_roots Optional package source-tree roots to include.
 #' @return A list with `providers` (loadable records) and `skipped` (with a
 #'   reason). Each provider record carries `package`, `manifest`, `mode`
-#'   ("builder"/"declarative"), `tool_count`, and `manifest_path`.
+#'   (`"builder"`), `tool_count`, and `manifest_path`.
 #' @keywords internal
 #' @export
 .mcp_discover_tool_providers <- function(dev_roots = character(0)) {
@@ -107,39 +105,15 @@ mcp_tools_schema_version <- function() {
     # The same package can be discovered twice (installed + dev_root); keep one.
     if (manifest$package %in% seen_pkg) next
     seen_pkg <- c(seen_pkg, manifest$package)
-    mode <- if (.is_scalar_string(manifest$builder)) "builder" else "declarative"
     providers[[length(providers) + 1]] <- list(
       package = manifest$package,
       manifest = manifest,
-      mode = mode,
-      tool_count = if (mode == "builder") NA_integer_ else length(manifest$tools),
+      mode = "builder",
+      tool_count = NA_integer_,
       manifest_path = rec$manifest_path,
       source = rec$source %||% "installed")
   }
   list(providers = providers, skipped = skipped)
-}
-
-# Map a declarative argument type string to an ellmer type object.
-.mcp_arg_type <- function(spec) {
-  required <- isTRUE(spec$required)
-  desc <- spec$description %||% ""
-  if (!is.character(spec$type) || length(spec$type) != 1L) {
-    stop(sprintf("unsupported argument type '%s'", spec$type %||% "<NA>"))
-  }
-  switch(spec$type,
-    string = ellmer::type_string(desc, required = required),
-    integer = ellmer::type_integer(desc, required = required),
-    number = ellmer::type_number(desc, required = required),
-    boolean = ellmer::type_boolean(desc, required = required),
-    array = ellmer::type_array(
-      items = switch(spec$items %||% "string",
-        integer = ellmer::type_integer(),
-        number = ellmer::type_number(),
-        boolean = ellmer::type_boolean(),
-        ellmer::type_string()),
-      description = desc, required = required),
-    stop(sprintf("unsupported argument type '%s'", spec$type %||% "<NA>"))
-  )
 }
 
 # Decide which groups to pass to a builder for a requested profile group set.
@@ -156,54 +130,29 @@ mcp_tools_schema_version <- function() {
 }
 
 # Materialize one provider's tools as a list of ellmer ToolDefs. `provider_groups`
-# (a profile's group allowlist, or NULL for all) filters declarative tools by
-# their `group` and is passed to builders that accept a `groups` argument. Errors
-# here are caught by the caller and turn into a skipped-provider record.
+# (a profile's group allowlist, or NULL for all) is passed to builders that accept
+# a `groups` argument. Errors here are caught by the caller and turn into a
+# skipped-provider record.
 .mcp_build_provider_tools <- function(provider, provider_groups = NULL) {
   pkg <- provider$package
-  if (provider$mode == "builder") {
-    builder <- getExportedValue(pkg, provider$manifest$builder)
-    call_spec <- .mcp_builder_call_groups(builder, provider_groups)
-    tools <- switch(call_spec$mode,
-      all = builder(),
-      groups = do.call(builder, list(groups = call_spec$groups)),
-      none = list()
-    )
-    if (!is.list(tools)) {
-      stop("builder did not return a list of tools")
-    }
-    return(tools)
+  builder <- getExportedValue(pkg, provider$manifest$builder)
+  call_spec <- .mcp_builder_call_groups(builder, provider_groups)
+  tools <- switch(call_spec$mode,
+    all = builder(),
+    groups = do.call(builder, list(groups = call_spec$groups)),
+    none = list()
+  )
+  if (!is.list(tools)) {
+    stop("builder did not return a list of tools")
   }
-  ts <- provider$manifest$tools
-  if (!is.null(provider_groups)) {
-    # Declarative tools are kept only when their declared group is requested;
-    # ungrouped tools appear only in the unfiltered (full) profile.
-    ts <- Filter(function(t) !is.null(t$group) && t$group %in% provider_groups, ts)
-  }
-  lapply(ts, function(t) {
-    fun <- getExportedValue(pkg, t$handler)
-    args <- list()
-    for (a in t$arguments %||% list()) {
-      args[[a$name]] <- .mcp_arg_type(a)
-    }
-    .ctool(fun, t$name, t$description %||% t$name, args)
-  })
+  tools
 }
 
 # Resolve one provider's group allowlist from a profile's `provider_groups`.
-# Three shapes, kept distinct so existing (pre-per-provider-mapping) callers
-# are unaffected:
-#   - NULL: no filtering (every group the provider offers) - unchanged.
-#   - a plain character vector: the same allowlist for every provider - the
-#     original behavior, still exactly what a caller gets if it passes one.
-#   - a named list: per-package allowlists (character vector, or NULL for "no
-#     filtering"), keyed by package name, with an optional `"*"` fallback for
-#     packages that have no explicit entry. This is what lets each provider
-#     keep its own group vocabulary (e.g. Certara.RDarwin's
-#     "environment"/"authoring"/"preflight"/"execution"/"results" vs.
-#     Certara.RsNLME's "knowledge"/"data"/.../"qualification") instead of being
-#     silently starved by a single flat allowlist tuned for a different
-#     provider's naming.
+# Three shapes, kept distinct so existing callers are unaffected:
+#   - NULL: no filtering
+#   - a plain character vector: the same allowlist for every provider
+#   - a named list: per-package allowlists with optional `"*"` fallback
 .mcp_resolve_provider_group_request <- function(provider_groups, package) {
   if (is.null(provider_groups) || !is.list(provider_groups)) {
     return(provider_groups)
@@ -220,13 +169,8 @@ mcp_tools_schema_version <- function() {
 #' @param providers Optional character vector of provider package names to
 #'   include (default: all discovered).
 #' @param provider_groups Optional launch-profile group allowlist (default
-#'   `NULL` = all). Either a plain character vector applied to every provider
-#'   (filters declarative tools by their `group` and is passed to builders
-#'   that accept a `groups` argument), or a named list of per-package
-#'   allowlists with an optional `"*"` fallback (resolved internally by
-#'   `.mcp_resolve_provider_group_request()`) - lets a profile give each
-#'   provider its own group vocabulary instead of one list assumed to mean the
-#'   same thing everywhere.
+#'   `NULL` = all). Either a plain character vector applied to every provider,
+#'   or a named list of per-package allowlists with an optional `"*"` fallback.
 #' @return A list with `tools` (flat list of ellmer ToolDefs) and `skipped`
 #'   (records with a reason, including providers that failed to build).
 #' @keywords internal
@@ -251,17 +195,12 @@ mcp_tools_schema_version <- function() {
   list(tools = tools, skipped = skipped)
 }
 
-# Names of tools a provider marks gated: true (declarative manifests only).
-# Surfacing only - the host uses these to set client approval prompts; the
-# gate itself is enforced inside the provider handler.
+# Names of tools a provider marks gated. Builder manifests carry no per-tool
+# metadata (the builder function alone decides what it returns), so there is
+# currently no source of gated tool names; this always returns character(0).
+# Kept as a function (rather than inlining character(0) at call sites) so a
+# future gating source can be wired in here without touching callers in
+# mcp_capabilities.R / mcp_config.R.
 .mcp_gated_tool_names <- function(dev_roots = character(0)) {
-  disc <- .mcp_discover_tool_providers(dev_roots)
-  out <- character(0)
-  for (p in disc$providers) {
-    if (p$mode != "declarative") next
-    for (t in p$manifest$tools) {
-      if (isTRUE(t$gated)) out <- c(out, t$name)
-    }
-  }
-  unique(out)
+  character(0)
 }

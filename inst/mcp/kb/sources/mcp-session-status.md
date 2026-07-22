@@ -38,8 +38,9 @@ because launch options are recorded only at `launch_certara_mcp()` startup.
 
 Use it before assuming an interactive object is reachable (e.g. a VPC handoff -
 see `Certara.RsNLME.guidance.topic.vpc_fit_target`) and when fits/VPC "can't find
-the model" (see `Certara.R.mcp.setup_troubleshooting`). The same execution-context
-map is mirrored in `certara_mcp_capabilities()$execution_contexts`.
+the model" (see `Certara.R.mcp.setup_troubleshooting`).
+`certara_mcp_capabilities()$execution_contexts` is a short pointer back to this
+tool, not a duplicate of its three-context map.
 
 ```r
 s <- certara_session_status()
