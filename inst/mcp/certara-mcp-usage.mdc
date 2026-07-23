@@ -25,18 +25,16 @@ behavior rules. The response includes `client_routing` with the same mapping.
 ## The right procedure
 
 1. **Call `certara_mcp_capabilities` first** via `CallMcpTool` with server
-   `__CALL_MCP_SERVER__`.
+   `__CALL_MCP_SERVER__`. It returns the discovered tool/KB providers, the
+   merged workflow phases, gated tools, the active tool profile, concurrency
+   policy, and behavior rules — use it as the single source of truth instead
+   of hard-coding a tool inventory here. Any provider-specific tool catalog
+   lives in the KB (`list_certara_kb_packages`, `search_certara_kb`).
 
-2. **Route all Certara tools through `__CALL_MCP_SERVER__`** — knowledge
-   (`search_certara_kb`, `validate_pml`, `validate_nlme_model`,
-   `validate_fit_spec`, `analyze_nonmem_control`, `draft_pml_from_nonmem`,
-   `confirm_pml_structure`, `scaffold_mmdl_from_pml`,
-   `list_builtin_model_constructors`, …), data (`inspect_pk_dataset`,
-   `inspect_textual_model`),
-   execution (`start_nlme_fit_spec`, `start_nlme_fitmodel`,
-   `start_nlme_vpcmodel`, `start_nlme_fit`, `start_nlme_job`,
-   `get_nlme_job_status`, `get_fit_summary`, `collect_nlme_job`, …), comparison
-   (`compare_nlme_jobs`, `summarize_vpc`), interpretation, and memory tools.
+2. **Route every Certara tool call through `__CALL_MCP_SERVER__`.** Use the
+   workflow phases returned by `certara_mcp_capabilities()$workflows` (and the
+   summary table below) to pick the right tool; the phase overlay is the
+   canonical map.
 
 3. **Knowledge lookup order (guidance first)** — the KB has a guidance layer
    (what to do and why, per FDA/EMA/industry expectations) and a reference layer
@@ -65,6 +63,27 @@ behavior rules. The response includes `client_routing` with the same mapping.
 
 5. **Heavy compute** — always via the `start_*` / job tools (non-blocking child
    processes), never as a long-blocking MCP handler call.
+
+## When Certara MCP tools are unavailable
+
+If a Certara MCP call errors, times out, or the tool is reported missing:
+
+1. If the whole server is unreachable (no `__SERVER_NAME__` entry in
+   `.cursor/mcp.json`, or every call to `__CALL_MCP_SERVER__` fails),
+   diagnosis must start on the client side — those symptoms mean
+   `certara_session_status` and `certara_mcp_capabilities` are unreachable
+   too. Check `.cursor/mcp.json` and reload Cursor's MCP servers.
+2. Once the server itself responds, call `certara_session_status` (and
+   `certara_mcp_capabilities`) to diagnose a single missing/failing tool —
+   check the `__CALL_MCP_SERVER__` server key, the discovered tool/KB
+   providers, and the active tool profile.
+3. Report the failure to the user with what you observed and what you tried.
+4. **Do not silently fall back to ad-hoc file authoring or shell/R scripts as a
+   substitute for the missing tool.** Direct file authoring (writing PML by
+   hand, hand-crafted `.mmdl`, hand-rolled fit scripts) is only appropriate
+   when the user explicitly chooses that route after the failure is surfaced.
+5. Fix the wiring (`Certara.R.mcp.setup_troubleshooting` KB entry) or wait for
+   the tools to return before resuming the workflow.
 
 ## Watching a long job (tight loop, no narration)
 
@@ -156,7 +175,7 @@ in any phase. `certara_mcp_capabilities()$workflows` carries the same map.
 | data_inspection | `inspect_pk_dataset`, `inspect_textual_model` |
 | model_creation | `list_builtin_model_constructors`, `validate_pml`, `confirm_pml_structure`, `analyze_nonmem_control`, `draft_pml_from_nonmem`, `scaffold_mmdl_from_pml`, `validate_mmdl`, `validate_nlme_model`, `inspect_nlme_model`, `validate_fit_spec` |
 | fit_execution | `start_nlme_fit_spec`, `start_nlme_fitmodel`, `start_nlme_fit`, `start_nlme_job` |
-| diagnostics | `get_fit_summary`, `interpret_parameters`, `interpret_run` |
+| diagnostics | `get_fit_summary`, `interpret_parameters` |
 | vpc | `start_nlme_vpcmodel`, `summarize_vpc` |
 | covariate_search | `start_nlme_job`, `compare_nlme_jobs` |
 | darwin_search (Certara.RDarwin) | `check_darwin_prereqs`, `scaffold_darwin_project`, `validate_darwin_search`, `start_darwin_search`, `wait_for_darwin_job`, `collect_darwin_search`, `explain_darwin_fitness`, `propose_darwin_qualification` |
@@ -171,12 +190,26 @@ in any phase. `certara_mcp_capabilities()$workflows` carries the same map.
 Two stages, **two separate approvals** - never a single automatic pipeline:
 
 1. **Stage A (Certara.RDarwin) - pick one qualified structural anchor.**
+   `scaffold_darwin_project` -> `validate_darwin_search` ->
    `start_darwin_search` -> `wait_for_darwin_job` -> `collect_darwin_search` /
    `explain_darwin_fitness` (winner must clear
    `darwin_default_acceptance_gates()`) -> optionally
    `propose_darwin_qualification()` for top-K recovered candidates. **Never**
    run an LRT across Darwin's top-K candidates - they are not generally
    nested models; rank them only by fitness + acceptance gates.
+
+   - **Omega search:** describe omega structure with
+     `scaffold_darwin_project(omega_search_blocks_json = ...)` and confirm the
+     result with `validate_darwin_search`. **Never** use an `OMEGA_COV` token
+     axis - pyDarwin does not support one; the omega decomposition is expressed
+     through the block spec plus optional `omega_search`/`OMEGA_MODEL` axes the
+     scaffolder emits.
+   - **InnerAD:** pass `InnerAD` values as **quoted strings** (e.g.
+     `"InnerAD": "\"BLOCK(2)\""`); an unquoted token corrupts the template.
+   - **Post-run RSE + QPC (opt-in recipe):** use the postprocessing recipe in
+     the `Certara.RDarwin.postprocessing.*` KB entries. This is opt-in and
+     never a Darwin acceptance gate.
+
 2. **Stage B (Certara.RsNLME) - refine the anchor with a nested LRT.** Refit
    the chosen anchor (`model_stage = "structural_anchor"`), reconcile
    Darwin's `ofv` (never `fitness`) against the refit `-2LL` with

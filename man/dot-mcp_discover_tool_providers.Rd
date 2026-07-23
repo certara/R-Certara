@@ -12,7 +12,7 @@
 \value{
 A list with \code{providers} (loadable records) and \code{skipped} (with a
 reason). Each provider record carries \code{package}, \code{manifest}, \code{mode}
-("builder"/"declarative"), \code{tool_count}, and \code{manifest_path}.
+(\code{"builder"}), \code{tool_count}, and \code{manifest_path}.
 }
 \description{
 Discover installed-package tool manifests

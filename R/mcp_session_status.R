@@ -30,8 +30,10 @@
   }
 }
 
-# The three R execution contexts this server can touch. Single-sourced here so
-# certara_session_status() and certara_mcp_capabilities() agree.
+# The three R execution contexts this server can touch. Single-sourced here;
+# certara_session_status() returns this map directly, while
+# certara_mcp_capabilities()$execution_contexts is only a short pointer back
+# to this tool, not a copy of the map.
 .mcp_execution_contexts <- function() {
   list(
     server_process = paste(

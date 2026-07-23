@@ -67,19 +67,12 @@
     config_key = server_name,
     cursor = list(
       call_mcp_server = paste0("user-", server_name),
-      note = paste(
-        "Cursor prefixes user-defined MCP servers with 'user-' for CallMcpTool.",
-        "Use call_mcp_server, not config_key."
-      )
+      note = "Cursor prefixes user MCP servers with 'user-'; use call_mcp_server."
     ),
     claude_code = list(
       call_mcp_server = server_name,
-      note = paste(
-        "Claude Code uses the mcp.json server key as the tool namespace",
-        "(mcp__{key}__{tool}). write_mcp_config() also installs a CLAUDE.md",
-        "guidance doc carrying these rules, since Claude Code does not read",
-        "Cursor .mdc rules."
-      )
+      note = paste("Claude Code namespaces tools as mcp__{key}__{tool};",
+                   "write_mcp_config() installs a CLAUDE.md-imported guidance doc.")
     ),
     claude_desktop = list(
       call_mcp_server = server_name,
@@ -87,13 +80,8 @@
         file.path(.claude_desktop_config_dir(), "certara-mcp-usage.md"),
         error = function(e) NA_character_
       ),
-      note = paste(
-        "Claude Desktop / Cowork uses the claude_desktop_config.json server key",
-        "as the tool namespace (mcp__{key}__{tool}). There is no CLAUDE.md",
-        "auto-import and no working config-file tool allowlist for Cowork, so",
-        "call certara_mcp_capabilities at session start and approve tools in the",
-        "UI; the guidance_file is a manual reference, not auto-loaded."
-      )
+      note = paste("Claude Desktop / Cowork namespaces tools as mcp__{key}__{tool};",
+                   "guidance_file is manual reference (no CLAUDE.md auto-import).")
     ),
     codex = list(
       call_mcp_server = server_name,
@@ -277,45 +265,51 @@ certara_mcp_capabilities <- function(dev_roots = character(0)) {
     concurrency = list(
       parallel_tools_call = "best_effort",
       recommended_retry = "sequential",
-      note = paste(
-        "Certara MCP tools are short control-plane calls. If parallel tool calls",
-        "fail or the connection closes, retry sequentially. Heavy compute runs in",
-        "child processes via provider job tools."
-      )
+      note = "Short control-plane calls; retry sequentially on parallel failures."
     ),
     rules = rules,
     workflows = frag$workflows,
     prerequisites = frag$prerequisites,
     session_start = list(
       memory_enabled = .memory_enabled(),
-      instruction = paste(c(
-        paste(
-          "At session start, call get_user_preferences() and get_lessons() to",
-          "load active hard preferences and corrective lessons before proposing a",
-          "workflow (only if memory is enabled). If setup looks broken (server not",
-          "listed, providers missing), check certara_session_status()."
-        ),
-        frag$session_start
-      ), collapse = " ")
+      instruction = paste(
+        "If memory is enabled, call get_user_preferences() and get_lessons()",
+        "before proposing a workflow. Diagnose setup with certara_session_status()."
+      ),
+      provider_notes = .mcp_unique_session_start(frag$session_start)
     ),
     execution_contexts = list(
-      contexts = .mcp_execution_contexts(),
       status_tool = "certara_session_status",
-      note = paste(
-        "There are three R contexts: the server's own process (control-plane",
-        "tools), an optional live session bridged with btw::btw_mcp_session()",
-        "(needs session_tools = TRUE), and per-job child processes from provider",
-        "execution tools. Call certara_session_status for the live wiring."
-      )
+      note = paste("Three R contexts (server process, bridged live session,",
+                   "per-job child); call certara_session_status for wiring.")
     ),
     environment_notes = list(
-      help_docs_pandoc = paste(
-        "The general-purpose btw docs tool (btw_tool_docs_help_page) renders Rd",
-        "via pandoc and errors when pandoc is absent. For Certara/PML APIs prefer",
-        "lookup_pml_symbol, find_certara_examples, and get_certara_kb_entry."
-      )
+      help_docs_pandoc = paste("btw_tool_docs_help_page renders Rd via pandoc;",
+                                "prefer lookup_pml_symbol / get_certara_kb_entry",
+                                "for Certara/PML APIs.")
     )
   )
+}
+
+# Drop only the clause(s) that repeat the host's memory-bootstrap pointer
+# (mentions get_user_preferences OR get_lessons) from each fragment
+# session_start item, keeping any other clause sharing that item. Providers
+# often combine a memory-bootstrap reminder with unique guidance in the same
+# item (e.g. Certara.RsNLME pairs it with a setup_troubleshooting pointer) -
+# dropping the whole item would silently lose that guidance. Split on
+# sentence/clause boundaries (., ;, !, ? followed by whitespace) without
+# requiring a capitalized word afterward - a lowercase continuation like
+# "get_lessons(); then consult setup_troubleshooting." must still split.
+.mcp_unique_session_start <- function(items) {
+  items <- unique(unlist(items, use.names = FALSE))
+  if (!length(items)) return(character(0))
+  out <- character(0)
+  for (item in items) {
+    clauses <- strsplit(item, "(?<=[.;!?])\\s+", perl = TRUE)[[1]]
+    keep <- clauses[!grepl("get_user_preferences|get_lessons", clauses, ignore.case = TRUE)]
+    if (length(keep)) out <- c(out, paste(keep, collapse = " "))
+  }
+  unique(out)
 }
 
 #' Export active memory as a client rule file

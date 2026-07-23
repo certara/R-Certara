@@ -95,3 +95,57 @@ test_that("discovery skips capability fragments with invalid rule shapes", {
   good <- .mcp_discover_capabilities(dev_roots = cap_root)
   expect_true("Certara.Fixture" %in% vapply(good$fragments, function(f) f$package, character(1)))
 })
+
+test_that("session_start advertises memory_enabled + instruction + provider_notes", {
+  on.exit(.kb_reset_index(), add = TRUE)
+  cap <- certara_mcp_capabilities(dev_roots = cap_root)
+  ss <- cap$session_start
+  expect_true("memory_enabled" %in% names(ss))
+  expect_true(is.character(ss$instruction) && nzchar(ss$instruction))
+  expect_match(ss$instruction, "get_user_preferences")
+  expect_match(ss$instruction, "certara_session_status")
+  # Fragment lines that do not repeat the host memory bootstrap surface here.
+  expect_true("Load the fixture domain context." %in% ss$provider_notes)
+})
+
+test_that(".mcp_unique_session_start drops only duplicated clauses, keeping unique remainder", {
+  # A single item that pairs the host memory-bootstrap reminder with unique
+  # guidance (as Certara.RsNLME's fragment does) must keep the unique sentence.
+  combined <- paste(
+    "At session start, call get_user_preferences() and get_lessons() to load preferences.",
+    "If setup looks broken, consult certara_session_status()."
+  )
+  standalone_dup <- "At session start, call get_user_preferences() to load preferences."
+  unique_note <- "For NLME setup problems, consult setup_troubleshooting."
+  result <- .mcp_unique_session_start(list(combined, standalone_dup, unique_note))
+  expect_true(any(grepl("consult certara_session_status", result, fixed = TRUE)))
+  expect_false(any(grepl("get_user_preferences", result, fixed = TRUE)))
+  expect_true(unique_note %in% result)
+  expect_identical(.mcp_unique_session_start(list()), character(0))
+
+  # A lowercase continuation after a semicolon (not just a capitalized new
+  # sentence after a period) must still split, so the unique clause survives.
+  semicolon_combined <- paste0(
+    "At session start, call get_user_preferences() and get_lessons(); ",
+    "then consult setup_troubleshooting."
+  )
+  semi_result <- .mcp_unique_session_start(list(semicolon_combined))
+  expect_true(any(grepl("consult setup_troubleshooting", semi_result, fixed = TRUE)))
+  expect_false(any(grepl("get_user_preferences", semi_result, fixed = TRUE)))
+})
+
+test_that("capabilities advertise a concurrency note and environment_notes", {
+  on.exit(.kb_reset_index(), add = TRUE)
+  cap <- certara_mcp_capabilities()
+  expect_identical(cap$concurrency$parallel_tools_call, "best_effort")
+  expect_true(nzchar(cap$concurrency$note))
+  expect_true(nzchar(cap$environment_notes$help_docs_pandoc))
+})
+
+test_that("client_routing carries a non-empty note per client", {
+  cap <- certara_mcp_capabilities()
+  for (client in c("cursor", "claude_code", "claude_desktop", "codex")) {
+    note <- cap$client_routing[[client]]$note
+    expect_true(is.character(note) && nzchar(note))
+  }
+})

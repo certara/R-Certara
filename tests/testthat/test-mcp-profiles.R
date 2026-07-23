@@ -1,5 +1,6 @@
-# Launch-profile tests (Phase 2.5b): host-group filtering, the builder
-# group-intersection decision, and declarative group filtering.
+# Launch-profile tests (Phase 2.5b): host-group filtering and the builder
+# group-intersection decision. Declarative tool providers are no longer
+# supported, so there is no separate declarative group-filtering path.
 
 host_names <- function(...) vapply(.certara_host_tools(...), function(t) t@name, character(1))
 
@@ -61,19 +62,4 @@ test_that(".mcp_builder_call_groups intersects requested groups with what the bu
   expect_identical(hit$mode, "groups")
   expect_identical(hit$groups, "data")                                           # intersection only
   expect_identical(.mcp_builder_call_groups(b_grouped, c("comparison"))$mode, "none")  # disjoint -> exclude
-})
-
-test_that("declarative provider tools are filtered by group", {
-  # A fake declarative provider whose handlers resolve to a real exported fn.
-  prov <- list(
-    mode = "declarative", package = "Certara.R",
-    manifest = list(tools = list(
-      list(name = "t_data", description = "d", handler = "list_certara_kb_packages", group = "data"),
-      list(name = "t_exec", description = "d", handler = "list_certara_kb_packages", group = "execution")
-    ))
-  )
-  keep <- .mcp_build_provider_tools(prov, provider_groups = "data")
-  expect_length(keep, 1)
-  expect_identical(keep[[1]]@name, "t_data")
-  expect_length(.mcp_build_provider_tools(prov, provider_groups = NULL), 2)  # full
 })
