@@ -123,3 +123,71 @@ test_that("render_certara_report warns without rmarkdown", {
   mcp_report_init("No render")
   expect_warning(render_certara_report(), "rmarkdown")
 })
+
+test_that("figure chunk guards a missing PNG instead of failing the whole render", {
+  mcp_report_reset()
+  mcp_session_paths_reset()
+  root <- file.path(tempdir(), "mcp_fig_missing")
+  on.exit({
+    unlink(root, recursive = TRUE)
+    mcp_report_reset()
+    mcp_session_paths_reset()
+  }, add = TRUE)
+  mcp_session_project_dir(root)
+  # Figure recorded but never actually written (e.g. a re-run cleaned the
+  # artifacts dir after this report entry was made).
+  missing_fig <- file.path(root, "figures", "gof_dv_vs_pred.png")
+  mcp_report_figure(missing_fig, "DV vs PRED", section = "diagnostics.gof",
+                    key = "gof_dv")
+  txt <- mcp_report_read()
+  expect_match(txt, "error=FALSE", fixed = TRUE)
+  expect_match(txt, "if (file.exists(", fixed = TRUE)
+  expect_match(txt, "Figure not found", fixed = TRUE)
+})
+
+test_that("render_certara_report pins knit_root_dir to the report's own directory", {
+  mcp_report_reset()
+  mcp_session_paths_reset()
+  root <- file.path(tempdir(), "mcp_report_knit_root")
+  on.exit({
+    unlink(root, recursive = TRUE)
+    mcp_report_reset()
+    mcp_session_paths_reset()
+  }, add = TRUE)
+  mcp_session_project_dir(root)
+  mcp_report_init("Knit root test")
+  captured <- NULL
+  local_mocked_bindings(
+    render = function(input, output_format, quiet, knit_root_dir, ...) {
+      captured <<- knit_root_dir
+      "rendered.html"
+    },
+    pandoc_available = function(...) TRUE,
+    .package = "rmarkdown"
+  )
+  render_certara_report()
+  expect_equal(normalizePath(captured, winslash = "/"),
+              normalizePath(dirname(mcp_report_path()), winslash = "/"))
+})
+
+test_that("render_certara_report succeeds when invoked from a different working directory", {
+  skip_if_not_installed("rmarkdown")
+  skip_if_not(rmarkdown::pandoc_available())
+  mcp_report_reset()
+  mcp_session_paths_reset()
+  root <- file.path(tempdir(), "mcp_report_cwd_indep")
+  on.exit({
+    unlink(root, recursive = TRUE)
+    mcp_report_reset()
+    mcp_session_paths_reset()
+  }, add = TRUE)
+  mcp_session_project_dir(root)
+  fig <- file.path(root, "figures", "gof_dv_vs_pred.png")
+  dir.create(dirname(fig), recursive = TRUE, showWarnings = FALSE)
+  writeLines("png", fig)
+  mcp_report_figure(fig, "DV vs PRED", section = "diagnostics.gof", key = "gof_dv")
+
+  elsewhere <- withr::local_tempdir()
+  out <- withr::with_dir(elsewhere, render_certara_report())
+  expect_true(file.exists(out))
+})

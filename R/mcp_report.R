@@ -241,14 +241,25 @@ mcp_report_chunk <- function(code, section, key = NULL) {
       } else {
         ""
       }
+      # error=FALSE is a defense-in-depth backstop; the file.exists() guard
+      # below is the actual fix - a figure recorded before a job re-run (or
+      # cleaned artifacts dir) removed its PNG used to halt the whole
+      # render with an opaque knitr error instead of rendering everything
+      # else that IS still valid.
       opts <- if (nzchar(cap) || nzchar(w)) {
-        paste0("```{r ", label, ", echo=FALSE, fig.align='center'",
+        paste0("```{r ", label, ", echo=FALSE, error=FALSE, fig.align='center'",
                if (nzchar(cap)) paste0(", ", cap) else "",
                w, "}")
       } else {
-        paste0("```{r ", label, ", echo=FALSE, fig.align='center'}")
+        paste0("```{r ", label, ", echo=FALSE, error=FALSE, fig.align='center'}")
       }
-      c("", opts, paste0("knitr::include_graphics('", item$path, "')"),
+      esc_path <- gsub("'", "\\\\'", item$path)
+      c("", opts,
+        sprintf("if (file.exists('%s')) {", esc_path),
+        sprintf("  knitr::include_graphics('%s')", esc_path),
+        "} else {",
+        sprintf("  cat('_Figure not found: %s_')", esc_path),
+        "}",
         "```", "")
     },
     chunk = {
@@ -358,6 +369,13 @@ render_certara_report <- function(output = "html") {
     return(invisible(NULL))
   }
   output_format <- if (identical(output, "html")) "html_document" else output
-  out <- rmarkdown::render(path, output_format = output_format, quiet = TRUE)
+  # Figure paths are recorded relative to the Rmd's own directory (see
+  # .mcp_report_rel_path()), which only resolves correctly if knitting
+  # happens from that directory. Without pinning knit_root_dir, knitr
+  # instead defaults to the *caller's* working directory at render time -
+  # so a render invoked from anywhere else silently re-resolves every
+  # relative figure path against the wrong base and fails.
+  out <- rmarkdown::render(path, output_format = output_format, quiet = TRUE,
+                           knit_root_dir = dirname(path))
   invisible(out)
 }

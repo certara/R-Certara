@@ -16,8 +16,11 @@ get_certara_project_status(project_dir = ".", dev_roots = character(0))
 A list with \code{project_dir}, \code{providers} (one entry per provider that
 declares a \code{status_hook}: \code{package}, \code{status_hook}, and either \code{status}
 or \code{error}), \code{next_gated_phase} (a best-effort hint from whichever
-provider's status names one, or \code{NULL}), \code{repro_script}, and
-\code{report_rmd} (this session's own accumulated artifacts).
+provider's status names one, or \code{NULL}), \code{repro_script}, \code{report_rmd}
+(this session's own accumulated artifacts), and
+\code{repro_project_mismatch} (\code{TRUE} when \code{repro_script} is not rooted under
+\code{project_dir} - the session recorder was never pointed at this project,
+so it is not a faithful replay of work done here).
 }
 \description{
 Calls every discovered provider's optional \code{status_hook} (declared in its

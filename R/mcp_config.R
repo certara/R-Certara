@@ -1127,10 +1127,32 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   TRUE
 }
 
+# Execute an already-quoted, shell-ready command string (as built by
+# .quote_if_needed() + paste()) and report whether it succeeded.
+#
+# Deliberately uses system() rather than system2(): system2()'s argv-array
+# invocation is only reconstructed correctly by Windows for native .exe
+# targets. When the program resolves to an npm-style .cmd/.ps1 shim (common
+# for CLIs installed via `npm install -g`, including `claude`), Windows must
+# relay the call through cmd.exe, and system2() does so *without* re-quoting
+# args that contain spaces - so e.g. "C:\Program Files\...\Rscript.exe"
+# silently becomes two arguments ("C:\Program" and "Files\...\Rscript.exe").
+# That is exactly how a real config on another machine ended up corrupted
+# (verified by reproducing it locally with an npm-style shim). Executing the
+# identical string already shown to the user keeps "what we print" and "what
+# we run" as one source of truth, correct on every platform and install
+# method system2() could get wrong.
+.run_shell_command <- function(pretty) {
+  out <- tryCatch(
+    system(paste(pretty, "2>&1"), intern = TRUE),
+    error = function(e) structure(conditionMessage(e), status = 1L)
+  )
+  status <- attr(out, "status")
+  list(output = out, ok = is.null(status) || identical(as.integer(status), 0L))
+}
+
 # Run a client CLI when run = TRUE and the program is on PATH; otherwise print
-# the command for the user. Tokens with spaces/quotes are quoted only for the
-# printed line (copy-pasteable in a shell); system2() receives raw args because
-# it does not invoke a shell and embedded quotes become part of the argv value.
+# the command for the user (copy-pasteable in a shell).
 .cli_command <- function(label, program, args, run) {
   args_fmt <- .quote_if_needed(args)
   pretty <- paste(program, paste(args_fmt, collapse = " "))
@@ -1143,16 +1165,11 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
                     label, program, pretty))
     return(list(command = pretty, ran = FALSE))
   }
-  out <- tryCatch(
-    system2(program, args = args, stdout = TRUE, stderr = TRUE),
-    error = function(e) structure(conditionMessage(e), status = 1L)
-  )
-  status <- attr(out, "status")
-  ok <- is.null(status) || identical(as.integer(status), 0L)
+  res <- .run_shell_command(pretty)
   message(sprintf("%s: %s\n  %s", label,
-                  if (ok) "ran" else "command FAILED", pretty))
-  if (length(out)) message(paste0("  ", out, collapse = "\n"))
-  list(command = pretty, ran = isTRUE(ok), output = out)
+                  if (res$ok) "ran" else "command FAILED", pretty))
+  if (length(res$output)) message(paste0("  ", res$output, collapse = "\n"))
+  list(command = pretty, ran = isTRUE(res$ok), output = res$output)
 }
 
 # Claude Code user/local: `claude mcp add` errors if the server name already
@@ -1170,11 +1187,29 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
                                       collapse = " "))
   combined <- paste(remove_pretty, add_pretty, sep = "\n")
 
+  # `claude mcp add`'s `--` (separating claude's own flags from the launched
+  # command) is only safe to paste manually if the shell preserves it
+  # verbatim. Windows PowerShell's own parameter binder treats a bare `--`
+  # as an "end of named parameters" marker and *strips* it before a target
+  # script ever sees it (verified: `& script.ps1 -- foo` yields $args =
+  # ("foo") only, `--` gone) - so if `claude` was installed via `npm install
+  # -g` (an npm .cmd/.ps1 shim pair, rather than the native installer's
+  # .exe) and this line is pasted into PowerShell, `claude` never receives
+  # the `--` it expects and can misinterpret the launch command. This only
+  # bites the manual copy-paste path below; run = TRUE never hits it
+  # (system() shells out directly, bypassing PowerShell's script binder).
+  ps1_note <- paste(
+    "  Note: if 'claude' was installed via npm (not the native installer),",
+    "pasting this into Windows PowerShell can silently drop the '--'",
+    "separator and break this command - use Command Prompt instead, or",
+    "rerun with run = TRUE so it executes directly."
+  )
+
   if (!isTRUE(run)) {
     message(sprintf(
       paste0("%s - run (remove-then-add so an existing entry is replaced):\n",
-             "  %s\n  %s"),
-      label, remove_pretty, add_pretty
+             "  %s\n  %s\n%s"),
+      label, remove_pretty, add_pretty, ps1_note
     ))
     return(list(command = combined, remove_command = remove_pretty,
                 add_command = add_pretty, ran = FALSE))
@@ -1182,35 +1217,29 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   if (!nzchar(Sys.which("claude"))) {
     message(sprintf(
       paste0("%s: 'claude' not found on PATH - run manually:\n",
-             "  %s\n  %s"),
-      label, remove_pretty, add_pretty
+             "  %s\n  %s\n%s"),
+      label, remove_pretty, add_pretty, ps1_note
     ))
     return(list(command = combined, remove_command = remove_pretty,
                 add_command = add_pretty, ran = FALSE))
   }
 
-  rem_out <- tryCatch(
-    system2("claude", args = remove_args,
-            stdout = TRUE, stderr = TRUE),
-    error = function(e) structure(conditionMessage(e), status = 1L)
-  )
-  rem_status <- attr(rem_out, "status")
-  rem_ok <- is.null(rem_status) || identical(as.integer(rem_status), 0L)
-  rem_txt <- paste(rem_out, collapse = "\n")
+  rem_res <- .run_shell_command(remove_pretty)
+  rem_txt <- paste(rem_res$output, collapse = "\n")
   rem_missing <- grepl("No MCP server named", rem_txt, fixed = TRUE)
-  if (!rem_ok && !rem_missing) {
+  if (!rem_res$ok && !rem_missing) {
     message(sprintf("%s: remove FAILED\n  %s", label, remove_pretty))
-    if (length(rem_out)) message(paste0("  ", rem_out, collapse = "\n"))
+    if (length(rem_res$output)) message(paste0("  ", rem_res$output, collapse = "\n"))
     return(list(command = combined, remove_command = remove_pretty,
-                add_command = add_pretty, ran = FALSE, output = rem_out))
+                add_command = add_pretty, ran = FALSE, output = rem_res$output))
   }
   message(sprintf(
     "%s: %s\n  %s",
     label,
-    if (rem_ok) "removed existing entry" else "no existing entry to remove",
+    if (rem_res$ok) "removed existing entry" else "no existing entry to remove",
     remove_pretty
   ))
-  if (length(rem_out)) message(paste0("  ", rem_out, collapse = "\n"))
+  if (length(rem_res$output)) message(paste0("  ", rem_res$output, collapse = "\n"))
 
   add_rec <- .cli_command(label, "claude", add_args, run = TRUE)
   list(

@@ -30,6 +30,43 @@
   list(package = pkg, status_hook = hook, status = status)
 }
 
+# normalizePath(mustWork = FALSE) only fully resolves the components of a
+# path up to the first one that doesn't exist yet; for a not-yet-written
+# repro script this can hand back Windows 8.3 short names (e.g. "MTOMAS~1")
+# for parent directories that DO exist, while a separately-normalized
+# project_dir resolves to the long name - a spurious mismatch. Recurse up to
+# the nearest existing ancestor to canonicalize, then reattach the
+# not-yet-existing remainder verbatim (nothing to resolve there).
+.mcp_normalize_path_lenient <- function(path) {
+  if (file.exists(path)) {
+    return(normalizePath(path, winslash = "/", mustWork = FALSE))
+  }
+  parent <- dirname(path)
+  if (identical(parent, path)) return(gsub("\\\\", "/", path))
+  file.path(.mcp_normalize_path_lenient(parent), basename(path))
+}
+
+# TRUE when the active repro script is not rooted under `project_dir` - e.g.
+# a provider launched a job with a project_dir the session recorder was never
+# pointed at (mcp_session_project_dir() was never called or was set for a
+# different project), so the "executed script" a user would replay silently
+# describes a different project than the one they asked about. Best-effort:
+# an unresolvable directory is never flagged. Reads the recorder's internal
+# path state directly (rather than mcp_repro_path(), which lazily creates a
+# default under tempdir() the first time it's called) so a session where
+# recording simply has not started yet is "no mismatch", not a false
+# positive against tempdir().
+.mcp_repro_project_mismatch <- function(project_dir) {
+  repro <- .mcp_repro_state$path
+  if (is.null(repro) || !nzchar(repro)) return(FALSE)
+  proj_abs <- tryCatch(.mcp_normalize_path_lenient(project_dir),
+                       error = function(e) NA_character_)
+  repro_abs <- tryCatch(.mcp_normalize_path_lenient(repro),
+                        error = function(e) NA_character_)
+  if (is.na(proj_abs) || is.na(repro_abs)) return(FALSE)
+  !startsWith(repro_abs, proj_abs)
+}
+
 # A best-effort "what's next" hint pulled from whichever provider's status
 # names a `recommended_next_phase` (Certara.RsNLME's project-workflow status
 # does); returns NA when no provider offers one. Provider-specific, so this
@@ -66,8 +103,11 @@
 #' @return A list with `project_dir`, `providers` (one entry per provider that
 #'   declares a `status_hook`: `package`, `status_hook`, and either `status`
 #'   or `error`), `next_gated_phase` (a best-effort hint from whichever
-#'   provider's status names one, or `NULL`), `repro_script`, and
-#'   `report_rmd` (this session's own accumulated artifacts).
+#'   provider's status names one, or `NULL`), `repro_script`, `report_rmd`
+#'   (this session's own accumulated artifacts), and
+#'   `repro_project_mismatch` (`TRUE` when `repro_script` is not rooted under
+#'   `project_dir` - the session recorder was never pointed at this project,
+#'   so it is not a faithful replay of work done here).
 #' @keywords internal
 #' @export
 get_certara_project_status <- function(project_dir = ".", dev_roots = character(0)) {
@@ -79,18 +119,29 @@ get_certara_project_status <- function(project_dir = ".", dev_roots = character(
       providers[[length(providers) + 1L]] <- entry
     }
   }
+  mismatch <- .mcp_repro_project_mismatch(project_dir)
   list(
     project_dir = normalizePath(project_dir, mustWork = FALSE),
     providers = providers,
     next_gated_phase = .mcp_status_next_phase(providers),
     repro_script = mcp_repro_path(),
     report_rmd = mcp_report_path(),
+    repro_project_mismatch = mismatch,
     note = paste(
       "Merged from each discovered provider's own status_hook; a provider",
       "with no status_hook is simply absent here. Provider-local artifacts",
       "(run/session directories, plan/decisions files, repro scripts) remain",
       "the source of truth - this surfaces their pointers, not their",
-      "content."
+      "content.",
+      if (isTRUE(mismatch)) {
+        paste(
+          "WARNING: repro_script is not rooted under project_dir - it does",
+          "not describe work done in this project. Call",
+          "mcp_session_project_dir(project_dir) to re-point the recorder."
+        )
+      } else {
+        NULL
+      }
     )
   )
 }
