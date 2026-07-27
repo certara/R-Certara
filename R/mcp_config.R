@@ -343,7 +343,8 @@ write_mcp_config <- function(client = c("cursor", "claude-code", "codex",
     # equivalent CLI command is reported for reference only.
     rec <- list(command = sprintf(
       "codex mcp add %s -- %s %s",
-      server_name, command, paste(.quote_if_needed(codex_args), collapse = " ")
+      server_name, .quote_if_needed(command),
+      paste(.quote_if_needed(codex_args), collapse = " ")
     ), ran = FALSE)
     message(sprintf("Codex (user scope): wrote '%s' in %s",
                     server_name, config_written))
@@ -1154,8 +1155,10 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
 # Run a client CLI when run = TRUE and the program is on PATH; otherwise print
 # the command for the user (copy-pasteable in a shell).
 .cli_command <- function(label, program, args, run) {
-  args_fmt <- .quote_if_needed(args)
-  pretty <- paste(program, paste(args_fmt, collapse = " "))
+  # Quote program as well as args: Windows system() takes everything up to the
+  # first unquoted space as the executable, so an absolute path under e.g.
+  # C:/Users/First Last/... would be truncated without this.
+  pretty <- paste(.quote_if_needed(c(program, args)), collapse = " ")
   if (!isTRUE(run)) {
     message(sprintf("%s - run:\n  %s", label, pretty))
     return(list(command = pretty, ran = FALSE))

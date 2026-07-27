@@ -365,6 +365,45 @@ test_that(".cli_command preserves multi-word args through an npm-style .cmd shim
   expect_false(any(grepl("^C:\\\\Program$", rec$output)))
 })
 
+test_that(".cli_command quotes a program path that contains spaces", {
+  # Display path: the pretty command must quote the program so a copy-paste
+  # (and system() on Windows) does not truncate at the first space.
+  program <- "C:/Users/First Last/bin/fakecli"
+  rec <- suppressMessages(
+    .cli_command("Fake CLI", program, c("mcp", "add", "certara-r"), run = FALSE)
+  )
+  expect_false(isTRUE(rec$ran))
+  expect_match(rec$command, "\"C:/Users/First Last/bin/fakecli\"", fixed = TRUE)
+  expect_false(grepl("^C:/Users/First ", rec$command))
+})
+
+test_that(".cli_command runs a program whose path contains spaces (Windows)", {
+  # Runtime path: Windows system() takes everything up to the first unquoted
+  # space as the executable, so a shim under a spaced directory must be
+  # quoted or the call never finds it.
+  skip_on_os(c("mac", "linux", "solaris"))
+  parent <- withr::local_tempdir()
+  shim_dir <- file.path(parent, "spaced dir")
+  dir.create(shim_dir)
+  rscript <- file.path(R.home("bin"), "Rscript.exe")
+  echo_r <- file.path(shim_dir, "echoargs.R")
+  writeLines(c(
+    "args <- commandArgs(trailingOnly = TRUE)",
+    "cat(paste(args, collapse = '|'))"
+  ), echo_r)
+  shim_cmd <- file.path(shim_dir, "fakecli.cmd")
+  writeLines(sprintf('@ECHO off\n"%s" "%s" %%*', rscript, echo_r), shim_cmd)
+
+  multiword_arg <- "C:\\Program Files\\Some Vendor\\thing.exe"
+  rec <- suppressMessages(
+    .cli_command("Fake CLI", shim_cmd, c("mcp", "add", "--", multiword_arg),
+                run = TRUE)
+  )
+  expect_true(isTRUE(rec$ran))
+  expect_match(rec$command, "\"", fixed = TRUE)
+  expect_true(any(grepl(multiword_arg, rec$output, fixed = TRUE)))
+})
+
 test_that("launch expression encodes btw groups and session flag", {
   expr <- .mcp_launch_expr(c("docs", "pkg"), FALSE, "certara-r")
   expect_match(expr, "launch_certara_mcp")

@@ -102,6 +102,35 @@ test_that(".mcp_repro_project_mismatch is TRUE when the repro script lives elsew
   expect_true(.mcp_repro_project_mismatch(proj))
 })
 
+test_that(".mcp_path_within requires a path boundary (not a bare prefix)", {
+  expect_true(.mcp_path_within("/tmp/proj/scripts/repro.R", "/tmp/proj"))
+  expect_true(.mcp_path_within("/tmp/proj", "/tmp/proj"))
+  expect_true(.mcp_path_within("/tmp/proj/", "/tmp/proj"))
+  expect_false(.mcp_path_within("/tmp/proj2/scripts/repro.R", "/tmp/proj"))
+  expect_false(.mcp_path_within("/tmp/other/repro.R", "/tmp/proj"))
+})
+
+test_that(".mcp_path_within is case-insensitive on Windows", {
+  skip_on_os(c("mac", "linux", "solaris"))
+  expect_true(.mcp_path_within("C:/Users/Me/proj/repro.R", "c:/users/me/proj"))
+  expect_true(.mcp_path_within("C:/Users/Me/Proj/repro.R", "C:/Users/ME/PROJ"))
+  expect_false(.mcp_path_within("C:/Users/Me/proj2/repro.R", "c:/users/me/proj"))
+})
+
+test_that(".mcp_repro_project_mismatch treats a sibling-prefix directory as a mismatch", {
+  # Bare startsWith("/tmp/proj", "/tmp/proj") would also match "/tmp/proj2/...";
+  # requiring a path boundary after the root rejects that false negative.
+  mcp_repro_reset()
+  on.exit(mcp_repro_reset(), add = TRUE)
+  parent <- withr::local_tempdir()
+  proj <- file.path(parent, "proj")
+  sibling <- file.path(parent, "proj2")
+  dir.create(proj)
+  dir.create(sibling)
+  mcp_repro_path(file.path(sibling, "certara_mcp_repro.R"))
+  expect_true(.mcp_repro_project_mismatch(proj))
+})
+
 test_that("get_certara_project_status surfaces repro_project_mismatch and warns in note", {
   local_mocked_bindings(
     .mcp_discover_tool_providers = function(dev_roots = character(0)) {

@@ -46,6 +46,21 @@
   file.path(.mcp_normalize_path_lenient(parent), basename(path))
 }
 
+# TRUE when `path` is `root` itself or a true descendant. Both sides are
+# expected to already use `/` separators (as from .mcp_normalize_path_lenient()).
+# A bare startsWith() would treat a sibling whose name merely begins with
+# `root` (e.g. /tmp/proj vs /tmp/proj2) as rooted under it; requiring a path
+# boundary after the root avoids that. On Windows the file system is
+# case-insensitive, so compare case-folded.
+.mcp_path_within <- function(path, root) {
+  root <- sub("/+$", "", root)
+  if (.Platform$OS.type == "windows") {
+    path <- tolower(path)
+    root <- tolower(root)
+  }
+  identical(path, root) || startsWith(path, paste0(root, "/"))
+}
+
 # TRUE when the active repro script is not rooted under `project_dir` - e.g.
 # a provider launched a job with a project_dir the session recorder was never
 # pointed at (mcp_session_project_dir() was never called or was set for a
@@ -64,7 +79,7 @@
   repro_abs <- tryCatch(.mcp_normalize_path_lenient(repro),
                         error = function(e) NA_character_)
   if (is.na(proj_abs) || is.na(repro_abs)) return(FALSE)
-  !startsWith(repro_abs, proj_abs)
+  !.mcp_path_within(repro_abs, proj_abs)
 }
 
 # A best-effort "what's next" hint pulled from whichever provider's status
