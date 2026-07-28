@@ -90,9 +90,9 @@ command. Falls back to printing if the CLI is not found. Default \code{FALSE}.
 Claude Code's \verb{claude mcp add} refuses when the server name already exists,
 so this path always remove-then-adds (soft-remove if absent) so a stale
 launcher (e.g. an old \code{Certara.RsNLME::launch_certara_mcp} entry) is
-replaced. Codex is configured by writing \verb{~/.codex/config.toml} directly (the only way
-to set per-tool approvals), so \code{run} does not invoke the Codex CLI; the
-equivalent \verb{codex mcp add} command is reported for reference.}
+replaced. Codex is configured by writing \verb{~/.codex/config.toml} directly
+(the only way to set per-tool approvals), so \code{run} does not invoke the
+Codex CLI; the equivalent \verb{codex mcp add} command is reported for reference.}
 
 \item{job_watch_wait_seconds}{Optional override for the per-call server-side
 job-watch budget (seconds) baked into the launch command, used by

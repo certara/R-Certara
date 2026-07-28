@@ -75,3 +75,75 @@ test_that("get_certara_project_status returns no next_gated_phase when no provid
   expect_length(out$providers, 0)
   expect_null(out$next_gated_phase)
 })
+
+test_that(".mcp_repro_project_mismatch is FALSE when the repro path is unset", {
+  mcp_repro_reset()
+  on.exit(mcp_repro_reset(), add = TRUE)
+  # No path ever set: mcp_repro_path() lazily resolves under tempdir(), which
+  # is never "under" an arbitrary project dir, but an unset recorder simply
+  # has not started yet -- that is not the same failure as a stale one.
+  expect_false(.mcp_repro_project_mismatch(withr::local_tempdir()))
+})
+
+test_that(".mcp_repro_project_mismatch is FALSE when the repro script is rooted under project_dir", {
+  mcp_repro_reset()
+  on.exit(mcp_repro_reset(), add = TRUE)
+  proj <- withr::local_tempdir()
+  mcp_repro_path(file.path(proj, "scripts", "certara_mcp_repro.R"))
+  expect_false(.mcp_repro_project_mismatch(proj))
+})
+
+test_that(".mcp_repro_project_mismatch is TRUE when the repro script lives elsewhere", {
+  mcp_repro_reset()
+  on.exit(mcp_repro_reset(), add = TRUE)
+  other <- withr::local_tempdir()
+  mcp_repro_path(file.path(other, "certara_mcp_repro.R"))
+  proj <- withr::local_tempdir()
+  expect_true(.mcp_repro_project_mismatch(proj))
+})
+
+test_that(".mcp_path_within requires a path boundary (not a bare prefix)", {
+  expect_true(.mcp_path_within("/tmp/proj/scripts/repro.R", "/tmp/proj"))
+  expect_true(.mcp_path_within("/tmp/proj", "/tmp/proj"))
+  expect_true(.mcp_path_within("/tmp/proj/", "/tmp/proj"))
+  expect_false(.mcp_path_within("/tmp/proj2/scripts/repro.R", "/tmp/proj"))
+  expect_false(.mcp_path_within("/tmp/other/repro.R", "/tmp/proj"))
+})
+
+test_that(".mcp_path_within is case-insensitive on Windows", {
+  skip_on_os(c("mac", "linux", "solaris"))
+  expect_true(.mcp_path_within("C:/Users/Me/proj/repro.R", "c:/users/me/proj"))
+  expect_true(.mcp_path_within("C:/Users/Me/Proj/repro.R", "C:/Users/ME/PROJ"))
+  expect_false(.mcp_path_within("C:/Users/Me/proj2/repro.R", "c:/users/me/proj"))
+})
+
+test_that(".mcp_repro_project_mismatch treats a sibling-prefix directory as a mismatch", {
+  # Bare startsWith("/tmp/proj", "/tmp/proj") would also match "/tmp/proj2/...";
+  # requiring a path boundary after the root rejects that false negative.
+  mcp_repro_reset()
+  on.exit(mcp_repro_reset(), add = TRUE)
+  parent <- withr::local_tempdir()
+  proj <- file.path(parent, "proj")
+  sibling <- file.path(parent, "proj2")
+  dir.create(proj)
+  dir.create(sibling)
+  mcp_repro_path(file.path(sibling, "certara_mcp_repro.R"))
+  expect_true(.mcp_repro_project_mismatch(proj))
+})
+
+test_that("get_certara_project_status surfaces repro_project_mismatch and warns in note", {
+  local_mocked_bindings(
+    .mcp_discover_tool_providers = function(dev_roots = character(0)) {
+      list(providers = list(), skipped = list())
+    }
+  )
+  mcp_repro_reset()
+  on.exit(mcp_repro_reset(), add = TRUE)
+  other <- withr::local_tempdir()
+  mcp_repro_path(file.path(other, "certara_mcp_repro.R"))
+  proj <- withr::local_tempdir()
+
+  out <- get_certara_project_status(project_dir = proj)
+  expect_true(out$repro_project_mismatch)
+  expect_match(out$note, "WARNING", fixed = TRUE)
+})

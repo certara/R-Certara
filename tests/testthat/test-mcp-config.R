@@ -207,6 +207,20 @@ test_that("claude-code user scope passes -s user to the CLI", {
   })
 })
 
+test_that("claude-code add/remove guidance warns about PowerShell stripping '--'", {
+  # The printed `claude mcp add ... -- <command> <args>` line is only safe to
+  # paste into PowerShell if `claude` is a native .exe; npm's .ps1/.cmd shims
+  # have their `--` silently stripped by PowerShell's own parameter binder
+  # before `claude` ever sees it. run = FALSE (the default) is exactly the
+  # manual copy-paste path, so it must carry this warning.
+  proj <- file.path(tempdir(), paste0("mcpcfg_ccwarn_", as.integer(Sys.time())))
+  dir.create(proj, showWarnings = FALSE, recursive = TRUE)
+  expect_message(
+    write_mcp_config(client = "claude-code", scope = "local", project_dir = proj),
+    "PowerShell can silently drop the '--'"
+  )
+})
+
 test_that("claude-code local scope passes -s local to the CLI", {
   proj <- file.path(tempdir(), paste0("mcpcfg_cclocal_", as.integer(Sys.time())))
   dir.create(proj, showWarnings = FALSE, recursive = TRUE)
@@ -317,6 +331,77 @@ test_that("run = TRUE falls back to printing when the CLI is absent", {
   )
   expect_false(isTRUE(rec$ran))
   expect_match(rec$command, "certara-rsnlme-definitely-missing-codex-cli mcp remove")
+})
+
+test_that(".cli_command preserves multi-word args through an npm-style .cmd shim", {
+  # Regression test for a real-world corrupted MCP config: system2()'s
+  # argv-array invocation is only reconstructed correctly by Windows for
+  # native .exe targets. When the target is an npm-style .cmd/.ps1 shim
+  # (how many CLIs, including `claude`, are installed via `npm install -g`),
+  # Windows must relay through cmd.exe, and system2() does so *without*
+  # re-quoting args containing spaces - so e.g. a "C:\Program Files\..."
+  # path silently becomes two arguments. .cli_command()/.run_shell_command()
+  # must instead execute the identical pre-quoted string shown to the user,
+  # which cmd.exe parses correctly.
+  skip_on_os(c("mac", "linux", "solaris"))
+  shim_dir <- withr::local_tempdir()
+  rscript <- file.path(R.home("bin"), "Rscript.exe")
+  echo_r <- file.path(shim_dir, "echoargs.R")
+  writeLines(c(
+    "args <- commandArgs(trailingOnly = TRUE)",
+    "cat(paste(args, collapse = '|'))"
+  ), echo_r)
+  shim_cmd <- file.path(shim_dir, "fakecli.cmd")
+  writeLines(sprintf('@ECHO off\n"%s" "%s" %%*', rscript, echo_r), shim_cmd)
+
+  multiword_arg <- "C:\\Program Files\\Some Vendor\\thing.exe"
+  rec <- suppressMessages(
+    .cli_command("Fake CLI", shim_cmd, c("mcp", "add", "--", multiword_arg),
+                run = TRUE)
+  )
+  expect_true(isTRUE(rec$ran))
+  expect_true(any(grepl(multiword_arg, rec$output, fixed = TRUE)))
+  # The corrupted-config failure mode: the path silently split at its space.
+  expect_false(any(grepl("^C:\\\\Program$", rec$output)))
+})
+
+test_that(".cli_command quotes a program path that contains spaces", {
+  # Display path: the pretty command must quote the program so a copy-paste
+  # (and system() on Windows) does not truncate at the first space.
+  program <- "C:/Users/First Last/bin/fakecli"
+  rec <- suppressMessages(
+    .cli_command("Fake CLI", program, c("mcp", "add", "certara-r"), run = FALSE)
+  )
+  expect_false(isTRUE(rec$ran))
+  expect_match(rec$command, "\"C:/Users/First Last/bin/fakecli\"", fixed = TRUE)
+  expect_false(grepl("^C:/Users/First ", rec$command))
+})
+
+test_that(".cli_command runs a program whose path contains spaces (Windows)", {
+  # Runtime path: Windows system() takes everything up to the first unquoted
+  # space as the executable, so a shim under a spaced directory must be
+  # quoted or the call never finds it.
+  skip_on_os(c("mac", "linux", "solaris"))
+  parent <- withr::local_tempdir()
+  shim_dir <- file.path(parent, "spaced dir")
+  dir.create(shim_dir)
+  rscript <- file.path(R.home("bin"), "Rscript.exe")
+  echo_r <- file.path(shim_dir, "echoargs.R")
+  writeLines(c(
+    "args <- commandArgs(trailingOnly = TRUE)",
+    "cat(paste(args, collapse = '|'))"
+  ), echo_r)
+  shim_cmd <- file.path(shim_dir, "fakecli.cmd")
+  writeLines(sprintf('@ECHO off\n"%s" "%s" %%*', rscript, echo_r), shim_cmd)
+
+  multiword_arg <- "C:\\Program Files\\Some Vendor\\thing.exe"
+  rec <- suppressMessages(
+    .cli_command("Fake CLI", shim_cmd, c("mcp", "add", "--", multiword_arg),
+                run = TRUE)
+  )
+  expect_true(isTRUE(rec$ran))
+  expect_match(rec$command, "\"", fixed = TRUE)
+  expect_true(any(grepl(multiword_arg, rec$output, fixed = TRUE)))
 })
 
 test_that("launch expression encodes btw groups and session flag", {
