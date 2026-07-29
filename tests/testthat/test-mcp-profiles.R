@@ -14,17 +14,50 @@ test_that(".mcp_resolve_profile returns specs and rejects unknown profiles", {
   expect_error(.mcp_resolve_profile("nope"))
 })
 
-test_that("provider_groups gives Certara.RDarwin and Certara.RsNLME their own vocabulary", {
+test_that("provider_groups gives Certara.RDarwin, Certara.RsNLME, and tidyvpc their own vocabulary", {
   exec_groups <- .mcp_resolve_profile("execution")$provider_groups
   expect_true("results" %in% exec_groups[["Certara.RDarwin"]])
   expect_false("results" %in% exec_groups[["*"]])
   expect_true("qualification" %in% exec_groups[["Certara.RsNLME"]])
   expect_false("qualification" %in% exec_groups[["*"]])
-  # A provider with no explicit entry falls back to "*".
+  # tidyvpc's build/plot/meta groups are not in the host "*" vocabulary; an
+  # explicit entry keeps the VPC lifecycle reachable under execution/
+  # diagnostics (stats/qpc_score stays full-only).
+  expect_true(all(c("data", "build", "plot", "meta") %in% exec_groups[["tidyvpc"]]))
+  expect_false("stats" %in% exec_groups[["tidyvpc"]])
   expect_identical(
     .mcp_resolve_provider_group_request(exec_groups, "tidyvpc"),
-    exec_groups[["*"]]
+    exec_groups[["tidyvpc"]]
   )
+  diag_groups <- .mcp_resolve_profile("diagnostics")$provider_groups
+  expect_identical(
+    .mcp_resolve_provider_group_request(diag_groups, "tidyvpc"),
+    c("data", "build", "plot", "meta")
+  )
+})
+
+test_that("diagnostics profile keeps each provider's build/plot lifecycle non-empty", {
+  skip_if_not_installed("tidyvpc")
+  skip_if_not_installed("Certara.Xpose.NLME")
+  diag <- .mcp_resolve_profile("diagnostics")$provider_groups
+  # tidyvpc: load + build + plot must all be selected.
+  tv_req <- .mcp_resolve_provider_group_request(diag, "tidyvpc")
+  tv_offered <- eval(formals(tidyvpc::tidyvpc_mcp_tools)[["groups"]])
+  tv_use <- intersect(tv_req, tv_offered)
+  expect_true(all(c("data", "build", "plot") %in% tv_use))
+  tv_tools <- tidyvpc::tidyvpc_mcp_tools(groups = tv_use)
+  tv_names <- vapply(tv_tools, function(t) t@name, character(1))
+  expect_true(any(grepl("load", tv_names)))
+  expect_true(any(grepl("build", tv_names)))
+  expect_true(any(grepl("plot", tv_names)))
+  expect_false(any(grepl("qpc", tv_names)))
+
+  # Xpose: interpretation + comparison under diagnostics via "*".
+  xp_req <- .mcp_resolve_provider_group_request(diag, "Certara.Xpose.NLME")
+  xp_offered <- eval(formals(Certara.Xpose.NLME::xpose_mcp_tools)[["groups"]])
+  xp_use <- intersect(xp_req, xp_offered)
+  expect_true(length(xp_use) >= 1L)
+  expect_true(length(Certara.Xpose.NLME::xpose_mcp_tools(groups = xp_use)) >= 1L)
 })
 
 test_that(".mcp_resolve_provider_group_request supports all three provider_groups shapes", {

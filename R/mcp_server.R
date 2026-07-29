@@ -51,7 +51,8 @@
         "*" = c("knowledge", "data", "execution"),
         "Certara.RsNLME" = c("knowledge", "data", "execution", "qualification"),
         "Certara.RDarwin" = c("environment", "authoring", "preflight",
-                              "execution", "results")
+                              "execution", "results"),
+        "tidyvpc" = c("data", "build", "plot", "meta")
       )
     ),
     # execution + comparison + interpretation.
@@ -62,7 +63,12 @@
         "Certara.RsNLME" = c("knowledge", "data", "execution", "comparison",
                              "interpretation", "qualification"),
         "Certara.RDarwin" = c("environment", "authoring", "preflight",
-                              "execution", "results")
+                              "execution", "results"),
+        # tidyvpc's group vocabulary (data/build/plot/meta) does not intersect
+        # the "*" host names above, so without an explicit entry the
+        # diagnostics profile would only expose the two loader tools. Keep
+        # stats (qpc_score) opt-in to the "full" profile.
+        "tidyvpc" = c("data", "build", "plot", "meta")
       )
     )
   )
@@ -173,6 +179,8 @@ launch_certara_mcp <- function(btw_groups = "docs",
   mcp_repro_reset()
   mcp_report_reset()
   mcp_session_paths_reset()
+  # Restore a durable project pin from the previous session, if any.
+  invisible(mcp_session_project_dir())
   invisible(tryCatch(
     .kb_build_index(dev_roots = dev_roots, refresh = TRUE),
     error = function(e) {

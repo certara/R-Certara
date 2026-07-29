@@ -114,21 +114,26 @@
     .ctool(
       function(dir = NULL) {
         if (!is.null(dir)) mcp_session_project_dir(dir)
+        dur <- mcp_session_durability()
         list(
           project_dir = mcp_session_project_dir(),
           scripts_dir = mcp_session_scripts_dir(),
           figures_dir = mcp_session_figures_dir(),
           reports_dir = mcp_session_reports_dir(),
-          models_dir = mcp_session_models_dir()
+          models_dir = mcp_session_models_dir(),
+          durable = dur$durable,
+          next_action = if (!isTRUE(dur$durable)) dur$next_action else NULL,
+          reason = dur$reason
         )
       },
       "certara_session_project_dir",
       paste(
         "Get or set the session project root so reproducible scripts, figures,",
         "report Rmd, and saved models co-locate under scripts/, figures/,",
-        "reports/, and models/. Set 'dir' once at project start before",
-        "diagnostics and reporting; after that, do not ask the user where to put",
-        "QC artifacts unless they request a different layout."
+        "reports/, and models/. The pin is written to",
+        "<dir>/.certara-mcp/session.json and restored after a server restart.",
+        "Set 'dir' once at project start before diagnostics and reporting;",
+        "prefer a durable path (not tempdir()/Rtmp*)."
       ),
       arguments = list(
         dir = .ts("Optional project root directory to pin for this session.")
@@ -372,7 +377,34 @@
     .ctool(
       function() list_memory_records(),
       "list_memory_records",
-      "Inspect all stored memory records (run memory, lessons, preferences)."
+      paste(
+        "Inspect all stored memory records (run memory, lessons, preferences,",
+        "and inactive-by-default MCP capability gaps from report_mcp_gap)."
+      )
+    ),
+    .ctool(
+      function(tool, task, missing_capability, attempted_args = NULL,
+               workaround = NULL, session_id = NULL) {
+        report_mcp_gap(tool, task, missing_capability,
+                       attempted_args = attempted_args,
+                       workaround = workaround, session_id = session_id)
+      },
+      "report_mcp_gap",
+      paste(
+        "Record a structured MCP capability gap: a tool worked but could not",
+        "express what the user asked for. Call this BEFORE writing a parallel",
+        "shell/script workaround. Gaps are stored inactive-by-default and",
+        "surfaced by list_memory_records so maintainers can prioritize fixes."
+      ),
+      arguments = list(
+        tool = .ts("Tool that was insufficient (or 'none').", required = TRUE),
+        task = .ts("What the user asked for.", required = TRUE),
+        missing_capability = .ts("Short description of the missing capability.",
+                                 required = TRUE),
+        attempted_args = .ts("Optional JSON text of args that were tried."),
+        workaround = .ts("Optional description of the fallback used (or 'none')."),
+        session_id = .ts("Optional session identifier.")
+      )
     )
   )
 }

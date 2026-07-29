@@ -124,6 +124,19 @@ If a Certara MCP call errors or a tool is missing:
 5. Fix the wiring (`Certara.R.mcp.setup_troubleshooting` KB entry) or wait for
    the tools to return before resuming the workflow.
 
+### When a tool works but cannot express what was asked (capability gap)
+
+Distinct from tool failure: the tool is available and may succeed, but an
+option / key / workflow the user needs is missing.
+
+1. State the gap (what was asked, what the tool accepted, what it dropped).
+2. Call `report_mcp_gap` with `{tool, task, missing_capability, attempted_args,
+   workaround}`.
+3. Ask before writing a parallel Shell/Write script; scripting is only
+   appropriate when the user explicitly chooses that route after the gap is
+   surfaced.
+4. Prefer a supported MCP alternative when one exists.
+
 ### Knowledge lookup (guidance first, then reference, then btw)
 
 The KB has two layers: a **guidance layer** (the pharmacometric "bible" — what to
@@ -191,25 +204,14 @@ Mapping rules live in the KB (`Certara.RsNLME.nonmem.*`): `advan_trans`,
 The tools are organized into task-oriented phases so you reason by phase instead
 of scanning the full list. This is a presentation map, not a second enablement
 axis - the same tool can appear in more than one phase, and the cross-cutting
-bands apply throughout. `certara_mcp_capabilities()$workflows` returns the same
-map.
+bands apply throughout.
 
-| Phase | Tools |
-|-------|-------|
-| setup | `certara_mcp_capabilities`, `list_certara_kb_packages`, `guide_pharmacometrics`, `get_user_preferences`, `get_lessons` |
-| analysis_plan | `guide_pharmacometrics`, `analyze_nonmem_control`, `validate_analysis_plan`, `save_analysis_plan` |
-| data_inspection | `inspect_pk_dataset`, `inspect_textual_model` |
-| model_creation | `list_builtin_model_constructors`, `validate_pml`, `confirm_pml_structure`, `analyze_nonmem_control`, `draft_pml_from_nonmem`, `scaffold_mmdl_from_pml`, `validate_mmdl`, `validate_nlme_model`, `inspect_nlme_model`, `validate_fit_spec` |
-| fit_execution | `start_nlme_fit_spec`, `start_nlme_fitmodel`, `start_nlme_fit`, `start_nlme_job` |
-| diagnostics | `get_fit_summary`, `interpret_parameters` |
-| vpc | `start_nlme_vpcmodel`, `summarize_vpc` |
-| covariate_search | `start_nlme_job`, `compare_nlme_jobs` |
-| darwin_search (Certara.RDarwin) | `check_darwin_prereqs`, `scaffold_darwin_project`, `validate_darwin_search`, `start_darwin_search`, `wait_for_darwin_job`, `collect_darwin_search`, `explain_darwin_fitness`, `propose_darwin_qualification` |
-| qualification (Certara.RsNLME) | `check_ofv_parity`, `validate_sequential_lrt`, `start_sequential_lrt`, `advance_sequential_lrt`, `get_sequential_lrt_status`, `collect_sequential_lrt`, `stop_sequential_lrt`, `list_sequential_lrt_sessions` |
-| report_qc | `get_fit_summary`, `compare_nlme_jobs`, `summarize_vpc`, `interpret_parameters`, `list_nlme_artifacts` |
-| knowledge (any phase) | `search_certara_kb`, `get_certara_kb_entry`, `find_certara_examples`, `explain_certara_workflow`, `lookup_pml_symbol`, `list_pml_enums` |
-| job_management (any phase) | `wait_for_nlme_job`, `get_nlme_job_status`, `collect_nlme_job`, `get_fit_summary`, `list_nlme_artifacts`, `list_mcp_runs`, `cleanup_mcp_runs`, `get_certara_project_status` |
-| memory (any phase) | `get_user_preferences`, `get_lessons`, `record_lesson`, `set_preference`, `list_memory_records` |
+**Source of truth:** `certara_mcp_capabilities()$workflows` (merged from each
+provider's `inst/mcp/capabilities.json`). Do not maintain a second hardcoded
+table here - it will drift. Project-scope Cursor setup
+(`write_mcp_config()`) embeds the live phase tables into
+`.cursor/rules/certara-mcp-usage.mdc` via the `__WORKFLOW_PHASE_TABLE__`
+placeholder so the rule, this document, and `capabilities.json` stay aligned.
 
 ### Default end-to-end PK/PD workflow
 

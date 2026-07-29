@@ -123,7 +123,15 @@ mcp_repro_read <- function() {
 #' @rdname mcp_repro
 #' @export
 mcp_repro_info <- function() {
-  list(path = mcp_repro_path(), contents = mcp_repro_read())
+  dur <- mcp_session_durability()
+  list(
+    path = mcp_repro_path(),
+    contents = mcp_repro_read(),
+    durable = dur$durable,
+    project_dir = dur$project_dir,
+    next_action = if (!isTRUE(dur$durable)) dur$next_action else NULL,
+    reason = dur$reason
+  )
 }
 
 # Mark a value to render verbatim (an R symbol/expression) rather than as a

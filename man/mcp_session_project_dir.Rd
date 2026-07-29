@@ -17,7 +17,8 @@ The active project root, or \code{NULL} when unset.
 Get or set the session project root. When set, reproducible scripts,
 figures, report Rmd files, and saved models are written under
 \verb{<dir>/scripts/}, \verb{<dir>/figures/}, \verb{<dir>/reports/}, and \verb{<dir>/models/}
-respectively.
+respectively. The pin is also written to \verb{<dir>/.certara-mcp/session.json}
+and restored automatically after a server restart.
 }
 \examples{
 mcp_session_project_dir(tempdir())

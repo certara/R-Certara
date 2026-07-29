@@ -340,10 +340,15 @@ mcp_report_info <- function() {
     length(sec$items)
   }, integer(1))
   names(sections) <- .mcp_report_ordered_section_ids()
+  dur <- mcp_session_durability()
   list(
     path = mcp_report_path(),
     contents = mcp_report_read(),
-    section_item_counts = sections[sections > 0L]
+    section_item_counts = sections[sections > 0L],
+    durable = dur$durable,
+    project_dir = dur$project_dir,
+    next_action = if (!isTRUE(dur$durable)) dur$next_action else NULL,
+    reason = dur$reason
   )
 }
 
