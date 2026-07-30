@@ -67,6 +67,8 @@ test_that("certara_mcp_capabilities exposes session_start_checklist and tool_dis
   expect_true(!is.null(cap$tool_discovery$host_tool_count))
   expect_true(cap$tool_discovery$host_tool_count >= 1L)
   expect_true("capability_gap" %in% names(cap$rules))
+  expect_true("evidence_tiers" %in% names(cap$rules))
+  expect_true(grepl("Engine facts|style preference", cap$rules$evidence_tiers))
   expect_true(any(vapply(cap$tool_providers, function(p) {
     !is.na(p$tool_count)
   }, logical(1))))
