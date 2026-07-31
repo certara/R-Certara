@@ -49,6 +49,32 @@
   )
 }
 
+.rule_capability_gap <- function() {
+  paste(
+    "Capability gap (distinct from tool failure): if a Certara MCP tool is",
+    "available and succeeds but cannot express what the user asked for (missing",
+    "option, unsupported key, missing workflow), do NOT silently fall back to",
+    "Write/Shell scripts. State the gap, call report_mcp_gap with the tool,",
+    "task, missing_capability, and attempted_args, then ask the user before",
+    "writing a parallel script. Tool-failure (unavailable/error) still follows",
+    "the anti-fallback rule in certara-mcp-usage.mdc."
+  )
+}
+
+.rule_evidence_tiers <- function() {
+  paste(
+    "Evidence tiers: keep three layers distinct. (1) Engine facts — KB entries",
+    "with provenance (grammar/codegen/product Rd) are ground truth for syntax",
+    "and engine behavior. (2) Modeling decisions — guidance/decision entries",
+    "state when a scientifically conditional choice is valid; ask or cite the",
+    "decision entry rather than treating one valid formulation as universal.",
+    "(3) User style preferences — comment style, unit comments, equation",
+    "notation, canonical working units — stored via set_preference() /",
+    "get_user_preferences() (see Certara.RsNLME.mcp.style_preferences). Never",
+    "present a style preference to the user as an engine requirement."
+  )
+}
+
 # Memory-and-sources behavior contract (generic; applies to every provider).
 .rule_memory_and_sources <- function() {
   paste(
@@ -232,10 +258,15 @@ certara_mcp_capabilities <- function(dev_roots = character(0)) {
     repro_script = .rule_repro_script(),
     report_rmd = .rule_report_rmd(),
     vpc_two_step = .rule_vpc_two_step(),
+    capability_gap = .rule_capability_gap(),
+    evidence_tiers = .rule_evidence_tiers(),
     memory_and_sources = .rule_memory_and_sources()
   )
   # Provider rules override host rules of the same id (more specific wins).
   rules <- utils::modifyList(host_rules, frag$rules)
+
+  tool_discovery <- .mcp_tool_discovery(tool_disc$providers,
+                                        .mcp_launch_config()$tool_profile)
 
   list(
     server = server_name,
@@ -252,13 +283,11 @@ certara_mcp_capabilities <- function(dev_roots = character(0)) {
     skipped_kb_providers = lapply(kb_skipped, function(s) {
       list(package = s$package, reason = s$reason)
     }),
-    tool_providers = lapply(tool_disc$providers, function(p) {
-      list(package = p$package, mode = p$mode, tool_count = p$tool_count,
-           source = p$source %||% "installed")
-    }),
+    tool_providers = tool_discovery$providers,
     skipped_tool_providers = lapply(tool_disc$skipped, function(s) {
       list(package = s$package, reason = s$reason)
     }),
+    tool_discovery = tool_discovery$summary,
     gated_tools = .mcp_gated_tool_names(dev_roots),
     capability_providers = frag$providers,
     attached_ecosystem = .certara_attached(),
@@ -272,12 +301,17 @@ certara_mcp_capabilities <- function(dev_roots = character(0)) {
     prerequisites = frag$prerequisites,
     session_start = list(
       memory_enabled = .memory_enabled(),
+      checklist = .mcp_session_start_checklist(),
       instruction = paste(
-        "If memory is enabled, call get_user_preferences() and get_lessons()",
-        "before proposing a workflow. Diagnose setup with certara_session_status()."
+        "Follow session_start.checklist in order: certara_mcp_capabilities ->",
+        "get_user_preferences and get_lessons (if memory is enabled) ->",
+        "find_certara_tools for the task -> phase tools. Diagnose setup with",
+        "certara_session_status(); pin a durable project_dir before",
+        "fits/diagnostics."
       ),
       provider_notes = .mcp_unique_session_start(frag$session_start)
     ),
+    session_start_checklist = .mcp_session_start_checklist(),
     execution_contexts = list(
       status_tool = "certara_session_status",
       note = paste("Three R contexts (server process, bridged live session,",
@@ -310,6 +344,78 @@ certara_mcp_capabilities <- function(dev_roots = character(0)) {
     if (length(keep)) out <- c(out, paste(keep, collapse = " "))
   }
   unique(out)
+}
+
+.mcp_session_start_checklist <- function() {
+  c(
+    "1. Call certara_mcp_capabilities() once for versions, rules, tool_discovery, and this checklist.",
+    "2. If memory is enabled, call get_user_preferences() and get_lessons().",
+    "3. Pin a durable project_dir with certara_session_project_dir (not tempdir()/Rtmp*).",
+    "4. Call find_certara_tools(task) when unsure which tool fits; use tool_discovery counts instead of scanning GetMcpTools.",
+    "5. Proceed with the phase tools for the current workflow; call report_mcp_gap before any script fallback."
+  )
+}
+
+# Populate per-provider tool counts/names at capabilities time so agents stop
+# treating tool_count = NA as a reason to scan the full catalog.
+.mcp_tool_discovery <- function(providers, tool_profile = NULL) {
+  profile <- tryCatch({
+    if (is.null(tool_profile) || !nzchar(tool_profile %||% "")) "full"
+    else tool_profile
+  }, error = function(e) "full")
+  profile <- tryCatch(.mcp_resolve_profile(profile), error = function(e) NULL)
+  provider_groups <- profile$provider_groups
+  host_groups <- profile$host %||% c("meta", "knowledge", "memory")
+
+  host_tools <- tryCatch(.certara_host_tools(groups = host_groups),
+                         error = function(e) list())
+  host_names <- vapply(host_tools, function(t) {
+    tryCatch(t@name, error = function(e) NA_character_)
+  }, character(1))
+  host_names <- host_names[!is.na(host_names)]
+
+  enriched <- lapply(providers, function(p) {
+    names_out <- character(0)
+    count <- NA_integer_
+    tryCatch({
+      req <- .mcp_resolve_provider_group_request(provider_groups, p$package)
+      tools <- .mcp_build_provider_tools(p, req)
+      names_out <- vapply(tools, function(t) {
+        tryCatch(t@name, error = function(e) NA_character_)
+      }, character(1))
+      names_out <- names_out[!is.na(names_out)]
+      count <- length(names_out)
+    }, error = function(e) NULL)
+    list(
+      package = p$package,
+      mode = p$mode,
+      tool_count = count,
+      tool_names = names_out,
+      source = p$source %||% "installed"
+    )
+  })
+
+  list(
+    providers = enriched,
+    summary = list(
+      host_tool_count = length(host_names),
+      host_tool_names = host_names,
+      provider_tool_count = sum(vapply(enriched, function(p) {
+        if (is.na(p$tool_count)) 0L else as.integer(p$tool_count)
+      }, integer(1))),
+      ranked_discovery = c(
+        "certara_mcp_capabilities",
+        "get_user_preferences",
+        "get_lessons",
+        "find_certara_tools",
+        "guide_pharmacometrics"
+      ),
+      note = paste(
+        "Use these counts/names instead of GetMcpTools catalog scans.",
+        "find_certara_tools ranks the right tool for a free-text task."
+      )
+    )
+  )
 }
 
 #' Export active memory as a client rule file

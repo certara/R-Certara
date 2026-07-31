@@ -13,6 +13,7 @@
 .memory_runs_path <- function() file.path(.memory_dir(), "run_memory.jsonl")
 .memory_lessons_path <- function() file.path(.memory_dir(), "lessons.jsonl")
 .memory_prefs_path <- function() file.path(.memory_dir(), "preferences.jsonl")
+.memory_gaps_path <- function() file.path(.memory_dir(), "gaps.jsonl")
 
 .memory_config <- function() {
   p <- .memory_config_path()
@@ -317,7 +318,7 @@ get_user_preferences <- function(context = NULL) {
 # ---- lifecycle controls -----------------------------------------------------
 
 #' List all per-user memory records
-#' @return A list with `run_memory`, `lessons`, `preferences`, and `enabled`.
+#' @return A list with `run_memory`, `lessons`, `preferences`, `gaps`, and `enabled`.
 #' @examples
 #' \dontrun{
 #' list_memory_records()
@@ -328,7 +329,8 @@ list_memory_records <- function() {
     enabled = .memory_enabled(),
     run_memory = .memory_read(.memory_runs_path()),
     lessons = .memory_read(.memory_lessons_path()),
-    preferences = .memory_read(.memory_prefs_path())
+    preferences = .memory_read(.memory_prefs_path()),
+    gaps = .memory_read(.memory_gaps_path())
   )
 }
 
@@ -357,7 +359,7 @@ export_memory <- function(path) {
 delete_memory_record <- function(id) {
   removed <- FALSE
   for (path in c(.memory_runs_path(), .memory_lessons_path(),
-                 .memory_prefs_path())) {
+                 .memory_prefs_path(), .memory_gaps_path())) {
     recs <- .memory_read(path)
     keep <- Filter(function(r) !identical(r$id, id), recs)
     if (length(keep) != length(recs)) {
@@ -366,6 +368,65 @@ delete_memory_record <- function(id) {
     }
   }
   removed
+}
+
+#' Report an MCP capability gap encountered in-session
+#'
+#' Records a structured gap the agent hit when a tool worked but could not
+#' express what the user asked for. Stored inactive-by-default under the
+#' per-user memory gaps store and surfaced by [list_memory_records()]. Does
+#' not require [enable_memory()] - gap reporting is always on so maintainers
+#' get a signal even when the analyst has not opted into lessons/preferences.
+#'
+#' @param tool Tool name that was insufficient (or `"none"`).
+#' @param task What the user asked for.
+#' @param missing_capability Short description of the missing capability.
+#' @param attempted_args Optional JSON text / list of args that were tried.
+#' @param workaround Optional description of the fallback used (or `"none"`).
+#' @param session_id Optional session identifier.
+#' @return A list with the stored `id` and the record.
+#' @export
+report_mcp_gap <- function(tool, task, missing_capability,
+                           attempted_args = NULL, workaround = NULL,
+                           session_id = NULL) {
+  if (!is.character(tool) || length(tool) != 1L || !nzchar(tool)) {
+    stop("`tool` must be a single non-empty string.", call. = FALSE)
+  }
+  if (!is.character(task) || length(task) != 1L || !nzchar(task)) {
+    stop("`task` must be a single non-empty string.", call. = FALSE)
+  }
+  if (!is.character(missing_capability) || length(missing_capability) != 1L ||
+      !nzchar(missing_capability)) {
+    stop("`missing_capability` must be a single non-empty string.",
+         call. = FALSE)
+  }
+  args <- attempted_args
+  if (is.character(args) && length(args) == 1L) {
+    args <- tryCatch(jsonlite::fromJSON(args, simplifyVector = FALSE),
+                     error = function(e) list(raw = args))
+  }
+  pkgs <- list()
+  for (p in c("Certara.R", "Certara.RsNLME", "Certara.RDarwin", "tidyvpc",
+              "Certara.Xpose.NLME")) {
+    if (requireNamespace(p, quietly = TRUE)) {
+      pkgs[[p]] <- as.character(utils::packageVersion(p))
+    }
+  }
+  rec <- list(
+    kind = "mcp_gap",
+    active = FALSE,
+    tool = .memory_redact(tool),
+    task = .memory_redact(task),
+    missing_capability = .memory_redact(missing_capability),
+    attempted_args = args,
+    workaround = if (is.null(workaround)) NULL else .memory_redact(as.character(workaround)[1]),
+    session_id = session_id %||% NA_character_,
+    timestamp = .mcp_now(),
+    package_versions = pkgs,
+    project_dir = mcp_session_project_dir()
+  )
+  id <- .memory_append(.memory_gaps_path(), rec)
+  list(id = id, record = rec)
 }
 
 #' Clear all per-user memory records
@@ -377,7 +438,7 @@ delete_memory_record <- function(id) {
 #' @export
 clear_memory <- function() {
   for (path in c(.memory_runs_path(), .memory_lessons_path(),
-                 .memory_prefs_path())) {
+                 .memory_prefs_path(), .memory_gaps_path())) {
     if (file.exists(path)) file.remove(path)
   }
   invisible(TRUE)

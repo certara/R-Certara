@@ -95,6 +95,8 @@ certara_session_status <- function() {
     server = server_name,
     session_tools_enabled = if (is.null(session_tools)) NA else session_tools,
     btw_groups = if (groups_known) groups else NA_character_,
+    project_dir = mcp_session_project_dir(),
+    durability = mcp_session_durability(),
     live_code_execution = list(
       enabled = run_enabled,
       tool = "btw_tool_run_r",

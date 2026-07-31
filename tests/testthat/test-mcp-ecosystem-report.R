@@ -1,5 +1,31 @@
 # Ecosystem report + VPC integration smoke test.
 
+test_that("guide_pharmacometrics resolves a PPP&D query to the PPP&D playbook", {
+  # Regression for the MCP UX review: before the PPP&D playbook/routing were
+  # added, guide_pharmacometrics("sequential PK then PD", ...) resolved only
+  # to covariate-model/VPC guidance, with no path to the isSequential/
+  # isPkFrozen staging recipe.
+  skip_if_not_installed("Certara.RsNLME")
+  Certara.R:::.kb_build_index(refresh = TRUE)
+  # Guard on KB-entry presence so this host test does not fail against a
+  # released Certara.RsNLME that predates the PPP&D playbook (skip, not fail).
+  entry <- tryCatch(
+    Certara.R::get_certara_kb_entry("Certara.RsNLME.workflow.pppd_sequential"),
+    error = function(e) NULL
+  )
+  skip_if(is.null(entry), "PPP&D playbook not in installed Certara.RsNLME KB")
+  expect_equal(entry$id, "Certara.RsNLME.workflow.pppd_sequential")
+
+  res <- Certara.R::guide_pharmacometrics("sequential PK then PD PPP&D frozen PK")
+  chapter_ids <- vapply(res$guidance_chapters, function(c) c$id, character(1))
+  expect_true("Certara.RsNLME.guidance.structural_model" %in% chapter_ids)
+
+  step_ids <- vapply(res$steps_resolved, function(s) s$id %||% s, character(1))
+  expect_true("Certara.RsNLME.workflow.pppd_sequential" %in% step_ids)
+  expect_true(
+    "Certara.RsNLME.antipattern.pppd_stage_flag_conflict" %in% res$anti_patterns)
+})
+
 test_that("tidyvpc bridge related ids resolve when provider KB is indexed", {
   skip_if_not_installed("tidyvpc")
   idx <- Certara.R:::.kb_build_index(refresh = TRUE)
