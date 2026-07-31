@@ -318,7 +318,7 @@ get_user_preferences <- function(context = NULL) {
 # ---- lifecycle controls -----------------------------------------------------
 
 #' List all per-user memory records
-#' @return A list with `run_memory`, `lessons`, `preferences`, and `enabled`.
+#' @return A list with `run_memory`, `lessons`, `preferences`, `gaps`, and `enabled`.
 #' @examples
 #' \dontrun{
 #' list_memory_records()

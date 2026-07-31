@@ -63,7 +63,8 @@ test_that("Darwin all-crash contract: state/error_class/next_action/no winner", 
   darwin_src <- normalizePath(file.path(pkg_root, "..", "R-Darwin"),
                               winslash = "/", mustWork = FALSE)
   if (dir.exists(darwin_src) &&
-      file.exists(file.path(darwin_src, "DESCRIPTION"))) {
+      file.exists(file.path(darwin_src, "DESCRIPTION")) &&
+      requireNamespace("devtools", quietly = TRUE)) {
     suppressMessages(devtools::load_all(darwin_src, quiet = TRUE))
   }
   project_dir <- tempfile("darwin-contract-")

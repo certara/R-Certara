@@ -1018,13 +1018,11 @@ remove_mcp_config <- function(client = c("cursor", "claude-code", "codex",
   }, error = function(e) {
     warning("Could not render live workflow phase table: ", conditionMessage(e),
             call. = FALSE)
-    character(0)
+    .mcp_render_workflow_phase_table(NULL)
   })
-  if (length(phase_table)) {
-    body <- gsub("__WORKFLOW_PHASE_TABLE__",
-                 paste(phase_table, collapse = "\n"),
-                 body, fixed = TRUE)
-  }
+  body <- gsub("__WORKFLOW_PHASE_TABLE__",
+               paste(phase_table, collapse = "\n"),
+               body, fixed = TRUE)
   dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
   writeLines(body, path, useBytes = TRUE)
   invisible(path)

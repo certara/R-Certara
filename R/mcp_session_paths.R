@@ -22,9 +22,8 @@
 }
 
 .mcp_session_last_project_path <- function() {
-  dir <- file.path(tools::R_user_dir("Certara.R", "data"), "mcp-session")
-  dir.create(dir, showWarnings = FALSE, recursive = TRUE)
-  file.path(dir, "last_project.json")
+  file.path(tools::R_user_dir("Certara.R", "data"), "mcp-session",
+            "last_project.json")
 }
 
 .mcp_session_write_pin <- function(dir) {
@@ -37,8 +36,10 @@
   )
   jsonlite::write_json(payload, .mcp_session_state_path(dir),
                        auto_unbox = TRUE, pretty = TRUE)
+  last_path <- .mcp_session_last_project_path()
+  dir.create(dirname(last_path), showWarnings = FALSE, recursive = TRUE)
   jsonlite::write_json(list(project_dir = dir, pinned = payload$pinned),
-                       .mcp_session_last_project_path(),
+                       last_path,
                        auto_unbox = TRUE, pretty = TRUE)
   invisible(dir)
 }

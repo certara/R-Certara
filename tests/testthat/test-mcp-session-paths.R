@@ -1,5 +1,21 @@
 # Session-root path contract (mcp_session_paths.R).
 
+test_that("session pin restore does not create user mcp-session dir when absent", {
+  mcp_session_paths_reset()
+  last_dir <- file.path(tools::R_user_dir("Certara.R", "data"), "mcp-session")
+  removed <- dir.exists(last_dir)
+  if (removed) unlink(last_dir, recursive = TRUE)
+  on.exit({
+    mcp_session_paths_reset()
+    if (removed) unlink(last_dir, recursive = TRUE)
+  }, add = TRUE)
+
+  expect_null(Certara.R:::.mcp_session_restore_pin())
+  expect_false(dir.exists(last_dir))
+  expect_null(mcp_session_project_dir())
+  expect_false(dir.exists(last_dir))
+})
+
 test_that("mcp_session_project_dir creates subdirs and returns root", {
   mcp_session_paths_reset()
   root <- file.path(tempdir(), "mcp_sess_test")

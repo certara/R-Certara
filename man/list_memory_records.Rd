@@ -7,7 +7,7 @@
 list_memory_records()
 }
 \value{
-A list with \code{run_memory}, \code{lessons}, \code{preferences}, and \code{enabled}.
+A list with \code{run_memory}, \code{lessons}, \code{preferences}, \code{gaps}, and \code{enabled}.
 }
 \description{
 List all per-user memory records
