@@ -97,6 +97,14 @@ certara_session_status <- function() {
     btw_groups = if (groups_known) groups else NA_character_,
     project_dir = mcp_session_project_dir(),
     durability = mcp_session_durability(),
+    memory = list(
+      enabled = .memory_enabled(),
+      next_action = if (!isTRUE(.memory_enabled())) {
+        "Certara.R::enable_memory()"
+      } else {
+        NULL
+      }
+    ),
     live_code_execution = list(
       enabled = run_enabled,
       tool = "btw_tool_run_r",

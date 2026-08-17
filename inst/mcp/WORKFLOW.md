@@ -170,7 +170,11 @@ hand-writing PML: `Certara.RsNLME.pml.authoring.skeleton` (statement order),
 `...authoring.naming` (conventions), `...authoring.compartment_map` (how
 statements create compartments), `...authoring.builtin_first` (prefer a builtin
 constructor; reserve `textualmodel()` for custom structures), and
-`...pml.parser_quirks` (lexical traps). Then `validate_pml()` and
+`...pml.parser_quirks` (lexical traps). The from-scratch convention matches
+`generatePMLModel()` emission: structural, `error`/`observe`, `stparm`,
+`covariate`/`fcovariate`, extra stparm, `fixef`, `ranef`, optional `secondary`.
+The parser does not require that order (only `sequence{}` is positional); do
+not rewrite valid user-supplied PML just to match it. Then `validate_pml()` and
 `confirm_pml_structure()` before building.
 
 **Translating a NONMEM control stream.** This is understanding-led, not

@@ -280,9 +280,12 @@ run `Naive-Pooled` (or NCA) to stabilize initials and carry them forward.
 
 - **Write PML from scratch:** retrieve the authoring KB first
   (`Certara.RsNLME.pml.authoring.skeleton`, `...naming`, `...compartment_map`,
-  `...builtin_first`, `...pml.parser_quirks`). Prefer a builtin constructor;
-  use `textualmodel` only for custom structures. Then `validate_pml` +
-  `confirm_pml_structure`.
+  `...builtin_first`, `...pml.parser_quirks`). The from-scratch convention
+  matches `generatePMLModel()`: structural, `error`/`observe`, `stparm`,
+  `covariate`/`fcovariate`, extra stparm, `fixef`, `ranef`, optional
+  `secondary`. The parser does not require that order. Prefer a builtin
+  constructor; use `textualmodel` only for custom structures. Then
+  `validate_pml` + `confirm_pml_structure`.
 - **Translate a NONMEM control stream (understanding-led, not one-to-one):**
   1. `analyze_nonmem_control` (read-only) → structure, parameters,
      `recommended_path`, `column_mapping_hint`, `open_questions`, `unsupported`.
