@@ -71,7 +71,9 @@
 #' [launch_certara_mcp()] startup.
 #'
 #' @return A structured list with `server`, `session_tools_enabled`,
-#'   `btw_groups`, `live_code_execution`, `environment_inspection`,
+#'   `btw_groups`, `project_dir`, `durability`, `memory` (whether per-user
+#'   memory is on, plus `next_action = "Certara.R::enable_memory()"` when it
+#'   is off), `live_code_execution`, `environment_inspection`,
 #'   `execution_contexts`, `connect_live_session`, and `next_steps`.
 #' @seealso [certara_mcp_capabilities()], [launch_certara_mcp()],
 #'   [write_mcp_config()]

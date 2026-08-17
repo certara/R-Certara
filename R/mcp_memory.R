@@ -96,10 +96,10 @@ disable_memory <- function() {
 
 .memory_require_enabled <- function() {
   if (!.memory_enabled()) {
-    stop(
+    stop(errorCondition(
       "Per-user memory is disabled. Enable with enable_memory() (opt-in).",
-      call. = FALSE
-    )
+      class = "certara_memory_disabled"
+    ))
   }
 }
 

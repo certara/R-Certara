@@ -324,10 +324,8 @@
         tryCatch(
           record_lesson(lesson, category, trigger, scope, level),
           error = function(e) {
-            msg <- conditionMessage(e)
-            if (grepl("enable_memory", msg, fixed = TRUE) ||
-                grepl("memory is disabled", msg, ignore.case = TRUE)) {
-              list(recorded = FALSE, reason = msg,
+            if (inherits(e, "certara_memory_disabled")) {
+              list(recorded = FALSE, reason = conditionMessage(e),
                    next_action = "Certara.R::enable_memory()")
             } else {
               stop(e)
