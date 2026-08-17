@@ -321,7 +321,17 @@
     .ctool(
       function(lesson, category = "corrective", trigger = NULL,
                scope = "global", level = NULL) {
-        record_lesson(lesson, category, trigger, scope, level)
+        tryCatch(
+          record_lesson(lesson, category, trigger, scope, level),
+          error = function(e) {
+            if (inherits(e, "certara_memory_disabled")) {
+              list(recorded = FALSE, reason = conditionMessage(e),
+                   next_action = "Certara.R::enable_memory()")
+            } else {
+              stop(e)
+            }
+          }
+        )
       },
       "record_lesson",
       "Record a corrective lesson or endorsed best practice for future sessions.",
@@ -375,7 +385,13 @@
       )
     ),
     .ctool(
-      function() list_memory_records(),
+      function() {
+        out <- list_memory_records()
+        if (!isTRUE(out$enabled)) {
+          out$next_action <- "Certara.R::enable_memory()"
+        }
+        out
+      },
       "list_memory_records",
       paste(
         "Inspect all stored memory records (run memory, lessons, preferences,",

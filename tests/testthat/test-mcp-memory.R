@@ -100,3 +100,39 @@ test_that("record_run round-trips through list_memory_records", {
   expect_match(runs[[1]]$summary, "FOCE-ELS")
   expect_identical(runs[[1]]$kind, "run")
 })
+
+test_that("record_lesson MCP wrapper returns next_action when memory is off", {
+  local_memory()
+  rec <- Filter(function(t) identical(t@name, "record_lesson"),
+                .certara_host_tools("memory"))[[1]]
+  out <- rec(lesson = "do not freeze every residual")
+  expect_false(isTRUE(out$recorded))
+  expect_match(out$reason, "disabled")
+  expect_identical(out$next_action, "Certara.R::enable_memory()")
+  err <- tryCatch(record_lesson("x"), error = identity)
+  expect_s3_class(err, "certara_memory_disabled")
+})
+
+test_that("record_lesson MCP wrapper still raises non-disable errors", {
+  local_memory()
+  enable_memory()
+  rec <- Filter(function(t) identical(t@name, "record_lesson"),
+                .certara_host_tools("memory"))[[1]]
+  expect_error(rec(lesson = "x", category = "not_a_category"), "arg")
+})
+
+test_that("list_memory_records MCP wrapper hints enable_memory when off", {
+  local_memory()
+  lst <- Filter(function(t) identical(t@name, "list_memory_records"),
+                .certara_host_tools("memory"))[[1]]
+  out <- lst()
+  expect_false(isTRUE(out$enabled))
+  expect_identical(out$next_action, "Certara.R::enable_memory()")
+})
+
+test_that("certara_session_status points at enable_memory when memory is off", {
+  local_memory()
+  st <- certara_session_status()
+  expect_false(isTRUE(st$memory$enabled))
+  expect_identical(st$memory$next_action, "Certara.R::enable_memory()")
+})
