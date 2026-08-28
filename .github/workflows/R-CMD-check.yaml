@@ -1,0 +1,66 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+#
+# Installs Certara ecosystem packages from JFrog (plus CRAN). INSTALLDIR is
+# left unset: current host tests do not launch NLME-Engine.
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+name: R-CMD-check
+
+permissions:
+  contents: read
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest,  r: 'release'}
+          - {os: windows-latest, r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      NOT_CRAN: true
+      # Suggests that fail to install (e.g. Darwin extras) skip via
+      # skip_if_not_installed() rather than failing the check.
+      _R_CHECK_FORCE_SUGGESTS_: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+          extra-repositories: https://certara.jfrog.io/artifactory/certara-cran-release-public/
+
+      - name: Put Certara JFrog ahead of CRAN
+        run: |
+          jfrog <- "https://certara.jfrog.io/artifactory/certara-cran-release-public/"
+          repos <- c(Certara = jfrog, getOption("repos"))
+          repos <- repos[!duplicated(unname(repos))]
+          cat("options(repos = ", deparse(repos), ")\n", sep = "",
+              file = file.path(path.expand("~"), ".Rprofile"), append = TRUE)
+          print(repos)
+        shell: Rscript {0}
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          args: 'c("--no-manual")'
