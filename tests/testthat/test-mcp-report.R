@@ -60,6 +60,7 @@ test_that("re-running figure with same key does not duplicate", {
 })
 
 test_that("figure path falls back to absolute when on a different Windows drive", {
+  skip_on_os(c("mac", "linux", "solaris"))
   mcp_report_reset()
   mcp_session_paths_reset()
   root <- file.path(tempdir(), "mcp_fig_cross_drive")
