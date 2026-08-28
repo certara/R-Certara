@@ -63,13 +63,13 @@
 
 .rule_evidence_tiers <- function() {
   paste(
-    "Evidence tiers: keep three layers distinct. (1) Engine facts — KB entries",
+    "Evidence tiers: keep three layers distinct. (1) Engine facts - KB entries",
     "with provenance (grammar/codegen/product Rd) are ground truth for syntax",
-    "and engine behavior. (2) Modeling decisions — guidance/decision entries",
+    "and engine behavior. (2) Modeling decisions - guidance/decision entries",
     "state when a scientifically conditional choice is valid; ask or cite the",
     "decision entry rather than treating one valid formulation as universal.",
-    "(3) User style preferences — comment style, unit comments, equation",
-    "notation, canonical working units — stored via set_preference() /",
+    "(3) User style preferences - comment style, unit comments, equation",
+    "notation, canonical working units - stored via set_preference() /",
     "get_user_preferences() (see Certara.RsNLME.mcp.style_preferences). Never",
     "present a style preference to the user as an engine requirement."
   )
