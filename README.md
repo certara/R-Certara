@@ -32,7 +32,7 @@ install.packages(
 library(Certara.R)  # attaches installed member packages
 ```
 
-JFrog is listed first so newer Certara releases are found before CRAN. On Windows/macOS, `install.packages()` still prefers a binary of the same version over source, so once CRAN has that version as a binary it will be used. CRAN also supplies Suggests that are CRAN-only. Missing suite packages are skipped at attach time.
+JFrog is listed first so newer Certara releases are found before CRAN. On Windows, `install.packages()` still prefers a binary of the same version over source, so once CRAN has that version as a binary it will be used. CRAN also supplies Suggests that are CRAN-only. Missing suite packages are skipped at attach time. Certara.RsNLME requires NLME-Engine, which is Windows and Linux only.
 
 #### AI assistant / MCP (optional)
 
