@@ -16,3 +16,14 @@ count_matches <- function(pattern, text) {
   positions <- gregexpr(pattern, text)[[1]]
   sum(positions != -1L)
 }
+
+# Write a tiny valid PNG. Tests that only inspect the Rmd source can stub a
+# figure with writeLines("png", path); tests that actually knit cannot, because
+# knitr::include_graphics() calls png::readPNG() for dimensions.
+write_tiny_png <- function(path) {
+  dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
+  grDevices::png(path, width = 2, height = 2, units = "in", res = 72)
+  graphics::plot.new()
+  grDevices::dev.off()
+  invisible(path)
+}

@@ -183,8 +183,7 @@ test_that("render_certara_report succeeds when invoked from a different working 
   }, add = TRUE)
   mcp_session_project_dir(root)
   fig <- file.path(root, "figures", "gof_dv_vs_pred.png")
-  dir.create(dirname(fig), recursive = TRUE, showWarnings = FALSE)
-  writeLines("png", fig)
+  write_tiny_png(fig)
   mcp_report_figure(fig, "DV vs PRED", section = "diagnostics.gof", key = "gof_dv")
 
   elsewhere <- withr::local_tempdir()
