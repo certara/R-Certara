@@ -24,9 +24,12 @@ test_that("certara_core_packages excludes GitHub-only packages", {
 
 test_that("optional core packages are declared in Suggests", {
   # GitHub-only members stay out: install.packages() cannot find them.
-  # Read the source-tree DESCRIPTION so this holds under load_all() /
-  # test_file(), not only against an already-installed Certara.R.
-  desc_path <- testthat::test_path("..", "..", "DESCRIPTION")
+  # Prefer the installed package DESCRIPTION (R CMD check); fall back to
+  # the source tree under load_all()/test_file().
+  desc_path <- system.file("DESCRIPTION", package = "Certara.R")
+  if (!nzchar(desc_path) || !file.exists(desc_path)) {
+    desc_path <- testthat::test_path("..", "..", "DESCRIPTION")
+  }
   skip_if_not(file.exists(desc_path), "package DESCRIPTION not available")
   suggests <- read.dcf(desc_path, fields = "Suggests")[[1]]
   declared <- trimws(gsub("\\s*\\(.*", "", strsplit(suggests, ",")[[1]]))
