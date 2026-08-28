@@ -29,10 +29,18 @@ Imports:
     utils
 Suggests:
     Certara.Xpose.NLME,
+    Certara.RsNLME.ModelExecutor,
+    Certara.ModelResults,
+    Certara.VPCResults,
+    Certara.RsNLME.ModelBuilder,
+    Certara.RDarwin,
+    Certara.DarwinReporter,
+    tidyvpc,
+    ggquickeda,
+    coveffectsplot,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    tidyvpc,
     withr
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3

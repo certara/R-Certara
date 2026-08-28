@@ -21,3 +21,12 @@ test_that("certara_core_packages excludes GitHub-only packages", {
   expect_false("table1c" %in% core)
   expect_true("Certara.RsNLME" %in% core)
 })
+
+test_that("optional core packages are declared in Suggests", {
+  # GitHub-only members stay out: install.packages() cannot find them.
+  suggests <- packageDescription("Certara.R")$Suggests
+  skip_if(is.na(suggests), "package DESCRIPTION not available")
+  declared <- trimws(gsub("\\s*\\(.*", "", strsplit(suggests, ",")[[1]]))
+  optional <- setdiff(certara_core_packages(), "Certara.RsNLME")
+  expect_identical(setdiff(optional, declared), character(0))
+})

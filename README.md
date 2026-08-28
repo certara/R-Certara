@@ -21,11 +21,18 @@
 #### Ecosystem
 
 ``` r
-install.packages("Certara.R")   # pulls in Certara.RsNLME (>= 3.2.0)
-library(Certara.R)              # attaches installed member packages
+install.packages(
+  "Certara.R",
+  dependencies = TRUE,
+  repos = c(
+    "https://certara.jfrog.io/artifactory/certara-cran-release-public/",
+    "https://cloud.r-project.org"
+  )
+)
+library(Certara.R)  # attaches installed member packages
 ```
 
-Additional suite packages are attached when installed; missing packages are skipped.
+JFrog is listed first so newer Certara releases are found before CRAN. On Windows/macOS, `install.packages()` still prefers a binary of the same version over source, so once CRAN has that version as a binary it will be used. CRAN also supplies Suggests that are CRAN-only. Missing suite packages are skipped at attach time.
 
 #### AI assistant / MCP (optional)
 
