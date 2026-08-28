@@ -60,6 +60,16 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      # RSPM/CRAN still has older binaries. JFrog has newer MCP-enabled source
+      # (tidyvpc 1.6.1, Certara.RDarwin 1.3.0, Certara.Xpose.NLME 2.1.0).
+      - name: Install MCP providers from JFrog source
+        run: |
+          jfrog <- "https://certara.jfrog.io/artifactory/certara-cran-release-public/"
+          pkgs <- c("tidyvpc", "Certara.RDarwin", "Certara.Xpose.NLME")
+          install.packages(pkgs, repos = c(jfrog, getOption("repos")), type = "source")
+          print(vapply(pkgs, function(p) as.character(utils::packageVersion(p)), character(1)))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
