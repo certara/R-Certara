@@ -56,17 +56,6 @@ test_that("constructor mode conflict contract exposes error_class", {
 
 test_that("Darwin all-crash contract: state/error_class/next_action/no winner", {
   skip_if_not_installed("Certara.RDarwin")
-  # Prefer the sibling working tree so host contract tests exercise the
-  # honesty gates before Darwin is reinstalled into the library.
-  pkg_root <- normalizePath(file.path(testthat::test_path(), "../.."),
-                            winslash = "/", mustWork = FALSE)
-  darwin_src <- normalizePath(file.path(pkg_root, "..", "R-Darwin"),
-                              winslash = "/", mustWork = FALSE)
-  if (dir.exists(darwin_src) &&
-      file.exists(file.path(darwin_src, "DESCRIPTION")) &&
-      requireNamespace("devtools", quietly = TRUE)) {
-    suppressMessages(devtools::load_all(darwin_src, quiet = TRUE))
-  }
   project_dir <- tempfile("darwin-contract-")
   run_dir <- file.path(project_dir, "darwin-mcp-runs", "job-1")
   output_dir <- file.path(run_dir, "wd", "output")

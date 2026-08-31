@@ -1,11 +1,21 @@
 # Tests for the per-user memory store (opt-in, lessons, preferences, lifecycle).
-# R_USER_DATA_DIR is redirected to a tempdir so tests never touch real memory.
+# Redirect tools::R_user_dir() to a unique temp dir so tests never share a
+# store. R_user_dir() consults R_USER_DATA_DIR, then XDG_DATA_HOME, then on
+# Windows APPDATA. A Sys.time()+sample() path can collide under R CMD check's
+# fixed seed when tests run in the same second, so use tempfile().
 
 local_memory <- function(env = parent.frame()) {
-  dir <- file.path(tempdir(), paste0("mcpmem_", as.integer(Sys.time()),
-                                     sample(1000, 1)))
+  dir <- tempfile("mcpmem_")
   dir.create(dir, showWarnings = FALSE, recursive = TRUE)
-  withr::local_envvar(c(R_USER_DATA_DIR = dir), .local_envir = env)
+  withr::local_envvar(
+    c(
+      R_USER_DATA_DIR = dir,
+      XDG_DATA_HOME = dir,
+      APPDATA = dir,
+      LOCALAPPDATA = dir
+    ),
+    .local_envir = env
+  )
   dir
 }
 

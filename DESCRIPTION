@@ -28,12 +28,21 @@ Imports:
     ps,
     utils
 Suggests:
-    Certara.Xpose.NLME,
+    Certara.Xpose.NLME (>= 2.1.0),
+    Certara.RsNLME.ModelExecutor,
+    Certara.ModelResults,
+    Certara.VPCResults,
+    Certara.RsNLME.ModelBuilder,
+    Certara.RDarwin (>= 1.3.0),
+    Certara.DarwinReporter,
+    tidyvpc (>= 1.6.1),
+    ggquickeda,
+    coveffectsplot,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    tidyvpc,
     withr
+Additional_repositories: https://certara.jfrog.io/artifactory/certara-cran-release-public/
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0

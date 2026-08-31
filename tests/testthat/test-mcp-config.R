@@ -368,12 +368,14 @@ test_that(".cli_command preserves multi-word args through an npm-style .cmd shim
 test_that(".cli_command quotes a program path that contains spaces", {
   # Display path: the pretty command must quote the program so a copy-paste
   # (and system() on Windows) does not truncate at the first space.
+  # shQuote() uses double quotes on Windows (cmd) and single quotes on POSIX.
   program <- "C:/Users/First Last/bin/fakecli"
   rec <- suppressMessages(
     .cli_command("Fake CLI", program, c("mcp", "add", "certara-r"), run = FALSE)
   )
   expect_false(isTRUE(rec$ran))
-  expect_match(rec$command, "\"C:/Users/First Last/bin/fakecli\"", fixed = TRUE)
+  qtype <- if (.Platform$OS.type == "windows") "cmd" else "sh"
+  expect_match(rec$command, shQuote(program, type = qtype), fixed = TRUE)
   expect_false(grepl("^C:/Users/First ", rec$command))
 })
 

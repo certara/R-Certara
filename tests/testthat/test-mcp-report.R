@@ -60,6 +60,7 @@ test_that("re-running figure with same key does not duplicate", {
 })
 
 test_that("figure path falls back to absolute when on a different Windows drive", {
+  skip_on_os(c("mac", "linux", "solaris"))
   mcp_report_reset()
   mcp_session_paths_reset()
   root <- file.path(tempdir(), "mcp_fig_cross_drive")
@@ -183,8 +184,7 @@ test_that("render_certara_report succeeds when invoked from a different working 
   }, add = TRUE)
   mcp_session_project_dir(root)
   fig <- file.path(root, "figures", "gof_dv_vs_pred.png")
-  dir.create(dirname(fig), recursive = TRUE, showWarnings = FALSE)
-  writeLines("png", fig)
+  write_tiny_png(fig)
   mcp_report_figure(fig, "DV vs PRED", section = "diagnostics.gof", key = "gof_dv")
 
   elsewhere <- withr::local_tempdir()

@@ -16,3 +16,17 @@ count_matches <- function(pattern, text) {
   positions <- gregexpr(pattern, text)[[1]]
   sum(positions != -1L)
 }
+
+# Copy a tiny valid PNG fixture. Tests that only inspect the Rmd source can
+# stub a figure with writeLines("png", path); tests that actually knit cannot,
+# because knitr::include_graphics() calls png::readPNG() for dimensions.
+# Copying a fixture avoids grDevices::png(), which needs a working raster
+# device (cairo/X11) that can be missing on headless CI.
+write_tiny_png <- function(path) {
+  dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
+  src <- testthat::test_path("fixtures", "tiny.png")
+  if (!file.copy(src, path, overwrite = TRUE)) {
+    stop("Failed to copy PNG fixture to ", path, call. = FALSE)
+  }
+  invisible(path)
+}

@@ -18,7 +18,9 @@
 ^_pkgdown\.yml$
 ^vignettes$
 ^inst/Certara_R_School$
+^\.github$
 
 
 ^\.positai$
 ^\.claude$
+^Certara-R-MCP\.code-workspace$
