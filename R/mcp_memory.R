@@ -385,6 +385,7 @@ delete_memory_record <- function(id) {
 #' @param workaround Optional description of the fallback used (or `"none"`).
 #' @param session_id Optional session identifier.
 #' @return A list with the stored `id` and the record.
+#' @keywords internal
 #' @export
 report_mcp_gap <- function(tool, task, missing_capability,
                            attempted_args = NULL, workaround = NULL,

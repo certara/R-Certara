@@ -11,10 +11,7 @@
 
 `Certara.R` is the meta-package for the Certara pharmacometrics R ecosystem: `library(Certara.R)` attaches the installed suite (RsNLME, Shiny apps, reporting tools, and more). It also hosts the optional federated Certara Model Context Protocol (MCP) server, which exposes knowledge-base and tool providers from member packages to AI coding assistants (Cursor, Claude Code, Codex, and Claude Desktop). Shiny applications provide the ability to generate R code given point-and-click operations, enabling a reproducible and extensible workflow from Shiny GUI to RStudio. [Learn more](https://certara.github.io/R-Certara/articles/why_learn_r.html)
 
-<br/>
-<br/>
-<br/>
-<br/>
+<div style="clear:both;"></div>
 
 ### Installation
 
@@ -39,9 +36,7 @@ JFrog is listed first so newer Certara releases are found before CRAN. On Window
 Modeling and reporting do not require MCP. To connect an AI coding assistant:
 
 ``` r
-write_mcp_config(client = "cursor", scope = "project")
-# Client starts the server automatically; or run manually:
-launch_certara_mcp()
+Certara.R::write_mcp_config(client = "claude-desktop", scope = "user")
 ```
 
 - Supported clients: Cursor, Claude Code, Codex, and Claude Desktop

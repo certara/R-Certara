@@ -3,6 +3,7 @@
 \name{report_mcp_gap}
 \alias{report_mcp_gap}
 \title{Report an MCP capability gap encountered in-session}
+\keyword{internal}
 \usage{
 report_mcp_gap(
   tool,

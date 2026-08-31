@@ -1,0 +1,52 @@
+# Why Learn R?
+
+![R software logo.](https://www.r-project.org/logo/Rlogo.png)
+
+## Why Learn R?
+
+Why should I learn R for pharmacometrics work? Drug development is
+filled with uncertainty. The best plans are routinely invalidated by the
+newest piece of data. Analysts need tools that are fit-for-purpose, but
+also flexible enough to excel in this domain of uncertainty.
+
+R is such a tool and its popularity continues to grow across several
+disciplines in drug development. In skilled hands, R and its massive
+library of support packages provides a means to achieve levels of
+efficiency, quality, and reproducibility that are difficult if not
+impossible to achieve with less flexible tools.
+
+R can be difficult to learn. Certara’s goal is to help users learn R by
+providing a rich set of tools, packages, and learning resources that
+ease the learning curve for R in pharmacometrics.
+
+------------------------------------------------------------------------
+
+## Learning and Support
+
+Certara is dedicated to supporting the adoption of R for PMx workflows
+and actively contributes to the development of open-source R packages
+and learning resources.
+
+### [Certara.R School](https://certara.github.io/R-Certara/articles/Certara_R_School.html)
+
+[Certara.R
+School](https://certara.github.io/R-Certara/articles/Certara_R_School.html)
+is a series of guided webinars, exercises, and interactive tutorials for
+the application of R in Pharmacometrics. Webinar topics range from
+general data set preparation to publishing results in RMarkdown. Click
+[here](https://certara.zoom.us/webinar/register/WN_eyKCdmfRTUGbXtBFOUEp_w)
+to register for the next webinar.
+
+### [Certara Forum](https://support.certara.com/forums/forum/30-modelling-and-simulation/)
+
+The [Certara
+Forum](https://support.certara.com/forums/forum/30-modelling-and-simulation/)
+provides access to various topics in PMx where you can engage with other
+users and ask questions about how to accomplish given analysis
+objectives in R.
+
+  
+  
+
+*Additional information for learning R can be found in
+[Resources](https://github.com/certara/R-Certara/articles/resources.md)*

@@ -8,10 +8,9 @@ certara_session_status()
 }
 \value{
 A structured list with \code{server}, \code{session_tools_enabled},
-\code{btw_groups}, \code{project_dir}, \code{durability}, \code{memory}
-(whether per-user memory is on, plus
-\code{next_action = "Certara.R::enable_memory()"} when it is off),
-\code{live_code_execution}, \code{environment_inspection},
+\code{btw_groups}, \code{project_dir}, \code{durability}, \code{memory} (whether per-user
+memory is on, plus \code{next_action = "Certara.R::enable_memory()"} when it
+is off), \code{live_code_execution}, \code{environment_inspection},
 \code{execution_contexts}, \code{connect_live_session}, and \code{next_steps}.
 }
 \description{

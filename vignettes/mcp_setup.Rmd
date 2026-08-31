@@ -1,0 +1,396 @@
+---
+title: "Certara MCP Server: Setup and Usage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Certara MCP Server: Setup and Usage}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Quick start {.tabset .tabset-fade .tabset-pills}
+
+Already have `Certara.R` installed? Configure your assistant with a single call,
+then reload the client. These use `scope = "user"` (enabled in every current and
+future project) and `run = TRUE` (register via the client CLI when applicable).
+Pick your client below. New to the details? Read on past the quick start.
+
+### Cursor
+
+```{r, eval = FALSE}
+Certara.R::write_mcp_config(client = "cursor", scope = "user", run = TRUE)
+```
+
+### Claude Code
+
+```{r, eval = FALSE}
+Certara.R::write_mcp_config(client = "claude-code", scope = "user", run = TRUE)
+```
+
+### Codex
+
+```{r, eval = FALSE}
+Certara.R::write_mcp_config(client = "codex", scope = "user", run = TRUE)
+```
+
+### Claude Desktop
+
+```{r, eval = FALSE}
+Certara.R::write_mcp_config(client = "claude-desktop", scope = "user", run = TRUE)
+```
+
+## What the Certara MCP server is
+
+`Certara.R` hosts an optional, federated [Model Context Protocol
+(MCP)](https://modelcontextprotocol.io/) server that exposes the Certara
+ecosystem's knowledge base and tool providers -- NLME modeling via
+`Certara.RsNLME`, machine-learning model search via `Certara.RDarwin`, VPC via
+`tidyvpc`, and more -- to AI coding assistants.
+
+Supported clients:
+
+* **Cursor**
+* **Claude Code**
+* **Codex**
+* **Claude Desktop** (and its Cowork local-agent mode)
+
+The MCP server is **optional**. Building, fitting, and reporting models with
+`Certara.RsNLME` and the rest of the suite does not require it; it is a
+convenience layer for AI-assisted workflows. When enabled, agents can author and
+validate PML, launch and watch fits asynchronously, run diagnostics, and emit
+audit-ready R scripts, all grounded in the same knowledge base the packages ship.
+
+## Prerequisites and installation
+
+The MCP stack ships as dependencies of `Certara.R`. Installing the ecosystem
+meta-package pulls everything the server needs:
+
+```{r, eval = FALSE}
+install.packages(
+  "Certara.R",
+  dependencies = TRUE,
+  repos = c(
+    "https://certara.jfrog.io/artifactory/certara-cran-release-public/",
+    "https://cloud.r-project.org"
+  )
+)
+```
+
+RsNLME users who install the full suite via the `Certara_Packages` vector in the
+[RsNLME Installation
+Guide](https://certara.github.io/R-RsNLME/articles/installation.html) already
+have `Certara.R`.
+
+The MCP layer has three required helpers with version floors:
+
+* `btw (>= 1.2.0)`
+* `mcptools (>= 0.2.0)`
+* `ellmer (>= 0.4.0)`
+
+A normal release install pulls these automatically. A developer install with
+`repos = NULL` (installing a source tarball directly) skips `Suggests` and can
+leave them missing; install them explicitly in that case:
+
+```{r, eval = FALSE}
+install.packages(c("btw", "mcptools", "ellmer"))
+```
+
+The provider packages that require Certara's NLME Engine (for example
+`Certara.RsNLME`) still need the engine installed and `INSTALLDIR` set; see the
+[RsNLME Installation
+Guide](https://certara.github.io/R-RsNLME/articles/installation.html).
+
+## Configure a client with `write_mcp_config()`
+
+`write_mcp_config()` writes (or merges) the MCP server entry into the client's
+own configuration file and, where supported, pre-authorizes the Certara tools.
+You run it once per client from an R console; the client then launches the
+server automatically.
+
+```{r, eval = FALSE}
+# Cursor, project scope -- writes/merges .cursor/mcp.json
+Certara.R::write_mcp_config(client = "cursor", scope = "project")
+
+# Claude Code, project scope -- writes/merges .mcp.json
+Certara.R::write_mcp_config(client = "claude-code", scope = "project")
+
+# Claude Code, user scope -- registered via the claude CLI when on PATH
+Certara.R::write_mcp_config(client = "claude-code", scope = "user", run = TRUE)
+
+# Codex -- writes the managed block to ~/.codex/config.toml directly
+Certara.R::write_mcp_config(client = "codex")
+
+# Claude Desktop / Cowork (user scope) -- merges claude_desktop_config.json
+Certara.R::write_mcp_config(client = "claude-desktop")
+```
+
+What each client writes:
+
+* **Cursor** -- the server entry in `.cursor/mcp.json` (project) or
+  `~/.cursor/mcp.json` (user), plus a `.cursor/rules/certara-mcp-usage.mdc`
+  routing rule at project scope.
+* **Claude Code** -- `.mcp.json` at project scope; user/local scopes are managed
+  through the `claude` CLI. A `certara-mcp-usage.md` guidance doc is imported via
+  `CLAUDE.md`.
+* **Codex** -- a managed block in `~/.codex/config.toml` (the only way to set
+  Codex per-tool approvals); the equivalent `codex mcp add` command is printed
+  for reference.
+* **Claude Desktop / Cowork** -- merged into `claude_desktop_config.json` (user
+  scope only; on Windows the MSIX-virtualized path Desktop actually reads). Fully
+  quit and relaunch Desktop after a config change.
+
+Key arguments:
+
+* `scope` -- where the configuration is written, which controls where the server
+  is available:
+    * `"project"` (default) -- writes into the current project folder (e.g.
+      `.cursor/mcp.json`), so the server is enabled **only when you open that
+      folder**. Choose this for per-analysis setup that can be version-controlled
+      with the project.
+    * `"user"` -- writes into your home-directory config (e.g.
+      `~/.cursor/mcp.json`), so the server is enabled **globally -- in every
+      current and future project** on your machine.
+    * `"local"` (Claude Code only) -- a private, per-project entry in
+      `~/.claude.json` that is not shared with collaborators through the
+      project's `.mcp.json`.
+* `tool_allowlist` -- when `TRUE` (default), pre-authorize the Certara tools so
+  they run without per-tool approval prompts, using each client's native
+  mechanism (Cursor `permissions.json`, Claude Code `settings.json`, Codex
+  approval settings). Claude Desktop/Cowork has no config-file allowlist, so
+  approve tools in the UI per session.
+* `run` -- controls whether the CLI-managed clients are configured *for* you. By
+  default (`FALSE`) `write_mcp_config()` only **prints** the client CLI command
+  so you can inspect and run it yourself. Setting `run = TRUE` executes that
+  command when the client CLI is on your `PATH` (currently the Claude Code
+  user/local scopes, via `claude mcp add`), falling back to printing if the CLI
+  is not found. File-based targets (Cursor, Claude Code project scope, Codex,
+  Claude Desktop) are always written directly, so `run` does not affect them.
+
+Use `remove_mcp_config()` to undo a configuration:
+
+```{r, eval = FALSE}
+# Remove the Cursor project-scope server written above.
+Certara.R::remove_mcp_config(client = "cursor", scope = "project")
+```
+
+## Tool profiles
+
+The launch command bakes in a curated tool subset so the agent's tool list stays
+focused. Pass `tool_profile` to `write_mcp_config()`:
+
+* **`full`** (default) -- every tool every provider offers.
+* **`core`** -- read/author/validate and data inspection only; no job launches.
+* **`authoring`** -- `core` plus model comparison; still no job launches.
+* **`execution`** -- `core` plus fit/search job launches and their
+  results/qualification tools.
+* **`diagnostics`** -- `execution` plus comparison and interpretation.
+
+`find_certara_tools()`, `certara_mcp_capabilities()`, and
+`certara_session_status()` are present in every profile.
+
+`full` is the default and is a fine choice most of the time -- there is no
+correctness penalty to exposing every tool. Narrow the profile when you want to:
+
+* **reduce tool overload** -- a shorter, task-shaped tool list is easier for the
+  agent to reason over and lowers the chance it reaches for a wrong or heavier
+  tool;
+* **gate risky actions** -- `core` and `authoring` expose no job-launch tools
+  (`start_*`), so the agent can read, author, and validate models but cannot
+  kick off fits or searches on its own; and
+* **trim the startup/latency footprint** on constrained clients.
+
+Pick the narrowest profile that still contains the tools your task needs, and
+keep `full` when you want the complete surface available.
+
+## `btw_groups` and live-session tools
+
+`btw_groups` controls which general-purpose `btw` R tool groups are exposed
+alongside the Certara tools. The default `"docs"` provides read-only R
+documentation lookup and is the leanest, lowest-latency option. Other useful
+groups include `"pkg"` (package-development actions), and -- for a live R session
+bridged with `btw::btw_mcp_session()` -- `"env"` (inspect that session's objects)
+and `"run"` (execute R code there via `btw_tool_run_r`).
+
+```{r, eval = FALSE}
+# Expose docs + package-dev tools, plus a bridge to a live RStudio session.
+Certara.R::write_mcp_config(
+  client        = "cursor",
+  btw_groups    = c("docs", "pkg", "env", "run"),
+  session_tools = TRUE
+)
+# Then, in the RStudio session you want the agent to reach:
+btw::btw_mcp_session()
+```
+
+`session_tools = TRUE` exposes the live-session bridge but does not by itself
+connect a session -- after writing the config, reload the MCP server, run
+`btw::btw_mcp_session()` in the target session, and have the agent attach to it.
+
+Three R contexts are in play and are easy to confuse:
+
+* the **server process** that answers control-plane tool calls,
+* the **bridged live session** (`env` inspection and `run` execution), and
+* the **per-job child process** launched by the `start_nlme_*` tools.
+
+`certara_session_status()` reports which of these are active and how to attach a
+session.
+
+**When to enable it.** Keep `session_tools = FALSE` (the default) for the common
+case: the server runs in its own clean R process, starts faster, and cannot
+disturb your interactive workspace. Set `session_tools = TRUE` when you want the
+agent to work against *your* live RStudio session -- to read objects you have
+already loaded (a prepared dataset, a fitted model) or to run R code in that
+session -- instead of re-loading everything in the isolated server process. Pair
+it with `btw_groups` `"env"` (inspect objects) and/or `"run"` (execute code).
+
+## Your first MCP session
+
+1. **Reload the client** so it picks up the new configuration (in Cursor:
+   Settings -> Tools & MCPs, then enable the Certara R server).
+2. **Call `certara_mcp_capabilities()` first.** It reports the concurrency
+   policy, the Certara-first rule, the discovered tool/KB providers, the active
+   tool profile, and the merged workflow phases (the canonical routing map).
+3. **Mind Cursor's routing key.** The key in `.cursor/mcp.json` is `certara-r`,
+   but Cursor's tool-call API addresses it as `user-certara-r`. The
+   project-scope `.cursor/rules/certara-mcp-usage.mdc` records this, and
+   `certara_mcp_capabilities()` reports the mapping under `client_routing`.
+4. **Look up knowledge guidance-first.** For "what should I do" / regulatory /
+   fit-for-purpose questions, call `guide_pharmacometrics(task, intended_use)`
+   before reaching for reference lookups (`search_certara_kb()`,
+   `lookup_pml_symbol()`) or `btw` documentation tools.
+
+## Approving tool calls
+
+By default, coding assistants prompt you to approve **every** tool call.
+Depending on your client and settings, the agent may ask you to "Approve" the
+same Certara tools over and over -- which, for a server you trust and use
+constantly, quickly becomes a full-time job of clicking *Approve*. The durable
+fix is to **allowlist the whole `certara-r` server** so its tools run without
+prompts.
+
+`write_mcp_config(tool_allowlist = TRUE)` (the default) already sets this up for
+the clients that support a config-file allowlist:
+
+* **Cursor** -- merges `certara-r:*` into `permissions.json`; takes effect once
+  you enable Cursor Run Mode (Allowlist or Auto-review).
+* **Claude Code** -- merges `mcp__certara-r` into `permissions$allow` of the
+  scope-appropriate `settings.json` (`~/.claude/settings.json` for user,
+  `<project>/.claude/settings.json` for project,
+  `<project>/.claude/settings.local.json` for local).
+* **Codex** -- writes per-tool approvals into `~/.codex/config.toml` (most tools
+  approved; privileged cleanup and arbitrary-R job tools stay prompt-gated).
+
+To do it by hand for Claude Code, add the server-wide rule to `settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": ["mcp__certara-r"]
+  }
+}
+```
+
+`mcp__certara-r` authorizes **every** tool from the server. To approve a single
+tool instead, use the fully-qualified form `mcp__certara-r__<tool>` (e.g.
+`mcp__certara-r__certara_mcp_capabilities`). Note that Claude Code does **not**
+support `*` wildcards for MCP tools, so use the bare server rule
+`mcp__certara-r` for "all tools" rather than `mcp__certara-r__*`. Reload the
+client after editing.
+
+**Claude Desktop / Cowork is the exception.** It has no working config-file
+allowlist -- "Always allow" / "Allow for all tasks" does not persist across
+sessions (upstream
+[claude-code#24433](https://github.com/anthropics/claude-code/issues/24433),
+[#56954](https://github.com/anthropics/claude-code/issues/56954)), which is why
+`write_mcp_config("claude-desktop")` only prints a note instead of writing one.
+If your Desktop "Code" tab honors `~/.claude/settings.json`, the `mcp__certara-r`
+rule above silences the prompts; if it uses the pure Cowork path, you are limited
+to clicking "Always allow" per session until Anthropic ships a persistent
+setting.
+
+## Inventory, status, and removal
+
+Two read-only console helpers distinguish what is *configured* from what is
+*running*:
+
+```{r}
+# What Certara MCP entries are written to client config files right now?
+Certara.R::list_certara_mcp_configs(client = "cursor", project_dir = tempdir())
+```
+
+```{r, eval = FALSE}
+# What Certara MCP server processes has this machine actually started?
+Certara.R::list_certara_mcp_servers()
+```
+
+These are ordinary R functions you call from the R console (or RStudio), not MCP
+tools. A server that is configured but never listed as running usually means the
+client has not been reloaded since `write_mcp_config()`. `certara_session_status()`
+is likewise callable from the console, but its fields read `NA` unless it runs
+*inside* a live server (the launch options it reports are recorded only at server
+startup) -- in practice the agent calls it as a tool to report the live wiring
+(server process, bridged session, active profile).
+
+## Troubleshooting
+
+MCP setup friction is mostly an *environment* problem, not something another tool
+can fix. Start with `certara_mcp_capabilities()` and `certara_session_status()`
+to see what is actually wired, then work through the common cases:
+
+* **MCP tools missing / server not listed** -- `write_mcp_config()` was not run,
+  or the client was not reloaded. Re-run it, reload the client, and enable the
+  server in the client's tool settings.
+* **`btw` / `mcptools` / `ellmer` not found** -- a `repos = NULL` source install
+  skipped `Suggests`. Install from the release repo, or
+  `install.packages(c("btw", "mcptools", "ellmer"))` (floors: `btw >= 1.2.0`,
+  `mcptools >= 0.2.0`, `ellmer >= 0.4.0`).
+* **Engine / compile failures** -- `INSTALLDIR` / NLME not resolvable. Confirm
+  the NLME Engine install and that `INSTALLDIR` is set (see the RsNLME
+  installation guide).
+* **Agent behavior feels "old"** -- the installed package predates the current
+  MCP knowledge base / rules. Install the current release and re-run
+  `write_mcp_config(client = "cursor", scope = "project")` so the Cursor rule is
+  refreshed too.
+* **Too many tools** -- normal when `btw` groups are enabled. Reason by task
+  using `certara_mcp_capabilities()$workflows`; for the leanest server use
+  `btw_groups = "docs"` or a narrower `tool_profile`.
+
+There is no automated "doctor" tool -- this checklist plus the two status tools
+is the supported path.
+
+## Memory (optional)
+
+The Certara MCP tools can use a local, **opt-in** memory of your preferences,
+lessons, and past runs, stored on your machine. The memory is *consumed by the
+agent* (its `get_user_preferences` / `get_lessons` / `record_lesson` tools read
+and write it so behavior carries across sessions), but the functions below are
+**for you, the human**, to control whether that happens and to audit what is
+kept. They are ordinary R console functions; none are required to use the MCP
+server.
+
+Run them under these conditions:
+
+* `enable_memory()` -- once, if you *want* the agent to remember preferences and
+  lessons between sessions. Pass `redact =` a vector of regex patterns to scrub
+  sensitive identifiers (compound or project names) from stored free text.
+  Memory stays off until you call this.
+* `disable_memory()` -- to turn it back off (existing records are kept but not
+  used).
+* `list_memory_records()` -- to see what is stored (`preferences`, `lessons`,
+  `run_memory`, `gaps`, and whether memory is `enabled`).
+* `export_memory()` -- to copy the records out for review or backup.
+* `delete_memory_record()` / `clear_memory()` -- to prune a single record or
+  wipe everything.
+
+If you never call `enable_memory()`, the agent simply operates without memory --
+a perfectly normal way to run.
+
+## See also
+
+* `?Certara.R::write_mcp_config`, `?Certara.R::launch_certara_mcp`
+* `?Certara.R::list_certara_mcp_configs`, `?Certara.R::remove_mcp_config`
+* [RsNLME Installation
+  Guide](https://certara.github.io/R-RsNLME/articles/installation.html)
