@@ -96,9 +96,7 @@ Learn about R packages and Shiny applications <br> developed by Certara
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<div class="section level4">
-<h4 id="ecosystem">Ecosystem<a class="anchor" aria-label="anchor" href="#ecosystem"></a>
-</h4>
+<p>Install <code>Certara.R</code> and the packages it manages, then attach the suite in one call:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Certara.R"</span>,</span>
@@ -108,13 +106,14 @@ Learn about R packages and Shiny applications <br> developed by Certara
 <span>    <span class="st">"https://cloud.r-project.org"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/R-Certara">Certara.R</a></span><span class="op">)</span>  <span class="co"># attaches installed member packages</span></span></code></pre></div>
-<p>JFrog is listed first so newer Certara releases are found before CRAN. On Windows, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> still prefers a binary of the same version over source, so once CRAN has that version as a binary it will be used. CRAN also supplies Suggests that are CRAN-only. Missing suite packages are skipped at attach time. Certara.RsNLME requires NLME-Engine, which is Windows and Linux only.</p>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/R-Certara">Certara.R</a></span><span class="op">)</span>  <span class="co"># attaches the installed member packages</span></span></code></pre></div>
+<p>The two URLs in the <code>repos =</code> argument tell <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> where to look: the first is <strong>Certara’s own package repository</strong>, the second is <strong>CRAN</strong>. Certara’s repository is listed first so the newest Certara releases are found before CRAN. (On Windows, <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> still prefers a binary of the same version, so once CRAN carries that version as a binary it is used; CRAN also supplies a few dependencies that live only there.) Any suite packages you have not installed are simply skipped when you run <code><a href="https://github.com/certara/R-Certara">library(Certara.R)</a></code>.</p>
+<p><code>Certara.RsNLME</code> additionally requires the NLME-Engine (Windows and Linux only) — see the <a href="https://certara.github.io/R-RsNLME/articles/installation.html" class="external-link">RsNLME installation guide</a>.</p>
 </div>
-<div class="section level4">
-<h4 id="ai-assistant--mcp-optional">AI assistant / MCP (optional)<a class="anchor" aria-label="anchor" href="#ai-assistant--mcp-optional"></a>
-</h4>
-<p>Modeling and reporting do not require MCP. To connect an AI coding assistant:</p>
+<div class="section level3">
+<h3 id="ai-assistant-mcp--optional">AI assistant (MCP) — optional<a class="anchor" aria-label="anchor" href="#ai-assistant-mcp--optional"></a>
+</h3>
+<p>Modeling and reporting do <strong>not</strong> require MCP. To connect an AI coding assistant (Cursor, Claude Code, Codex, or Claude Desktop), write its configuration once:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-desktop"</span>, scope <span class="op">=</span> <span class="st">"user"</span><span class="op">)</span></span></code></pre></div>
 <ul>
@@ -122,10 +121,9 @@ Learn about R packages and Shiny applications <br> developed by Certara
 <li>First MCP call in a session: <code><a href="reference/certara_mcp_capabilities.html">certara_mcp_capabilities()</a></code>
 </li>
 <li>MCP sessions can emit audit-ready R scripts for QC</li>
-<li>Deeper setup and troubleshooting: <code><a href="reference/write_mcp_config.html">?write_mcp_config</a></code> and <a href="inst/mcp/WORKFLOW.html">inst/mcp/WORKFLOW.md</a>
+<li>Full setup, tool profiles, and troubleshooting: the <a href="https://certara.github.io/R-Certara/articles/mcp_setup.html" class="external-link">Certara MCP Server: Setup and Usage</a> vignette, or <code><a href="reference/write_mcp_config.html">?write_mcp_config</a></code>
 </li>
 </ul>
-</div>
 </div>
 <div class="section level2">
 <h2 id="modeling">Modeling<a class="anchor" aria-label="anchor" href="#modeling"></a>

@@ -29,7 +29,7 @@ The active project root, or `NULL` when unset.
 
 ``` r
 mcp_session_project_dir(tempdir())
-#> [1] "C:/Users/jcraig/AppData/Local/Temp/RtmpER9QED"
+#> [1] "C:/Users/jcraig/AppData/Local/Temp/RtmpEjytjC"
 mcp_session_project_dir()
-#> [1] "C:/Users/jcraig/AppData/Local/Temp/RtmpER9QED"
+#> [1] "C:/Users/jcraig/AppData/Local/Temp/RtmpEjytjC"
 ```

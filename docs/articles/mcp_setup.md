@@ -10,8 +10,8 @@ Read on past the quick start.
 
 - Cursor
 - Claude Code
-- Codex
 - Claude Desktop
+- Codex
 
 ``` r
 
@@ -25,12 +25,12 @@ Certara.R::write_mcp_config(client = "claude-code", scope = "user", run = TRUE)
 
 ``` r
 
-Certara.R::write_mcp_config(client = "codex", scope = "user", run = TRUE)
+Certara.R::write_mcp_config(client = "claude-desktop", scope = "user", run = TRUE)
 ```
 
 ``` r
 
-Certara.R::write_mcp_config(client = "claude-desktop", scope = "user", run = TRUE)
+Certara.R::write_mcp_config(client = "codex", scope = "user", run = TRUE)
 ```
 
 ## What the Certara MCP server is
@@ -44,9 +44,9 @@ VPC via `tidyvpc`, and more – to AI coding assistants.
 Supported clients:
 
 - **Cursor**
-- **Claude Code**
+- **Claude Code** – the `claude` command-line agent (terminal / CLI)
+- **Claude Desktop** – the desktop app, including its **Code** tab
 - **Codex**
-- **Claude Desktop** (and its Cowork local-agent mode)
 
 The MCP server is **optional**. Building, fitting, and reporting models
 with `Certara.RsNLME` and the rest of the suite does not require it; it
@@ -117,11 +117,11 @@ Certara.R::write_mcp_config(client = "claude-code", scope = "project")
 # Claude Code, user scope -- registered via the claude CLI when on PATH
 Certara.R::write_mcp_config(client = "claude-code", scope = "user", run = TRUE)
 
+# Claude Desktop (user scope) -- merges claude_desktop_config.json
+Certara.R::write_mcp_config(client = "claude-desktop")
+
 # Codex -- writes the managed block to ~/.codex/config.toml directly
 Certara.R::write_mcp_config(client = "codex")
-
-# Claude Desktop / Cowork (user scope) -- merges claude_desktop_config.json
-Certara.R::write_mcp_config(client = "claude-desktop")
 ```
 
 What each client writes:
@@ -132,13 +132,12 @@ What each client writes:
 - **Claude Code** – `.mcp.json` at project scope; user/local scopes are
   managed through the `claude` CLI. A `certara-mcp-usage.md` guidance
   doc is imported via `CLAUDE.md`.
+- **Claude Desktop** – merged into `claude_desktop_config.json` (user
+  scope only; on Windows the MSIX-virtualized path Desktop actually
+  reads). Fully quit and relaunch Desktop after a config change.
 - **Codex** – a managed block in `~/.codex/config.toml` (the only way to
   set Codex per-tool approvals); the equivalent `codex mcp add` command
   is printed for reference.
-- **Claude Desktop / Cowork** – merged into `claude_desktop_config.json`
-  (user scope only; on Windows the MSIX-virtualized path Desktop
-  actually reads). Fully quit and relaunch Desktop after a config
-  change.
 
 Key arguments:
 
@@ -157,8 +156,8 @@ Key arguments:
 - `tool_allowlist` – when `TRUE` (default), pre-authorize the Certara
   tools so they run without per-tool approval prompts, using each
   client’s native mechanism (Cursor `permissions.json`, Claude Code
-  `settings.json`, Codex approval settings). Claude Desktop/Cowork has
-  no config-file allowlist, so approve tools in the UI per session.
+  `settings.json`, Codex approval settings). Claude Desktop has no
+  config-file allowlist, so approve tools in the UI per session.
 - `run` – controls whether the CLI-managed clients are configured *for*
   you. By default (`FALSE`)
   [`write_mcp_config()`](https://github.com/certara/R-Certara/reference/write_mcp_config.md)
@@ -329,16 +328,17 @@ single tool instead, use the fully-qualified form
 `mcp__certara-r` for “all tools” rather than `mcp__certara-r__*`. Reload
 the client after editing.
 
-**Claude Desktop / Cowork is the exception.** It has no working
-config-file allowlist – “Always allow” / “Allow for all tasks” does not
-persist across sessions (upstream
+**Claude Desktop is the exception.** It has no working config-file
+allowlist – “Always allow” / “Allow for all tasks” does not persist
+across sessions (upstream
 [claude-code#24433](https://github.com/anthropics/claude-code/issues/24433),
 [\#56954](https://github.com/anthropics/claude-code/issues/56954)),
 which is why `write_mcp_config("claude-desktop")` only prints a note
-instead of writing one. If your Desktop “Code” tab honors
+instead of writing one. If the Desktop **Code** tab honors
 `~/.claude/settings.json`, the `mcp__certara-r` rule above silences the
-prompts; if it uses the pure Cowork path, you are limited to clicking
-“Always allow” per session until Anthropic ships a persistent setting.
+prompts; if it uses the desktop app’s own agent path instead, you are
+limited to clicking “Always allow” per session until Anthropic ships a
+persistent setting.
 
 ## Inventory, status, and removal
 
@@ -354,7 +354,7 @@ Certara.R::list_certara_mcp_configs(client = "cursor", project_dir = tempdir())
 #> 2 cursor    user
 #> 3 cursor   local
 #>                                                                   path exists
-#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\Rtmp6XuAhT/.cursor/mcp.json  FALSE
+#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpGkvxfh/.cursor/mcp.json  FALSE
 #> 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE
 #> 3                                                                 <NA>     NA
 #>   configured server_key         status

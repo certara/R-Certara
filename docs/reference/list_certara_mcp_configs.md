@@ -81,7 +81,7 @@ list_certara_mcp_configs(client = "cursor", project_dir = tempdir())
 #> 2 cursor    user
 #> 3 cursor   local
 #>                                                                   path exists
-#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpER9QED/.cursor/mcp.json  FALSE
+#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpEjytjC/.cursor/mcp.json  FALSE
 #> 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE
 #> 3                                                                 <NA>     NA
 #>   configured server_key         status

@@ -102,8 +102,8 @@ the quick start.</p>
 <ul class="nav nav-pills" id="quick-start" role="tablist">
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#cursor" id="cursor-tab" type="button" role="tab" aria-controls="cursor" aria-selected="true" class="active nav-link">Cursor</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#claude-code" id="claude-code-tab" type="button" role="tab" aria-controls="claude-code" aria-selected="false" class="nav-link">Claude Code</button></li>
-<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#codex" id="codex-tab" type="button" role="tab" aria-controls="codex" aria-selected="false" class="nav-link">Codex</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#claude-desktop" id="claude-desktop-tab" type="button" role="tab" aria-controls="claude-desktop" aria-selected="false" class="nav-link">Claude Desktop</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#codex" id="codex-tab" type="button" role="tab" aria-controls="codex" aria-selected="false" class="nav-link">Codex</button></li>
 </ul>
 <div class="tab-content">
 <div class="active show fade tab-pane" id="cursor" role="tabpanel" aria-labelledby="cursor-tab">
@@ -116,15 +116,15 @@ the quick start.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-code"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="fade tab-pane" id="codex" role="tabpanel" aria-labelledby="codex-tab">
-
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"codex"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-</div>
 <div class="fade tab-pane" id="claude-desktop" role="tabpanel" aria-labelledby="claude-desktop-tab">
 
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-desktop"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="fade tab-pane" id="codex" role="tabpanel" aria-labelledby="codex-tab">
+
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"codex"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -139,11 +139,13 @@ machine-learning model search via <code>Certara.RDarwin</code>, VPC via
 <p>Supported clients:</p>
 <ul>
 <li><strong>Cursor</strong></li>
-<li><strong>Claude Code</strong></li>
-<li><strong>Codex</strong></li>
 <li>
-<strong>Claude Desktop</strong> (and its Cowork local-agent
-mode)</li>
+<strong>Claude Code</strong> – the <code>claude</code> command-line
+agent (terminal / CLI)</li>
+<li>
+<strong>Claude Desktop</strong> – the desktop app, including its
+<strong>Code</strong> tab</li>
+<li><strong>Codex</strong></li>
 </ul>
 <p>The MCP server is <strong>optional</strong>. Building, fitting, and
 reporting models with <code>Certara.RsNLME</code> and the rest of the
@@ -204,11 +206,11 @@ console; the client then launches the server automatically.</p>
 <span><span class="co"># Claude Code, user scope -- registered via the claude CLI when on PATH</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-code"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Codex -- writes the managed block to ~/.codex/config.toml directly</span></span>
-<span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"codex"</span><span class="op">)</span></span>
+<span><span class="co"># Claude Desktop (user scope) -- merges claude_desktop_config.json</span></span>
+<span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-desktop"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Claude Desktop / Cowork (user scope) -- merges claude_desktop_config.json</span></span>
-<span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-desktop"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Codex -- writes the managed block to ~/.codex/config.toml directly</span></span>
+<span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"codex"</span><span class="op">)</span></span></code></pre></div>
 <p>What each client writes:</p>
 <ul>
 <li>
@@ -223,15 +225,15 @@ scope; user/local scopes are managed through the <code>claude</code>
 CLI. A <code>certara-mcp-usage.md</code> guidance doc is imported via
 <code>CLAUDE.md</code>.</li>
 <li>
+<strong>Claude Desktop</strong> – merged into
+<code>claude_desktop_config.json</code> (user scope only; on Windows the
+MSIX-virtualized path Desktop actually reads). Fully quit and relaunch
+Desktop after a config change.</li>
+<li>
 <strong>Codex</strong> – a managed block in
 <code>~/.codex/config.toml</code> (the only way to set Codex per-tool
 approvals); the equivalent <code>codex mcp add</code> command is printed
 for reference.</li>
-<li>
-<strong>Claude Desktop / Cowork</strong> – merged into
-<code>claude_desktop_config.json</code> (user scope only; on Windows the
-MSIX-virtualized path Desktop actually reads). Fully quit and relaunch
-Desktop after a config change.</li>
 </ul>
 <p>Key arguments:</p>
 <ul>
@@ -260,8 +262,8 @@ collaborators through the project’s <code>.mcp.json</code>.</li>
 pre-authorize the Certara tools so they run without per-tool approval
 prompts, using each client’s native mechanism (Cursor
 <code>permissions.json</code>, Claude Code <code>settings.json</code>,
-Codex approval settings). Claude Desktop/Cowork has no config-file
-allowlist, so approve tools in the UI per session.</li>
+Codex approval settings). Claude Desktop has no config-file allowlist,
+so approve tools in the UI per session.</li>
 <li>
 <code>run</code> – controls whether the CLI-managed clients are
 configured <em>for</em> you. By default (<code>FALSE</code>)
@@ -448,16 +450,17 @@ Code does <strong>not</strong> support <code>*</code> wildcards for MCP
 tools, so use the bare server rule <code>mcp__certara-r</code> for “all
 tools” rather than <code>mcp__certara-r__*</code>. Reload the client
 after editing.</p>
-<p><strong>Claude Desktop / Cowork is the exception.</strong> It has no
-working config-file allowlist – “Always allow” / “Allow for all tasks”
-does not persist across sessions (upstream <a href="https://github.com/anthropics/claude-code/issues/24433" class="external-link">claude-code#24433</a>,
+<p><strong>Claude Desktop is the exception.</strong> It has no working
+config-file allowlist – “Always allow” / “Allow for all tasks” does not
+persist across sessions (upstream <a href="https://github.com/anthropics/claude-code/issues/24433" class="external-link">claude-code#24433</a>,
 <a href="https://github.com/anthropics/claude-code/issues/56954" class="external-link">#56954</a>),
 which is why <code>write_mcp_config("claude-desktop")</code> only prints
-a note instead of writing one. If your Desktop “Code” tab honors
-<code>~/.claude/settings.json</code>, the <code>mcp__certara-r</code>
-rule above silences the prompts; if it uses the pure Cowork path, you
-are limited to clicking “Always allow” per session until Anthropic ships
-a persistent setting.</p>
+a note instead of writing one. If the Desktop <strong>Code</strong> tab
+honors <code>~/.claude/settings.json</code>, the
+<code>mcp__certara-r</code> rule above silences the prompts; if it uses
+the desktop app’s own agent path instead, you are limited to clicking
+“Always allow” per session until Anthropic ships a persistent
+setting.</p>
 </div>
 <div class="section level2">
 <h2 id="inventory-status-and-removal">Inventory, status, and removal<a class="anchor" aria-label="anchor" href="#inventory-status-and-removal"></a>
@@ -472,7 +475,7 @@ from what is <em>running</em>:</p>
 <span><span class="co">#&gt; 2 cursor    user</span></span>
 <span><span class="co">#&gt; 3 cursor   local</span></span>
 <span><span class="co">#&gt;                                                                   path exists</span></span>
-<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\Rtmp6XuAhT/.cursor/mcp.json  FALSE</span></span>
+<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpGkvxfh/.cursor/mcp.json  FALSE</span></span>
 <span><span class="co">#&gt; 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE</span></span>
 <span><span class="co">#&gt; 3                                                                 &lt;NA&gt;     NA</span></span>
 <span><span class="co">#&gt;   configured server_key         status</span></span>

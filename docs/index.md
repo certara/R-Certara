@@ -23,7 +23,8 @@ more](https://certara.github.io/R-Certara/articles/why_learn_r.html)
 
 ### Installation
 
-#### Ecosystem
+Install `Certara.R` and the packages it manages, then attach the suite
+in one call:
 
 ``` r
 
@@ -35,21 +36,30 @@ install.packages(
     "https://cloud.r-project.org"
   )
 )
-library(Certara.R)  # attaches installed member packages
+library(Certara.R)  # attaches the installed member packages
 ```
 
-JFrog is listed first so newer Certara releases are found before CRAN.
-On Windows,
+The two URLs in the `repos =` argument tell
 [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
-still prefers a binary of the same version over source, so once CRAN has
-that version as a binary it will be used. CRAN also supplies Suggests
-that are CRAN-only. Missing suite packages are skipped at attach time.
-Certara.RsNLME requires NLME-Engine, which is Windows and Linux only.
+where to look: the first is **Certara’s own package repository**, the
+second is **CRAN**. Certara’s repository is listed first so the newest
+Certara releases are found before CRAN. (On Windows,
+[`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
+still prefers a binary of the same version, so once CRAN carries that
+version as a binary it is used; CRAN also supplies a few dependencies
+that live only there.) Any suite packages you have not installed are
+simply skipped when you run
+[`library(Certara.R)`](https://github.com/certara/R-Certara).
 
-#### AI assistant / MCP (optional)
+`Certara.RsNLME` additionally requires the NLME-Engine (Windows and
+Linux only) — see the [RsNLME installation
+guide](https://certara.github.io/R-RsNLME/articles/installation.html).
 
-Modeling and reporting do not require MCP. To connect an AI coding
-assistant:
+### AI assistant (MCP) — optional
+
+Modeling and reporting do **not** require MCP. To connect an AI coding
+assistant (Cursor, Claude Code, Codex, or Claude Desktop), write its
+configuration once:
 
 ``` r
 
@@ -60,10 +70,11 @@ Certara.R::write_mcp_config(client = "claude-desktop", scope = "user")
 - First MCP call in a session:
   [`certara_mcp_capabilities()`](https://github.com/certara/R-Certara/reference/certara_mcp_capabilities.md)
 - MCP sessions can emit audit-ready R scripts for QC
-- Deeper setup and troubleshooting:
+- Full setup, tool profiles, and troubleshooting: the [Certara MCP
+  Server: Setup and
+  Usage](https://certara.github.io/R-Certara/articles/mcp_setup.html)
+  vignette, or
   [`?write_mcp_config`](https://github.com/certara/R-Certara/reference/write_mcp_config.md)
-  and
-  [inst/mcp/WORKFLOW.md](https://github.com/certara/R-Certara/inst/mcp/WORKFLOW.md)
 
 ## Modeling
 
