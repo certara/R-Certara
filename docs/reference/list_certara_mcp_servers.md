@@ -51,18 +51,18 @@ automatically the next time a Certara MCP server starts.
 ``` r
 list_certara_mcp_servers()
 #>   server_name   pid  status               started_at package_version r_version
+#> 3   certara-r 46848 running 2026-09-01T13:42:12-0700           2.0.0     4.6.0
+#> 4   certara-r 46924 running 2026-09-01T13:42:12-0700           2.0.0     4.6.0
 #> 1   certara-r 14364 running 2026-08-31T16:15:33-0700           2.0.0     4.6.0
-#> 3   certara-r 28492 running 2026-08-31T16:15:32-0700           2.0.0     4.6.0
-#> 2   certara-r 27808 running 2026-08-31T16:01:58-0700           2.0.0     4.6.0
-#> 4   certara-r 40272 running 2026-08-31T16:01:54-0700           2.0.0     4.6.0
+#> 2   certara-r 28492 running 2026-08-31T16:15:32-0700           2.0.0     4.6.0
 #>   tool_profile session_tools btw_groups job_watch_wait_seconds
-#> 1         full         FALSE       docs                     45
-#> 3         full         FALSE       docs                     45
-#> 2         full         FALSE       docs                    600
+#> 3         full         FALSE       docs                    600
 #> 4         full         FALSE       docs                    600
+#> 1         full         FALSE       docs                     45
+#> 2         full         FALSE       docs                     45
 #>           working_dir
-#> 1     C:/Users/jcraig
-#> 3     C:/Users/jcraig
-#> 2 C:/WINDOWS/system32
+#> 3 C:/WINDOWS/system32
 #> 4 C:/WINDOWS/system32
+#> 1     C:/Users/jcraig
+#> 2     C:/Users/jcraig
 ```

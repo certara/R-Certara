@@ -134,7 +134,10 @@ What each client writes:
   doc is imported via `CLAUDE.md`.
 - **Claude Desktop** – merged into `claude_desktop_config.json` (user
   scope only; on Windows the MSIX-virtualized path Desktop actually
-  reads). Fully quit and relaunch Desktop after a config change.
+  reads). Fully quit and relaunch Desktop after a config change. On
+  Windows, also see [Claude Desktop on Windows: required environment
+  variables](#claude-desktop-on-windows-required-environment-variables)
+  – MCP-launched fits need a few variables added to the `env` block.
 - **Codex** – a managed block in `~/.codex/config.toml` (the only way to
   set Codex per-tool approvals); the equivalent `codex mcp add` command
   is printed for reference.
@@ -178,6 +181,114 @@ to undo a configuration:
 # Remove the Cursor project-scope server written above.
 Certara.R::remove_mcp_config(client = "cursor", scope = "project")
 ```
+
+## Claude Desktop on Windows: required environment variables
+
+> **Quick tip.** Short on time? Point your Claude session at this
+> article (share the page, or paste this section) and ask it to
+> *“diagnose and fill in the environment variables that Claude Desktop
+> sanitizes out of my `claude_desktop_config.json`.”* With filesystem
+> access the agent can run the env-check job below, see which variables
+> are empty, and add the `env` block to your config for you – you then
+> just **fully quit and restart Claude Desktop** for it to take effect.
+
+**This applies to Claude Desktop on Windows when you launch NLME fits
+through the MCP job tools** (`start_nlme_fit_spec`, `start_nlme_job`,
+`start_nlme_fitmodel`, the SCM scripts, etc.).
+
+**Symptom.** MCP-launched fits fail at the compile stage with
+`Compile/Link Failed`, even though the *same model fits fine* from
+RStudio or a plain `Rscript` run in a terminal.
+
+**Cause.** Claude Desktop launches MCP servers with a **sanitized,
+minimal environment** – it does not pass your full user/system
+environment to the server process. On Windows a child process inherits a
+**frozen snapshot** of its parent’s environment (it never re-reads the
+registry), and the job launcher copies the server’s environment into
+every spawned fit. So whatever Claude Desktop omits is missing in the
+server *and* in each fit child:
+
+``` text
+Claude Desktop  ->  Rscript.exe (MCP server)  ->  job child (Rscript -> PowerShell -> TDL5/gcc)
+```
+
+The critical omission is **`ComSpec`**: the engine’s PowerShell wrapper
+shells out with `& $env:comspec /c ...`, and with `ComSpec` empty every
+shell-out fails, which surfaces as `ERROR in generating Model.cpp` -\>
+`Compile/Link Failed`. `NLMEGCCDir64` and `INSTALLDIR` are also
+typically dropped, so the compile either cannot find `TDL5.exe`/engine
+libraries or falls back to an incompatible gcc (e.g. RTools) instead of
+the Certara-shipped GCC 8.4.0.
+
+**Fix.** Declare the variables explicitly in the server’s `env` block in
+`claude_desktop_config.json`, then fully restart Claude Desktop:
+
+``` json
+"mcpServers": {
+  "certara-r": {
+    "command": "C:\\Program Files\\R\\R-4.6.0\\bin\\x64\\Rscript.exe",
+    "args": [
+      "-e",
+      "Certara.R::launch_certara_mcp(btw_groups = c('docs'), session_tools = FALSE, server_name = 'certara-r', job_watch_wait_seconds = 600, tool_profile = 'full')"
+    ],
+    "type": "stdio",
+    "env": {
+      "ComSpec": "C:\\WINDOWS\\system32\\cmd.exe",
+      "INSTALLDIR": "C:\\Program Files\\Certara\\NLME_Engine",
+      "NLMEGCCDir64": "C:\\Program Files\\Certara\\mingw64\\",
+      "TMP": "C:\\Users\\<you>\\AppData\\Local\\Temp",
+      "NUMBER_OF_PROCESSORS": "<your core count>",
+      "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"
+    }
+  }
+}
+```
+
+Notes:
+
+- The `command` and `args` are the ones
+  `write_mcp_config("claude-desktop")` already wrote – you are only
+  **adding** the `env` block. Edit the exact file the call reported (on
+  Windows this may be the MSIX-virtualized path, not the one Desktop’s
+  “Edit Config” button opens; see the Claude Desktop bullet under
+  *Configure a client* above).
+- Replace `<you>` and `<your core count>` with your values.
+- `ComSpec` is the one that actually unblocks `Compile/Link Failed`; the
+  gcc compatibility warning is a red herring, but set `NLMEGCCDir64` too
+  so the Certara GCC 8.4.0 is used. `INSTALLDIR` must point at your
+  NLME-Engine install.
+- `TMP`, `NUMBER_OF_PROCESSORS`, and `PATHEXT` are commonly dropped as
+  well (`TEMP`/`USERPROFILE`/`SystemRoot` usually survive); include them
+  to be safe.
+- **Restart is required.** Claude Desktop reads MCP config only at
+  startup – fully quit it (system tray -\> Quit, not just closing the
+  window) and relaunch.
+
+**Diagnose it yourself.** Run a throwaway MCP job that prints what the
+child actually sees, then read `stdout.log` in the returned `run_dir`
+(empty values mean the variables are not reaching the fit children):
+
+``` r
+
+start_nlme_job(
+  expr = "cat('ComSpec=', Sys.getenv('ComSpec'), '\n');
+          cat('INSTALLDIR=', Sys.getenv('INSTALLDIR'), '\n');
+          cat('NLMEGCCDir64=', Sys.getenv('NLMEGCCDir64'), '\n')",
+  label = "env-check", project_dir = "<your project>"
+)
+```
+
+`<run_dir>/artifacts/GEN*/Shared/compilelog.txt` shows the actual
+compile-stage error rather than the generic `Compile/Link Failed`.
+
+**Claude Code (CLI) generally does not need this.** A terminal-launched
+MCP server inherits the shell’s full environment, so `ComSpec` and the
+Certara toolchain variables are already present. Caveats: a terminal
+only snapshots the environment when it opens (open a new one after
+changing system variables), and IDE-embedded terminals inherit from the
+IDE process (restart the IDE). If a launcher ever sanitizes the
+environment, the same `env`-block fix applies to `.mcp.json` /
+`claude mcp add`.
 
 ## Tool profiles
 
@@ -354,7 +465,7 @@ Certara.R::list_certara_mcp_configs(client = "cursor", project_dir = tempdir())
 #> 2 cursor    user
 #> 3 cursor   local
 #>                                                                   path exists
-#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpGkvxfh/.cursor/mcp.json  FALSE
+#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\Rtmpu8JTvn/.cursor/mcp.json  FALSE
 #> 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE
 #> 3                                                                 <NA>     NA
 #>   configured server_key         status

@@ -228,7 +228,9 @@ CLI. A <code>certara-mcp-usage.md</code> guidance doc is imported via
 <strong>Claude Desktop</strong> – merged into
 <code>claude_desktop_config.json</code> (user scope only; on Windows the
 MSIX-virtualized path Desktop actually reads). Fully quit and relaunch
-Desktop after a config change.</li>
+Desktop after a config change. On Windows, also see <a href="#claude-desktop-on-windows-required-environment-variables">Claude
+Desktop on Windows: required environment variables</a> – MCP-launched
+fits need a few variables added to the <code>env</code> block.</li>
 <li>
 <strong>Codex</strong> – a managed block in
 <code>~/.codex/config.toml</code> (the only way to set Codex per-tool
@@ -280,6 +282,117 @@ not affect them.</li>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Remove the Cursor project-scope server written above.</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/remove_mcp_config.html">remove_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"cursor"</span>, scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="claude-desktop-on-windows-required-environment-variables">Claude Desktop on Windows: required environment variables<a class="anchor" aria-label="anchor" href="#claude-desktop-on-windows-required-environment-variables"></a>
+</h2>
+<blockquote>
+<p><strong>Quick tip.</strong> Short on time? Point your Claude session
+at this article (share the page, or paste this section) and ask it to
+<em>“diagnose and fill in the environment variables that Claude Desktop
+sanitizes out of my <code>claude_desktop_config.json</code>.”</em> With
+filesystem access the agent can run the env-check job below, see which
+variables are empty, and add the <code>env</code> block to your config
+for you – you then just <strong>fully quit and restart Claude
+Desktop</strong> for it to take effect.</p>
+</blockquote>
+<p><strong>This applies to Claude Desktop on Windows when you launch
+NLME fits through the MCP job tools</strong>
+(<code>start_nlme_fit_spec</code>, <code>start_nlme_job</code>,
+<code>start_nlme_fitmodel</code>, the SCM scripts, etc.).</p>
+<p><strong>Symptom.</strong> MCP-launched fits fail at the compile stage
+with <code>Compile/Link Failed</code>, even though the <em>same model
+fits fine</em> from RStudio or a plain <code>Rscript</code> run in a
+terminal.</p>
+<p><strong>Cause.</strong> Claude Desktop launches MCP servers with a
+<strong>sanitized, minimal environment</strong> – it does not pass your
+full user/system environment to the server process. On Windows a child
+process inherits a <strong>frozen snapshot</strong> of its parent’s
+environment (it never re-reads the registry), and the job launcher
+copies the server’s environment into every spawned fit. So whatever
+Claude Desktop omits is missing in the server <em>and</em> in each fit
+child:</p>
+<pre class="text"><code>Claude Desktop  -&gt;  Rscript.exe (MCP server)  -&gt;  job child (Rscript -&gt; PowerShell -&gt; TDL5/gcc)</code></pre>
+<p>The critical omission is <strong><code>ComSpec</code></strong>: the
+engine’s PowerShell wrapper shells out with
+<code>&amp; $env:comspec /c ...</code>, and with <code>ComSpec</code>
+empty every shell-out fails, which surfaces as
+<code>ERROR in generating Model.cpp</code> -&gt;
+<code>Compile/Link Failed</code>. <code>NLMEGCCDir64</code> and
+<code>INSTALLDIR</code> are also typically dropped, so the compile
+either cannot find <code>TDL5.exe</code>/engine libraries or falls back
+to an incompatible gcc (e.g. RTools) instead of the Certara-shipped GCC
+8.4.0.</p>
+<p><strong>Fix.</strong> Declare the variables explicitly in the
+server’s <code>env</code> block in
+<code>claude_desktop_config.json</code>, then fully restart Claude
+Desktop:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="st">"mcpServers"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="dt">"certara-r"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">R</span><span class="ch">\\</span><span class="st">R-4.6.0</span><span class="ch">\\</span><span class="st">bin</span><span class="ch">\\</span><span class="st">x64</span><span class="ch">\\</span><span class="st">Rscript.exe"</span><span class="fu">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>      <span class="st">"-e"</span><span class="ot">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>      <span class="st">"Certara.R::launch_certara_mcp(btw_groups = c('docs'), session_tools = FALSE, server_name = 'certara-r', job_watch_wait_seconds = 600, tool_profile = 'full')"</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"stdio"</span><span class="fu">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>    <span class="dt">"env"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>      <span class="dt">"ComSpec"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">WINDOWS</span><span class="ch">\\</span><span class="st">system32</span><span class="ch">\\</span><span class="st">cmd.exe"</span><span class="fu">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>      <span class="dt">"INSTALLDIR"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">NLME_Engine"</span><span class="fu">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>      <span class="dt">"NLMEGCCDir64"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">mingw64</span><span class="ch">\\</span><span class="st">"</span><span class="fu">,</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>      <span class="dt">"TMP"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Users</span><span class="ch">\\</span><span class="st">&lt;you&gt;</span><span class="ch">\\</span><span class="st">AppData</span><span class="ch">\\</span><span class="st">Local</span><span class="ch">\\</span><span class="st">Temp"</span><span class="fu">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>      <span class="dt">"NUMBER_OF_PROCESSORS"</span><span class="fu">:</span> <span class="st">"&lt;your core count&gt;"</span><span class="fu">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>      <span class="dt">"PATHEXT"</span><span class="fu">:</span> <span class="st">".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Notes:</p>
+<ul>
+<li>The <code>command</code> and <code>args</code> are the ones
+<code>write_mcp_config("claude-desktop")</code> already wrote – you are
+only <strong>adding</strong> the <code>env</code> block. Edit the exact
+file the call reported (on Windows this may be the MSIX-virtualized
+path, not the one Desktop’s “Edit Config” button opens; see the Claude
+Desktop bullet under <em>Configure a client</em> above).</li>
+<li>Replace <code>&lt;you&gt;</code> and
+<code>&lt;your core count&gt;</code> with your values.</li>
+<li>
+<code>ComSpec</code> is the one that actually unblocks
+<code>Compile/Link Failed</code>; the gcc compatibility warning is a red
+herring, but set <code>NLMEGCCDir64</code> too so the Certara GCC 8.4.0
+is used. <code>INSTALLDIR</code> must point at your NLME-Engine
+install.</li>
+<li>
+<code>TMP</code>, <code>NUMBER_OF_PROCESSORS</code>, and
+<code>PATHEXT</code> are commonly dropped as well
+(<code>TEMP</code>/<code>USERPROFILE</code>/<code>SystemRoot</code>
+usually survive); include them to be safe.</li>
+<li>
+<strong>Restart is required.</strong> Claude Desktop reads MCP
+config only at startup – fully quit it (system tray -&gt; Quit, not just
+closing the window) and relaunch.</li>
+</ul>
+<p><strong>Diagnose it yourself.</strong> Run a throwaway MCP job that
+prints what the child actually sees, then read <code>stdout.log</code>
+in the returned <code>run_dir</code> (empty values mean the variables
+are not reaching the fit children):</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://certara.github.io/R-RsNLME/reference/start_nlme_job.html" class="external-link">start_nlme_job</a></span><span class="op">(</span></span>
+<span>  expr <span class="op">=</span> <span class="st">"cat('ComSpec=', Sys.getenv('ComSpec'), '\n');</span></span>
+<span><span class="st">          cat('INSTALLDIR=', Sys.getenv('INSTALLDIR'), '\n');</span></span>
+<span><span class="st">          cat('NLMEGCCDir64=', Sys.getenv('NLMEGCCDir64'), '\n')"</span>,</span>
+<span>  label <span class="op">=</span> <span class="st">"env-check"</span>, project_dir <span class="op">=</span> <span class="st">"&lt;your project&gt;"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><code>&lt;run_dir&gt;/artifacts/GEN*/Shared/compilelog.txt</code>
+shows the actual compile-stage error rather than the generic
+<code>Compile/Link Failed</code>.</p>
+<p><strong>Claude Code (CLI) generally does not need this.</strong> A
+terminal-launched MCP server inherits the shell’s full environment, so
+<code>ComSpec</code> and the Certara toolchain variables are already
+present. Caveats: a terminal only snapshots the environment when it
+opens (open a new one after changing system variables), and IDE-embedded
+terminals inherit from the IDE process (restart the IDE). If a launcher
+ever sanitizes the environment, the same <code>env</code>-block fix
+applies to <code>.mcp.json</code> / <code>claude mcp add</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="tool-profiles">Tool profiles<a class="anchor" aria-label="anchor" href="#tool-profiles"></a>
@@ -341,7 +454,7 @@ live R session bridged with <code><a href="https://posit-dev.github.io/btw/refer
 <code>"env"</code> (inspect that session’s objects) and
 <code>"run"</code> (execute R code there via
 <code>btw_tool_run_r</code>).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Expose docs + package-dev tools, plus a bridge to a live RStudio session.</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span></span>
 <span>  client        <span class="op">=</span> <span class="st">"cursor"</span>,</span>
@@ -437,11 +550,11 @@ cleanup and arbitrary-R job tools stay prompt-gated).</li>
 </ul>
 <p>To do it by hand for Claude Code, add the server-wide rule to
 <code>settings.json</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"mcp__certara-r"</span><span class="ot">]</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"mcp__certara-r"</span><span class="ot">]</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <p><code>mcp__certara-r</code> authorizes <strong>every</strong> tool
 from the server. To approve a single tool instead, use the
 fully-qualified form <code>mcp__certara-r__&lt;tool&gt;</code> (e.g.
@@ -467,7 +580,7 @@ setting.</p>
 </h2>
 <p>Two read-only console helpers distinguish what is <em>configured</em>
 from what is <em>running</em>:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># What Certara MCP entries are written to client config files right now?</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/list_certara_mcp_configs.html">list_certara_mcp_configs</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"cursor"</span>, project_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   client   scope</span></span>
@@ -475,7 +588,7 @@ from what is <em>running</em>:</p>
 <span><span class="co">#&gt; 2 cursor    user</span></span>
 <span><span class="co">#&gt; 3 cursor   local</span></span>
 <span><span class="co">#&gt;                                                                   path exists</span></span>
-<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpGkvxfh/.cursor/mcp.json  FALSE</span></span>
+<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\Rtmpu8JTvn/.cursor/mcp.json  FALSE</span></span>
 <span><span class="co">#&gt; 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE</span></span>
 <span><span class="co">#&gt; 3                                                                 &lt;NA&gt;     NA</span></span>
 <span><span class="co">#&gt;   configured server_key         status</span></span>
@@ -494,7 +607,7 @@ from what is <em>running</em>:</p>
 <span><span class="co">#&gt; 1                         &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 2                         &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 3 Cursor has no 'local' scope.</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># What Certara MCP server processes has this machine actually started?</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/list_certara_mcp_servers.html">list_certara_mcp_servers</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>These are ordinary R functions you call from the R console (or
