@@ -238,7 +238,8 @@ the Certara-shipped GCC 8.4.0.
       "NLMEGCCDir64": "C:\\Program Files\\Certara\\mingw64\\",
       "TMP": "C:\\Users\\<you>\\AppData\\Local\\Temp",
       "NUMBER_OF_PROCESSORS": "<your core count>",
-      "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"
+      "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC",
+      "PhoenixMSMPIDir": "C:\\Program Files\\Certara\\MPI\\"
     }
   }
 }
@@ -259,7 +260,25 @@ Notes:
   NLME-Engine install.
 - `TMP`, `NUMBER_OF_PROCESSORS`, and `PATHEXT` are commonly dropped as
   well (`TEMP`/`USERPROFILE`/`SystemRoot` usually survive); include them
-  to be safe.
+  to be safe. The full default allowlist Claude Desktop passes on
+  Windows is `APPDATA`, `HOMEDRIVE`, `HOMEPATH`, `LOCALAPPDATA`, `PATH`,
+  `PROCESSOR_ARCHITECTURE`, `SYSTEMDRIVE`, `SYSTEMROOT`, `TEMP`,
+  `USERNAME`, and `USERPROFILE` – anything else must be declared
+  explicitly.
+- **`PhoenixMSMPIDir` (optional – for MPI parallelization).** Locates
+  the MS-MPI runtime that RsNLME execution hosts use when
+  `hostParams(parallelMethod = "LOCAL_MPI")` (the directory holding
+  `mpiexec.exe` / `msmpi.dll`). Unlike the variables above, **its
+  absence is silent, not an error**: the run does not fail – the job log
+  prints
+  `MPI not found on the system. Using localhost without parallelization.`
+  and proceeds **serially**. A single small fit barely notices, but SCM
+  stepwise/shotgun covariate searches and bootstraps lose all
+  scenario-level parallelism, so MCP-launched runs come out much slower
+  than the identical run from RStudio/terminal. Add it (value
+  `C:\Program Files\Certara\MPI\`, trailing backslash) to restore
+  parallel execution; a correctly-wired run instead logs
+  `Using MPI host with N cores` and `[MPI plan] ... method=local_mpi`.
 - **Restart is required.** Claude Desktop reads MCP config only at
   startup – fully quit it (system tray -\> Quit, not just closing the
   window) and relaunch.
@@ -273,13 +292,18 @@ child actually sees, then read `stdout.log` in the returned `run_dir`
 start_nlme_job(
   expr = "cat('ComSpec=', Sys.getenv('ComSpec'), '\n');
           cat('INSTALLDIR=', Sys.getenv('INSTALLDIR'), '\n');
-          cat('NLMEGCCDir64=', Sys.getenv('NLMEGCCDir64'), '\n')",
+          cat('NLMEGCCDir64=', Sys.getenv('NLMEGCCDir64'), '\n');
+          cat('PhoenixMSMPIDir=', Sys.getenv('PhoenixMSMPIDir'), '\n')",
   label = "env-check", project_dir = "<your project>"
 )
 ```
 
 `<run_dir>/artifacts/GEN*/Shared/compilelog.txt` shows the actual
-compile-stage error rather than the generic `Compile/Link Failed`.
+compile-stage error rather than the generic `Compile/Link Failed`. For
+parallelization, the job’s stderr distinguishes the two states directly:
+`MPI not found on the system. Using localhost without parallelization.`
+(serial) versus `Using MPI host with N cores` /
+`[MPI plan] ... method=local_mpi` (parallel).
 
 **Claude Code (CLI) generally does not need this.** A terminal-launched
 MCP server inherits the shell’s full environment, so `ComSpec` and the
@@ -465,7 +489,7 @@ Certara.R::list_certara_mcp_configs(client = "cursor", project_dir = tempdir())
 #> 2 cursor    user
 #> 3 cursor   local
 #>                                                                   path exists
-#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\Rtmpu8JTvn/.cursor/mcp.json  FALSE
+#> 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpCUc9r6/.cursor/mcp.json  FALSE
 #> 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE
 #> 3                                                                 <NA>     NA
 #>   configured server_key         status
@@ -523,6 +547,14 @@ to see what is actually wired, then work through the common cases:
 - **Engine / compile failures** – `INSTALLDIR` / NLME not resolvable.
   Confirm the NLME Engine install and that `INSTALLDIR` is set (see the
   RsNLME installation guide).
+- **Claude Desktop on Windows: `Compile/Link Failed`** even though the
+  same model fits from RStudio – Desktop sanitizes the server
+  environment. Add `ComSpec`, `INSTALLDIR`, `NLMEGCCDir64`, `TMP`,
+  `NUMBER_OF_PROCESSORS`, and `PATHEXT` to the `env` block; see [Claude
+  Desktop on Windows: required environment
+  variables](#claude-desktop-on-windows-required-environment-variables).
+  The same case is summarized in the [RsNLME troubleshooting
+  guide](https://certara.github.io/R-RsNLME/articles/troubleshooting.html#claude-desktop-on-windows-extra-environment-variables).
 - **Agent behavior feels “old”** – the installed package predates the
   current MCP knowledge base / rules. Install the current release and
   re-run `write_mcp_config(client = "cursor", scope = "project")` so the

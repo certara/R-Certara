@@ -341,10 +341,11 @@ Desktop:</p>
 <span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>      <span class="dt">"NLMEGCCDir64"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">mingw64</span><span class="ch">\\</span><span class="st">"</span><span class="fu">,</span></span>
 <span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>      <span class="dt">"TMP"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Users</span><span class="ch">\\</span><span class="st">&lt;you&gt;</span><span class="ch">\\</span><span class="st">AppData</span><span class="ch">\\</span><span class="st">Local</span><span class="ch">\\</span><span class="st">Temp"</span><span class="fu">,</span></span>
 <span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>      <span class="dt">"NUMBER_OF_PROCESSORS"</span><span class="fu">:</span> <span class="st">"&lt;your core count&gt;"</span><span class="fu">,</span></span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>      <span class="dt">"PATHEXT"</span><span class="fu">:</span> <span class="st">".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"</span></span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>      <span class="dt">"PATHEXT"</span><span class="fu">:</span> <span class="st">".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"</span><span class="fu">,</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>      <span class="dt">"PhoenixMSMPIDir"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">MPI</span><span class="ch">\\</span><span class="st">"</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <p>Notes:</p>
 <ul>
 <li>The <code>command</code> and <code>args</code> are the ones
@@ -365,7 +366,31 @@ install.</li>
 <code>TMP</code>, <code>NUMBER_OF_PROCESSORS</code>, and
 <code>PATHEXT</code> are commonly dropped as well
 (<code>TEMP</code>/<code>USERPROFILE</code>/<code>SystemRoot</code>
-usually survive); include them to be safe.</li>
+usually survive); include them to be safe. The full default allowlist
+Claude Desktop passes on Windows is <code>APPDATA</code>,
+<code>HOMEDRIVE</code>, <code>HOMEPATH</code>,
+<code>LOCALAPPDATA</code>, <code>PATH</code>,
+<code>PROCESSOR_ARCHITECTURE</code>, <code>SYSTEMDRIVE</code>,
+<code>SYSTEMROOT</code>, <code>TEMP</code>, <code>USERNAME</code>, and
+<code>USERPROFILE</code> – anything else must be declared
+explicitly.</li>
+<li>
+<strong><code>PhoenixMSMPIDir</code> (optional – for MPI
+parallelization).</strong> Locates the MS-MPI runtime that RsNLME
+execution hosts use when
+<code>hostParams(parallelMethod = "LOCAL_MPI")</code> (the directory
+holding <code>mpiexec.exe</code> / <code>msmpi.dll</code>). Unlike the
+variables above, <strong>its absence is silent, not an error</strong>:
+the run does not fail – the job log prints
+<code>MPI not found on the system. Using localhost without parallelization.</code>
+and proceeds <strong>serially</strong>. A single small fit barely
+notices, but SCM stepwise/shotgun covariate searches and bootstraps lose
+all scenario-level parallelism, so MCP-launched runs come out much
+slower than the identical run from RStudio/terminal. Add it (value
+<code>C:\Program Files\Certara\MPI\</code>, trailing backslash) to
+restore parallel execution; a correctly-wired run instead logs
+<code>Using MPI host with N cores</code> and
+<code>[MPI plan] ... method=local_mpi</code>.</li>
 <li>
 <strong>Restart is required.</strong> Claude Desktop reads MCP
 config only at startup – fully quit it (system tray -&gt; Quit, not just
@@ -379,12 +404,17 @@ are not reaching the fit children):</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://certara.github.io/R-RsNLME/reference/start_nlme_job.html" class="external-link">start_nlme_job</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="st">"cat('ComSpec=', Sys.getenv('ComSpec'), '\n');</span></span>
 <span><span class="st">          cat('INSTALLDIR=', Sys.getenv('INSTALLDIR'), '\n');</span></span>
-<span><span class="st">          cat('NLMEGCCDir64=', Sys.getenv('NLMEGCCDir64'), '\n')"</span>,</span>
+<span><span class="st">          cat('NLMEGCCDir64=', Sys.getenv('NLMEGCCDir64'), '\n');</span></span>
+<span><span class="st">          cat('PhoenixMSMPIDir=', Sys.getenv('PhoenixMSMPIDir'), '\n')"</span>,</span>
 <span>  label <span class="op">=</span> <span class="st">"env-check"</span>, project_dir <span class="op">=</span> <span class="st">"&lt;your project&gt;"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><code>&lt;run_dir&gt;/artifacts/GEN*/Shared/compilelog.txt</code>
 shows the actual compile-stage error rather than the generic
-<code>Compile/Link Failed</code>.</p>
+<code>Compile/Link Failed</code>. For parallelization, the job’s stderr
+distinguishes the two states directly:
+<code>MPI not found on the system. Using localhost without parallelization.</code>
+(serial) versus <code>Using MPI host with N cores</code> /
+<code>[MPI plan] ... method=local_mpi</code> (parallel).</p>
 <p><strong>Claude Code (CLI) generally does not need this.</strong> A
 terminal-launched MCP server inherits the shell’s full environment, so
 <code>ComSpec</code> and the Certara toolchain variables are already
@@ -588,7 +618,7 @@ from what is <em>running</em>:</p>
 <span><span class="co">#&gt; 2 cursor    user</span></span>
 <span><span class="co">#&gt; 3 cursor   local</span></span>
 <span><span class="co">#&gt;                                                                   path exists</span></span>
-<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\Rtmpu8JTvn/.cursor/mcp.json  FALSE</span></span>
+<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpCUc9r6/.cursor/mcp.json  FALSE</span></span>
 <span><span class="co">#&gt; 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE</span></span>
 <span><span class="co">#&gt; 3                                                                 &lt;NA&gt;     NA</span></span>
 <span><span class="co">#&gt;   configured server_key         status</span></span>
@@ -646,6 +676,17 @@ repo, or <code>install.packages(c("btw", "mcptools", "ellmer"))</code>
 <strong>Engine / compile failures</strong> – <code>INSTALLDIR</code>
 / NLME not resolvable. Confirm the NLME Engine install and that
 <code>INSTALLDIR</code> is set (see the RsNLME installation guide).</li>
+<li>
+<strong>Claude Desktop on Windows:
+<code>Compile/Link Failed</code></strong> even though the same model
+fits from RStudio – Desktop sanitizes the server environment. Add
+<code>ComSpec</code>, <code>INSTALLDIR</code>,
+<code>NLMEGCCDir64</code>, <code>TMP</code>,
+<code>NUMBER_OF_PROCESSORS</code>, and <code>PATHEXT</code> to the
+<code>env</code> block; see <a href="#claude-desktop-on-windows-required-environment-variables">Claude
+Desktop on Windows: required environment variables</a>. The same case is
+summarized in the <a href="https://certara.github.io/R-RsNLME/articles/troubleshooting.html#claude-desktop-on-windows-extra-environment-variables" class="external-link">RsNLME
+troubleshooting guide</a>.</li>
 <li>
 <strong>Agent behavior feels “old”</strong> – the installed package
 predates the current MCP knowledge base / rules. Install the current
