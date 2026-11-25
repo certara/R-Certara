@@ -86,6 +86,345 @@
 
     
     
+<div class="section level2">
+<h2 id="for-ai-agents-setup-checklist">For AI agents: setup checklist<a class="anchor" aria-label="anchor" href="#for-ai-agents-setup-checklist"></a>
+</h2>
+<blockquote>
+<p><strong>For humans.</strong> Point your AI assistant at this page and
+say: <em>“Set up the certara-r MCP <a href="https://certara.github.io/R-Certara/articles/mcp_setup.md" class="external-link uri">https://certara.github.io/R-Certara/articles/mcp_setup.md</a>”</em>.
+The agent works through the checklist below and pauses whenever it needs
+you (to approve a change, install the NLME Engine, sign in for a
+license, or restart the client).</p>
+</blockquote>
+<p><strong>Agent instructions.</strong> This document is the source of
+truth. Work through the steps in order. Follow these ground rules
+throughout:</p>
+<ul>
+<li>
+<strong>Check before changing.</strong> Inspect what is already in
+place and skip any step that is already satisfied.</li>
+<li>
+<strong>Ask before acting.</strong> Tell the user what you plan to
+do and wait for their OK before installing software or editing any
+config file.</li>
+<li>
+<strong>Back up and merge.</strong> Before editing a config file,
+make a timestamped copy
+(e.g. <code>claude_desktop_config.json.bak-20261125-0630</code>). Merge
+the <code>certara-r</code> entry in; never overwrite other servers or
+settings.</li>
+<li>
+<strong>Pause for manual steps.</strong> When a step needs the user
+(a download, a browser sign-in, a restart), stop, explain exactly what
+to do, and resume once they confirm.</li>
+<li>
+<strong>Never echo secrets.</strong> Do not print
+<code>.Renviron</code> contents, API keys, or license tokens.</li>
+<li>
+<strong>Report errors in full.</strong> Do not hide or paraphrase
+failing output.</li>
+<li>
+<strong>Do not change system settings</strong> (PATH, system
+environment variables) or delete or move R libraries yourself. Report
+and recommend instead.</li>
+</ul>
+<div class="section level3">
+<h3 id="step-1-identify-the-client-and-platform">Step 1: Identify the client and platform<a class="anchor" aria-label="anchor" href="#step-1-identify-the-client-and-platform"></a>
+</h3>
+<p>Ask which client is being set up: <strong>Cursor</strong>,
+<strong>Claude Code</strong> (the <code>claude</code> CLI),
+<strong>Claude Desktop</strong> (its <strong>Code</strong> tab), or
+<strong>Codex</strong>. Several can be set up in one pass; repeat steps
+7-10 for each.</p>
+</div>
+<div class="section level3">
+<h3 id="step-2-claude-desktop-only-anchor-the-session-in-a-folder">Step 2: Claude Desktop only – anchor the session in a folder<a class="anchor" aria-label="anchor" href="#step-2-claude-desktop-only-anchor-the-session-in-a-folder"></a>
+</h3>
+<p>In the Claude Desktop <strong>Code</strong> tab, the chat session
+must be anchored to a folder on this machine (select a folder when
+starting the session). Without one, NLME Engine runs fail with a
+PowerShell error saying the script cannot be executed or is not
+authorized. Tell the user this now; if the current session is not
+anchored, ask them to start a new one in a folder (for example their
+project folder) before any fits are run.</p>
+</div>
+<div class="section level3">
+<h3 id="step-3-check-r">Step 3: Check R<a class="anchor" aria-label="anchor" href="#step-3-check-r"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li><p>Run <code>Rscript --version</code>. If <code>Rscript</code> is
+not on <code>PATH</code>, look under <code>C:\Program Files\R\</code>
+and tell the user the exact folder to add to <code>PATH</code>
+(e.g. <code>C:\Program Files\R\R-4.6.0\bin</code>). Record the full path
+to <code>Rscript.exe</code> for later steps.</p></li>
+<li><p>R must be <strong>4.0 or later</strong>. Compare with the current
+release on <a href="https://cran.r-project.org/" class="external-link">CRAN</a>. If R is
+missing or below 4.0, tell the user where to download it and
+pause.</p></li>
+<li>
+<p>Check for non-standard library locations:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R_LIBS"</span>, <span class="st">"R_LIBS_USER"</span>, <span class="st">"R_LIBS_SITE"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Also check the user and system environment variables for
+<code>R_LIBS</code>, <code>R_LIBS_USER</code>, and
+<code>R_LIBS_SITE</code>, and look for <code>.Renviron</code> or
+<code>Rprofile.site</code> files that set library paths.</p>
+</li>
+<li><p>If a custom library folder is configured, check whether it holds
+packages built under different R versions (look at the
+<code>Built:</code> field in the <code>DESCRIPTION</code> of a few
+packages). A library shared across R versions can load packages built
+for the wrong version or hide the Certara packages; recommend a separate
+library per R version, or the default per-version library. Report
+only.</p></li>
+<li><p>If the user keeps a custom library set through an OS environment
+variable, note the variable and its value: Claude Desktop needs it in
+the <code>env</code> block (step 8).</p></li>
+</ol>
+</div>
+<div class="section level3">
+<h3 id="step-4-install-the-r-packages">Step 4: Install the R packages<a class="anchor" aria-label="anchor" href="#step-4-install-the-r-packages"></a>
+</h3>
+<p>Show the user the repositories before installing: the Certara JFrog
+CRAN repository plus CRAN.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Certara.R"</span>,</span>
+<span>  dependencies <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"https://certara.jfrog.io/artifactory/certara-cran-release-public/"</span>,</span>
+<span>    <span class="st">"https://cloud.r-project.org"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Then verify:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/R-Certara">Certara.R</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"Certara.R"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"btw"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"1.2.0"</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"mcptools"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"0.2.0"</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"ellmer"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"0.4.0"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>If the helper packages are missing, install them with
+<code>install.packages(c("btw", "mcptools", "ellmer"))</code>. See <a href="#prerequisites-and-installation">Prerequisites and
+installation</a> for details.</p>
+</div>
+<div class="section level3">
+<h3 id="step-5-check-the-nlme-engine-version-26-9-1">Step 5: Check the NLME Engine (version 26.9.1)<a class="anchor" aria-label="anchor" href="#step-5-check-the-nlme-engine-version-26-9-1"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">installdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"INSTALLDIR"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">installdir</span><span class="op">)</span><span class="op">)</span> <span class="va">installdir</span> <span class="op">&lt;-</span> <span class="st">"C:/Program Files/Certara/NLME_Engine"</span></span>
+<span><span class="fu">Certara.NLME8</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Certara.NLME8/man/checkInstallDir.html" class="external-link">checkInstallDir</a></span><span class="op">(</span><span class="va">installdir</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">installdir</span>, <span class="st">"TDL5.exe"</span><span class="op">)</span>, <span class="st">"-v"</span>, stdout <span class="op">=</span> <span class="cn">TRUE</span>, stderr <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Expect a line like: "TDL5 version: 26.9.1.1"</span></span></code></pre></div>
+<ul>
+<li>
+<strong>Engine missing or not 26.9.1:</strong> pause. Tell the user
+to open <a href="https://help.certara.net/en/articles/7981602-software-downloads" class="external-link">Software
+Downloads</a> in the Certara Help Center, go to the
+<strong>RsNLME</strong> product section, download <strong>NLME Engine
+26.9.1 for Windows</strong> (or <strong>for Linux</strong>), and run the
+installer. If their IT department manages installs, the engine may be
+available in Company Portal instead. Resume when they confirm, then
+re-run the check.</li>
+<li>
+<strong>GCC compiler.</strong> Check
+<code>Sys.getenv("NLMEGCCDir64")</code> and that the folder exists. The
+standalone engine installer uses
+<code>C:\Program Files\Certara\mingw64\</code>; a Phoenix installation
+uses <code>C:\PHSTMinGW64</code>. Either is valid.</li>
+<li>
+<strong>MS-MPI runtime.</strong> Check
+<code>Sys.getenv("PhoenixMSMPIDir")</code> and that the folder exists.
+The standalone installer uses
+<code>C:\Program Files\Certara\MPI\</code>; a Phoenix installation uses
+<code>C:\Program Files (x86)\Certara\MPI\</code>. Either is valid.
+Without MPI, runs still work but execute serially.</li>
+</ul>
+<p>Report anything missing.</p>
+</div>
+<div class="section level3">
+<h3 id="step-6-check-the-nlme-license-certara-admin">Step 6: Check the NLME license (Certara Admin)<a class="anchor" aria-label="anchor" href="#step-6-check-the-nlme-license-certara-admin"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">installdir</span>, <span class="st">"TDL5.exe"</span><span class="op">)</span>, <span class="st">"/license_check"</span>,</span>
+<span>        stdout <span class="op">=</span> <span class="cn">TRUE</span>, stderr <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Look for "Status: OK" and the "License expires:" line.</span></span></code></pre></div>
+<p>If the status is not OK, pause and explain the next step:
+<code><a href="https://certara.github.io/R-RsNLME/reference/obtain_NLMELicense.html" class="external-link">Certara.RsNLME::obtain_NLMELicense()</a></code> opens a browser window
+where the user signs in to Certara Admin (CAD). Either run it for them
+or ask them to run it in RStudio, wait for them to finish the browser
+sign-in, then re-run the license check.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">Certara.RsNLME</span><span class="fu">::</span><span class="fu"><a href="https://certara.github.io/R-RsNLME/reference/obtain_NLMELicense.html" class="external-link">obtain_NLMELicense</a></span><span class="op">(</span>InstallDir <span class="op">=</span> <span class="va">installdir</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Users without a license can request a trial from
+<code>certara.licensing@certara.com</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="step-7-write-the-client-configuration">Step 7: Write the client configuration<a class="anchor" aria-label="anchor" href="#step-7-write-the-client-configuration"></a>
+</h3>
+<p>Use <code><a href="../reference/write_mcp_config.html">write_mcp_config()</a></code> at user scope (the server is then
+available in every project). Use the call for the client from step
+1:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"cursor"</span>,         scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-code"</span>,    scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-desktop"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"codex"</span>,          scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Claude Desktop: confirm the config file first.</strong> The
+file Claude Desktop reads depends on how it was installed:</p>
+<ul>
+<li>Installed by the user from Anthropic’s website:
+<code>%APPDATA%\Claude\claude_desktop_config.json</code>
+(<code>C:\Users\&lt;you&gt;\AppData\Roaming\Claude\claude_desktop_config.json</code>).</li>
+<li>Installed from the Microsoft Store or by IT: a packaged folder whose
+name has random characters after <code>Claude</code>, such as
+<code>%LOCALAPPDATA%\Packages\Claude_&lt;suffix&gt;\LocalCache\Roaming\Claude\claude_desktop_config.json</code>.</li>
+</ul>
+<p>Ask the user to open <strong>File &gt; Settings &gt; Desktop
+app</strong>, click <strong>Manage</strong> next to
+<strong>Extensions</strong>, then click <strong>Edit config</strong>
+(under <em>Local MCP servers</em>), and tell you the path of the file
+that opens. Compare it with the path <code><a href="../reference/write_mcp_config.html">write_mcp_config()</a></code>
+reports. If they differ, the file <strong>Edit config</strong> opens is
+the one Claude Desktop reads: back it up and merge the same
+<code>certara-r</code> entry (<code>command</code>, <code>args</code>,
+<code>type</code>) into it.</p>
+</div>
+<div class="section level3">
+<h3 id="step-8-claude-desktop-on-windows-only-add-the-env-block">Step 8: Claude Desktop on Windows only – add the <code>env</code>
+block<a class="anchor" aria-label="anchor" href="#step-8-claude-desktop-on-windows-only-add-the-env-block"></a>
+</h3>
+<p>Claude Desktop starts MCP servers with a stripped-down environment,
+and <code><a href="../reference/write_mcp_config.html">write_mcp_config()</a></code> does <strong>not</strong> write an
+<code>env</code> block. Without these variables MCP-launched fits fail
+with <code>Compile/Link Failed</code> (see <a href="#claude-desktop-on-windows-required-environment-variables">Claude
+Desktop on Windows: required environment variables</a> for why each
+variable is needed).</p>
+<p>Run this in R on the user’s machine to print the real values. Fill in
+<code>extra_vars</code> with any custom library variable kept in step
+3:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">extra_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># e.g. c("R_LIBS") if kept in step 3</span></span>
+<span></span>
+<span><span class="va">env_or</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">var</span>, <span class="va">default</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="va">var</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="va">value</span> <span class="kw">else</span> <span class="va">default</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">first_dir</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">dirs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"[\\\\/]+$"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">dirs</span> <span class="op">&lt;-</span> <span class="va">dirs</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="va">dirs</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="va">dirs</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dirs</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="va">dirs</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, winslash <span class="op">=</span> <span class="st">"\\"</span><span class="op">)</span>, <span class="st">"\\"</span><span class="op">)</span> <span class="kw">else</span> <span class="st">""</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  ComSpec <span class="op">=</span> <span class="fu">env_or</span><span class="op">(</span><span class="st">"ComSpec"</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">env_or</span><span class="op">(</span><span class="st">"SystemRoot"</span>, <span class="st">"C:\\WINDOWS"</span><span class="op">)</span>,</span>
+<span>                                        <span class="st">"system32"</span>, <span class="st">"cmd.exe"</span>, fsep <span class="op">=</span> <span class="st">"\\"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  INSTALLDIR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"\\\\$"</span>, <span class="st">""</span>, <span class="fu">first_dir</span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"INSTALLDIR"</span><span class="op">)</span>, <span class="st">"C:/Program Files/Certara/NLME_Engine"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span>,</span>
+<span>  NLMEGCCDir64 <span class="op">=</span> <span class="fu">first_dir</span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"NLMEGCCDir64"</span><span class="op">)</span>, <span class="st">"C:/Program Files/Certara/mingw64"</span>,</span>
+<span>    <span class="st">"C:/PHSTMinGW64"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  PhoenixMSMPIDir <span class="op">=</span> <span class="fu">first_dir</span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"PhoenixMSMPIDir"</span><span class="op">)</span>, <span class="st">"C:/Program Files/Certara/MPI"</span>,</span>
+<span>    <span class="st">"C:/Program Files (x86)/Certara/MPI"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  TMP <span class="op">=</span> <span class="fu">env_or</span><span class="op">(</span><span class="st">"TMP"</span>, <span class="fu">env_or</span><span class="op">(</span><span class="st">"TEMP"</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  NUMBER_OF_PROCESSORS <span class="op">=</span> <span class="fu">env_or</span><span class="op">(</span><span class="st">"NUMBER_OF_PROCESSORS"</span>,</span>
+<span>                                <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  PATHEXT <span class="op">=</span> <span class="fu">env_or</span><span class="op">(</span><span class="st">"PATHEXT"</span>,</span>
+<span>                   <span class="st">".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">v</span> <span class="kw">in</span> <span class="va">extra_vars</span><span class="op">)</span> <span class="va">env</span><span class="op">[[</span><span class="va">v</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
+<span><span class="va">env</span> <span class="op">&lt;-</span> <span class="va">env</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nzchar</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">env</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html" class="external-link">toJSON</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>env <span class="op">=</span> <span class="va">env</span><span class="op">)</span>, auto_unbox <span class="op">=</span> <span class="cn">TRUE</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Any expected variable missing from the output means the corresponding
+component was not found (step 5); resolve that first. Then, after
+backing up the config file confirmed in step 7, merge the block into the
+<code>certara-r</code> entry and check the result:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cfg_path</span> <span class="op">&lt;-</span> <span class="st">"&lt;config file confirmed in step 7&gt;"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span><span class="va">cfg_path</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">cfg_path</span>, <span class="st">".bak-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%Y%m%d-%H%M%S"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html" class="external-link">read_json</a></span><span class="op">(</span><span class="va">cfg_path</span>, simplifyVector <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">cfg</span><span class="op">$</span><span class="va">mcpServers</span><span class="op">[[</span><span class="st">"certara-r"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cfg</span><span class="op">$</span><span class="va">mcpServers</span><span class="op">[[</span><span class="st">"certara-r"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">env</span> <span class="op">&lt;-</span> <span class="va">env</span></span>
+<span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html" class="external-link">write_json</a></span><span class="op">(</span><span class="va">cfg</span>, <span class="va">cfg_path</span>, auto_unbox <span class="op">=</span> <span class="cn">TRUE</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span>, null <span class="op">=</span> <span class="st">"null"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html" class="external-link">read_json</a></span><span class="op">(</span><span class="va">cfg_path</span><span class="op">)</span><span class="op">$</span><span class="va">mcpServers</span><span class="op">[[</span><span class="st">"certara-r"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">env</span><span class="op">)</span></span></code></pre></div>
+<p>The finished entry looks like the example in <a href="#claude-desktop-on-windows-required-environment-variables">Claude
+Desktop on Windows: required environment variables</a>.</p>
+<blockquote>
+<p><strong>Warning.</strong> Re-running
+<code>write_mcp_config(client = "claude-desktop")</code> replaces the
+whole <code>certara-r</code> entry and <strong>deletes the
+<code>env</code> block</strong>. Repeat this step after any re-run.</p>
+</blockquote>
+<p>Other clients normally inherit the full environment from the terminal
+or IDE and do not need an <code>env</code> block. Add one only if a
+custom library variable from step 3 is not visible to the MCP server, or
+if fits fail as described above.</p>
+</div>
+<div class="section level3">
+<h3 id="step-9-restart-the-client">Step 9: Restart the client<a class="anchor" aria-label="anchor" href="#step-9-restart-the-client"></a>
+</h3>
+<ul>
+<li>
+<strong>Claude Desktop:</strong> fully quit (right-click the
+system-tray icon and choose <strong>Quit</strong>; closing the window is
+not enough), reopen it, and start a new <strong>Code</strong> session
+anchored in a folder (step 2).</li>
+<li>
+<strong>Cursor:</strong> open <strong>Settings &gt; Tools &amp;
+MCPs</strong> and enable or refresh <code>certara-r</code>.</li>
+<li>
+<strong>Claude Code / Codex:</strong> start a new session.</li>
+</ul>
+<p>The user has to do this, and for Claude Desktop, Claude Code, and
+Codex the current chat session ends. Before the restart, summarize
+progress so far and tell the user what to say when they are back (for
+example, <em>“continue the certara-r MCP setup at step 10”</em>).</p>
+</div>
+<div class="section level3">
+<h3 id="step-10-verify-the-connection">Step 10: Verify the connection<a class="anchor" aria-label="anchor" href="#step-10-verify-the-connection"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>Call <code>certara_mcp_capabilities</code> and
+<code>certara_session_status</code>, and list a few Certara tools
+(<code>mcp__certara-r__*</code> in Claude, <code>user-certara-r</code>
+in Cursor).</li>
+<li>Optionally run the <code>env-check</code> job from the <a href="#claude-desktop-on-windows-required-environment-variables">environment
+variables section</a> to confirm <code>ComSpec</code>,
+<code>INSTALLDIR</code>, <code>NLMEGCCDir64</code>, and
+<code>PhoenixMSMPIDir</code> reach the fit processes.</li>
+<li>If the server does not connect:
+<ul>
+<li>run <code><a href="../reference/list_certara_mcp_configs.html">Certara.R::list_certara_mcp_configs()</a></code> to see which
+config files hold a <code>certara-r</code> entry;</li>
+<li>read the client’s MCP logs (for Claude Desktop, the
+<code>logs</code> folder next to the config file,
+e.g. <code>%APPDATA%\Claude\logs</code>);</li>
+<li>check the usual causes: a missing <code>env</code> variable, the
+entry written to a file the client does not read (step 7), or the MCP
+server’s R seeing different <code><a href="https://rdrr.io/r/base/libPaths.html" class="external-link">.libPaths()</a></code> than the user’s
+interactive R (step 3).</li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section level3">
+<h3 id="step-11-final-report">Step 11: Final report<a class="anchor" aria-label="anchor" href="#step-11-final-report"></a>
+</h3>
+<p>Give the user a short checklist of what passed, what you changed
+(including the paths of any backup files), and anything they still need
+to do by hand.</p>
+</div>
+</div>
 <div class="section level2 tabset tabset-fade tabset-pills">
 <h2 class="tabset tabset-fade tabset-pills" id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
@@ -108,22 +447,22 @@ the quick start.</p>
 <div class="tab-content">
 <div class="active show fade tab-pane" id="cursor" role="tabpanel" aria-labelledby="cursor-tab">
 
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"cursor"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="fade tab-pane" id="claude-code" role="tabpanel" aria-labelledby="claude-code-tab">
 
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-code"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="fade tab-pane" id="claude-desktop" role="tabpanel" aria-labelledby="claude-desktop-tab">
 
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"claude-desktop"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="fade tab-pane" id="codex" role="tabpanel" aria-labelledby="codex-tab">
 
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"codex"</span>, scope <span class="op">=</span> <span class="st">"user"</span>, run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -160,7 +499,7 @@ scripts, all grounded in the same knowledge base the packages ship.</p>
 <p>The MCP stack ships as dependencies of <code>Certara.R</code>.
 Installing the ecosystem meta-package pulls everything the server
 needs:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Certara.R"</span>,</span>
 <span>  dependencies <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -182,7 +521,7 @@ Installation Guide</a> already have <code>Certara.R</code>.</p>
 install with <code>repos = NULL</code> (installing a source tarball
 directly) skips <code>Suggests</code> and can leave them missing;
 install them explicitly in that case:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"btw"</span>, <span class="st">"mcptools"</span>, <span class="st">"ellmer"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The provider packages that require Certara’s NLME Engine (for example
 <code>Certara.RsNLME</code>) still need the engine installed and
@@ -196,7 +535,7 @@ Installation Guide</a>.</p>
 entry into the client’s own configuration file and, where supported,
 pre-authorizes the Certara tools. You run it once per client from an R
 console; the client then launches the server automatically.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cursor, project scope -- writes/merges .cursor/mcp.json</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"cursor"</span>, scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span>
 <span></span>
@@ -226,9 +565,17 @@ CLI. A <code>certara-mcp-usage.md</code> guidance doc is imported via
 <code>CLAUDE.md</code>.</li>
 <li>
 <strong>Claude Desktop</strong> – merged into
-<code>claude_desktop_config.json</code> (user scope only; on Windows the
-MSIX-virtualized path Desktop actually reads). Fully quit and relaunch
-Desktop after a config change. On Windows, also see <a href="#claude-desktop-on-windows-required-environment-variables">Claude
+<code>claude_desktop_config.json</code> (user scope only). On Windows
+the file’s location depends on how Desktop was installed:
+<code>%APPDATA%\Claude\</code> for a self-install, or a
+<code>Claude_&lt;suffix&gt;</code> package folder under
+<code>%LOCALAPPDATA%\Packages\</code> for Microsoft Store/IT installs.
+Confirm the real path with <strong>File &gt; Settings &gt; Desktop app
+&gt; Extensions (Manage) &gt; Edit config</strong>. Fully quit and
+relaunch Desktop after a config change. <code><a href="../reference/write_mcp_config.html">write_mcp_config()</a></code>
+does not write an <code>env</code> block, and re-running it replaces the
+entry, deleting any <code>env</code> block you added. On Windows, also
+see <a href="#claude-desktop-on-windows-required-environment-variables">Claude
 Desktop on Windows: required environment variables</a> – MCP-launched
 fits need a few variables added to the <code>env</code> block.</li>
 <li>
@@ -279,7 +626,7 @@ Claude Desktop) are always written directly, so <code>run</code> does
 not affect them.</li>
 </ul>
 <p>Use <code><a href="../reference/remove_mcp_config.html">remove_mcp_config()</a></code> to undo a configuration:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Remove the Cursor project-scope server written above.</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/remove_mcp_config.html">remove_mcp_config</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"cursor"</span>, scope <span class="op">=</span> <span class="st">"project"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -327,33 +674,43 @@ to an incompatible gcc (e.g. RTools) instead of the Certara-shipped GCC
 server’s <code>env</code> block in
 <code>claude_desktop_config.json</code>, then fully restart Claude
 Desktop:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="st">"mcpServers"</span><span class="er">:</span> <span class="fu">{</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="dt">"certara-r"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">R</span><span class="ch">\\</span><span class="st">R-4.6.0</span><span class="ch">\\</span><span class="st">bin</span><span class="ch">\\</span><span class="st">x64</span><span class="ch">\\</span><span class="st">Rscript.exe"</span><span class="fu">,</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>      <span class="st">"-e"</span><span class="ot">,</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>      <span class="st">"Certara.R::launch_certara_mcp(btw_groups = c('docs'), session_tools = FALSE, server_name = 'certara-r', job_watch_wait_seconds = 600, tool_profile = 'full')"</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"stdio"</span><span class="fu">,</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>    <span class="dt">"env"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>      <span class="dt">"ComSpec"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">WINDOWS</span><span class="ch">\\</span><span class="st">system32</span><span class="ch">\\</span><span class="st">cmd.exe"</span><span class="fu">,</span></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>      <span class="dt">"INSTALLDIR"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">NLME_Engine"</span><span class="fu">,</span></span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>      <span class="dt">"NLMEGCCDir64"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">mingw64</span><span class="ch">\\</span><span class="st">"</span><span class="fu">,</span></span>
-<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>      <span class="dt">"TMP"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Users</span><span class="ch">\\</span><span class="st">&lt;you&gt;</span><span class="ch">\\</span><span class="st">AppData</span><span class="ch">\\</span><span class="st">Local</span><span class="ch">\\</span><span class="st">Temp"</span><span class="fu">,</span></span>
-<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>      <span class="dt">"NUMBER_OF_PROCESSORS"</span><span class="fu">:</span> <span class="st">"&lt;your core count&gt;"</span><span class="fu">,</span></span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>      <span class="dt">"PATHEXT"</span><span class="fu">:</span> <span class="st">".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"</span><span class="fu">,</span></span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>      <span class="dt">"PhoenixMSMPIDir"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">MPI</span><span class="ch">\\</span><span class="st">"</span></span>
-<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="st">"mcpServers"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="dt">"certara-r"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>    <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">R</span><span class="ch">\\</span><span class="st">R-4.6.0</span><span class="ch">\\</span><span class="st">bin</span><span class="ch">\\</span><span class="st">x64</span><span class="ch">\\</span><span class="st">Rscript.exe"</span><span class="fu">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>    <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>      <span class="st">"-e"</span><span class="ot">,</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>      <span class="st">"Certara.R::launch_certara_mcp(btw_groups = c('docs'), session_tools = FALSE, server_name = 'certara-r', job_watch_wait_seconds = 600, tool_profile = 'full')"</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>    <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"stdio"</span><span class="fu">,</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>    <span class="dt">"env"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>      <span class="dt">"ComSpec"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">WINDOWS</span><span class="ch">\\</span><span class="st">system32</span><span class="ch">\\</span><span class="st">cmd.exe"</span><span class="fu">,</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>      <span class="dt">"INSTALLDIR"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">NLME_Engine"</span><span class="fu">,</span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>      <span class="dt">"NLMEGCCDir64"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">mingw64</span><span class="ch">\\</span><span class="st">"</span><span class="fu">,</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>      <span class="dt">"TMP"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Users</span><span class="ch">\\</span><span class="st">&lt;you&gt;</span><span class="ch">\\</span><span class="st">AppData</span><span class="ch">\\</span><span class="st">Local</span><span class="ch">\\</span><span class="st">Temp"</span><span class="fu">,</span></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a>      <span class="dt">"NUMBER_OF_PROCESSORS"</span><span class="fu">:</span> <span class="st">"&lt;your core count&gt;"</span><span class="fu">,</span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>      <span class="dt">"PATHEXT"</span><span class="fu">:</span> <span class="st">".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC"</span><span class="fu">,</span></span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>      <span class="dt">"PhoenixMSMPIDir"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">Program Files</span><span class="ch">\\</span><span class="st">Certara</span><span class="ch">\\</span><span class="st">MPI</span><span class="ch">\\</span><span class="st">"</span></span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <p>Notes:</p>
 <ul>
 <li>The <code>command</code> and <code>args</code> are the ones
 <code>write_mcp_config("claude-desktop")</code> already wrote – you are
-only <strong>adding</strong> the <code>env</code> block. Edit the exact
-file the call reported (on Windows this may be the MSIX-virtualized
-path, not the one Desktop’s “Edit Config” button opens; see the Claude
-Desktop bullet under <em>Configure a client</em> above).</li>
+only <strong>adding</strong> the <code>env</code> block. Edit the file
+Claude Desktop actually reads: open <strong>File &gt; Settings &gt;
+Desktop app &gt; Extensions (Manage) &gt; Edit config</strong> to see
+its path (Microsoft Store/IT installs use a
+<code>Claude_&lt;suffix&gt;</code> package folder rather than
+<code>%APPDATA%\Claude</code>). If it differs from the path
+<code><a href="../reference/write_mcp_config.html">write_mcp_config()</a></code> reported, use the <strong>Edit
+config</strong> file.</li>
+<li>
+<code><a href="../reference/write_mcp_config.html">write_mcp_config()</a></code> does not write this block, and
+re-running it replaces the whole <code>certara-r</code> entry, so the
+<code>env</code> block must be added again afterwards. <a href="#step-8-claude-desktop-on-windows-only-add-the-env-block">Step 8
+of the agent checklist</a> has an R snippet that prints this machine’s
+values and merges them in.</li>
 <li>Replace <code>&lt;you&gt;</code> and
 <code>&lt;your core count&gt;</code> with your values.</li>
 <li>
@@ -400,7 +757,7 @@ closing the window) and relaunch.</li>
 prints what the child actually sees, then read <code>stdout.log</code>
 in the returned <code>run_dir</code> (empty values mean the variables
 are not reaching the fit children):</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://certara.github.io/R-RsNLME/reference/start_nlme_job.html" class="external-link">start_nlme_job</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="st">"cat('ComSpec=', Sys.getenv('ComSpec'), '\n');</span></span>
 <span><span class="st">          cat('INSTALLDIR=', Sys.getenv('INSTALLDIR'), '\n');</span></span>
@@ -484,7 +841,7 @@ live R session bridged with <code><a href="https://posit-dev.github.io/btw/refer
 <code>"env"</code> (inspect that session’s objects) and
 <code>"run"</code> (execute R code there via
 <code>btw_tool_run_r</code>).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Expose docs + package-dev tools, plus a bridge to a live RStudio session.</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/write_mcp_config.html">write_mcp_config</a></span><span class="op">(</span></span>
 <span>  client        <span class="op">=</span> <span class="st">"cursor"</span>,</span>
@@ -580,11 +937,11 @@ cleanup and arbitrary-R job tools stay prompt-gated).</li>
 </ul>
 <p>To do it by hand for Claude Code, add the server-wide rule to
 <code>settings.json</code>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"mcp__certara-r"</span><span class="ot">]</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"mcp__certara-r"</span><span class="ot">]</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
 <p><code>mcp__certara-r</code> authorizes <strong>every</strong> tool
 from the server. To approve a single tool instead, use the
 fully-qualified form <code>mcp__certara-r__&lt;tool&gt;</code> (e.g.
@@ -610,7 +967,7 @@ setting.</p>
 </h2>
 <p>Two read-only console helpers distinguish what is <em>configured</em>
 from what is <em>running</em>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># What Certara MCP entries are written to client config files right now?</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/list_certara_mcp_configs.html">list_certara_mcp_configs</a></span><span class="op">(</span>client <span class="op">=</span> <span class="st">"cursor"</span>, project_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   client   scope</span></span>
@@ -618,7 +975,7 @@ from what is <em>running</em>:</p>
 <span><span class="co">#&gt; 2 cursor    user</span></span>
 <span><span class="co">#&gt; 3 cursor   local</span></span>
 <span><span class="co">#&gt;                                                                   path exists</span></span>
-<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\RtmpCUc9r6/.cursor/mcp.json  FALSE</span></span>
+<span><span class="co">#&gt; 1 C:\\Users\\jcraig\\AppData\\Local\\Temp\\Rtmp4avxQz/.cursor/mcp.json  FALSE</span></span>
 <span><span class="co">#&gt; 2                                   C:\\Users\\jcraig/.cursor/mcp.json   TRUE</span></span>
 <span><span class="co">#&gt; 3                                                                 &lt;NA&gt;     NA</span></span>
 <span><span class="co">#&gt;   configured server_key         status</span></span>
@@ -637,7 +994,7 @@ from what is <em>running</em>:</p>
 <span><span class="co">#&gt; 1                         &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 2                         &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 3 Cursor has no 'local' scope.</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># What Certara MCP server processes has this machine actually started?</span></span>
 <span><span class="fu">Certara.R</span><span class="fu">::</span><span class="fu"><a href="../reference/list_certara_mcp_servers.html">list_certara_mcp_servers</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>These are ordinary R functions you call from the R console (or
@@ -687,6 +1044,19 @@ fits from RStudio – Desktop sanitizes the server environment. Add
 Desktop on Windows: required environment variables</a>. The same case is
 summarized in the <a href="https://certara.github.io/R-RsNLME/articles/troubleshooting.html#claude-desktop-on-windows-extra-environment-variables" class="external-link">RsNLME
 troubleshooting guide</a>.</li>
+<li>
+<strong>Claude Desktop: PowerShell “cannot be executed” / “not
+authorized” errors</strong> when a fit starts – the
+<strong>Code</strong> session is not anchored to a folder. Start a new
+Code session with a folder on your machine selected (for example your
+project folder) and run the fit again.</li>
+<li>
+<strong>Claude Desktop: config edits have no effect</strong> – the
+entry was written to a file Desktop does not read. Check the path shown
+by <strong>File &gt; Settings &gt; Desktop app &gt; Extensions (Manage)
+&gt; Edit config</strong> (Microsoft Store/IT installs use a
+<code>Claude_&lt;suffix&gt;</code> folder) and merge the
+<code>certara-r</code> entry there.</li>
 <li>
 <strong>Agent behavior feels “old”</strong> – the installed package
 predates the current MCP knowledge base / rules. Install the current
