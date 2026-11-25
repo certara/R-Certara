@@ -11,6 +11,298 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
+## For AI agents: setup checklist
+
+> **For humans.** Point your AI assistant at this page and say: *"Set up the
+> certara-r MCP
+> <https://certara.github.io/R-Certara/articles/mcp_setup.md>"*. The agent
+> works through the checklist below and pauses whenever it needs you (to approve
+> a change, install the NLME Engine, sign in for a license, or restart the
+> client).
+
+**Agent instructions.** This document is the source of truth. Work through the
+steps in order. Follow these ground rules throughout:
+
+* **Check before changing.** Inspect what is already in place and skip any step
+  that is already satisfied.
+* **Ask before acting.** Tell the user what you plan to do and wait for their OK
+  before installing software or editing any config file.
+* **Back up and merge.** Before editing a config file, make a timestamped copy
+  (e.g. `claude_desktop_config.json.bak-20261125-0630`). Merge the `certara-r`
+  entry in; never overwrite other servers or settings.
+* **Pause for manual steps.** When a step needs the user (a download, a browser
+  sign-in, a restart), stop, explain exactly what to do, and resume once they
+  confirm.
+* **Never echo secrets.** Do not print `.Renviron` contents, API keys, or license
+  tokens.
+* **Report errors in full.** Do not hide or paraphrase failing output.
+* **Do not change system settings** (PATH, system environment variables) or
+  delete or move R libraries yourself. Report and recommend instead.
+
+### Step 1: Identify the client and platform
+
+Ask which client is being set up: **Cursor**, **Claude Code** (the `claude`
+CLI), **Claude Desktop** (its **Code** tab), or **Codex**. Several can be set up
+in one pass; repeat steps 7-10 for each.
+
+### Step 2: Claude Desktop only -- anchor the session in a folder
+
+In the Claude Desktop **Code** tab, the chat session must be anchored to a
+folder on this machine (select a folder when starting the session). Without
+one, NLME Engine runs fail with a PowerShell error saying the script cannot be
+executed or is not authorized. Tell the user this now; if the current session is
+not anchored, ask them to start a new one in a folder (for example their
+project folder) before any fits are run.
+
+### Step 3: Check R
+
+1. Run `Rscript --version`. If `Rscript` is not on `PATH`, look under
+   `C:\Program Files\R\` and tell the user the exact folder to add to `PATH`
+   (e.g. `C:\Program Files\R\R-4.6.0\bin`). Record the full path to
+   `Rscript.exe` for later steps.
+2. R must be **4.0 or later**. Compare with the current release on
+   [CRAN](https://cran.r-project.org/). If R is missing or below 4.0, tell the
+   user where to download it and pause.
+3. Check for non-standard library locations:
+
+    ```{r, eval = FALSE}
+    .libPaths()
+    Sys.getenv(c("R_LIBS", "R_LIBS_USER", "R_LIBS_SITE"))
+    ```
+
+    Also check the user and system environment variables for `R_LIBS`,
+    `R_LIBS_USER`, and `R_LIBS_SITE`, and look for `.Renviron` or
+    `Rprofile.site` files that set library paths.
+4. If a custom library folder is configured, check whether it holds packages
+   built under different R versions (look at the `Built:` field in the
+   `DESCRIPTION` of a few packages). A library shared across R versions can load
+   packages built for the wrong version or hide the Certara packages; recommend a
+   separate library per R version, or the default per-version library. Report
+   only.
+5. If the user keeps a custom library set through an OS environment variable,
+   note the variable and its value: Claude Desktop needs it in the `env` block
+   (step 8).
+
+### Step 4: Install the R packages
+
+Show the user the repositories before installing: the Certara JFrog CRAN
+repository plus CRAN.
+
+```{r, eval = FALSE}
+install.packages(
+  "Certara.R",
+  dependencies = TRUE,
+  repos = c(
+    "https://certara.jfrog.io/artifactory/certara-cran-release-public/",
+    "https://cloud.r-project.org"
+  )
+)
+```
+
+Then verify:
+
+```{r, eval = FALSE}
+library(Certara.R)
+packageVersion("Certara.R")
+stopifnot(
+  packageVersion("btw") >= "1.2.0",
+  packageVersion("mcptools") >= "0.2.0",
+  packageVersion("ellmer") >= "0.4.0"
+)
+```
+
+If the helper packages are missing, install them with
+`install.packages(c("btw", "mcptools", "ellmer"))`. See
+[Prerequisites and installation](#prerequisites-and-installation) for details.
+
+### Step 5: Check the NLME Engine (version 26.9.1)
+
+```{r, eval = FALSE}
+installdir <- Sys.getenv("INSTALLDIR")
+if (!nzchar(installdir)) installdir <- "C:/Program Files/Certara/NLME_Engine"
+Certara.NLME8::checkInstallDir(installdir)
+system2(file.path(installdir, "TDL5.exe"), "-v", stdout = TRUE, stderr = TRUE)
+# Expect a line like: "TDL5 version: 26.9.1.1"
+```
+
+* **Engine missing or not 26.9.1:** pause. Tell the user to open
+  [Software Downloads](https://help.certara.net/en/articles/7981602-software-downloads)
+  in the Certara Help Center, go to the **RsNLME** product section, download
+  **NLME Engine 26.9.1 for Windows** (or **for Linux**), and run the installer.
+  If their IT department manages installs, the engine may be available in
+  Company Portal instead. Resume when they confirm, then re-run the check.
+* **GCC compiler.** Check `Sys.getenv("NLMEGCCDir64")` and that the folder
+  exists. The standalone engine installer uses `C:\Program Files\Certara\mingw64\`;
+  a Phoenix installation uses `C:\PHSTMinGW64`. Either is valid.
+* **MS-MPI runtime.** Check `Sys.getenv("PhoenixMSMPIDir")` and that the folder
+  exists. The standalone installer uses `C:\Program Files\Certara\MPI\`; a
+  Phoenix installation uses `C:\Program Files (x86)\Certara\MPI\`. Either is
+  valid. Without MPI, runs still work but execute serially.
+
+Report anything missing.
+
+### Step 6: Check the NLME license (Certara Admin)
+
+```{r, eval = FALSE}
+system2(file.path(installdir, "TDL5.exe"), "/license_check",
+        stdout = TRUE, stderr = TRUE)
+# Look for "Status: OK" and the "License expires:" line.
+```
+
+If the status is not OK, pause and explain the next step:
+`Certara.RsNLME::obtain_NLMELicense()` opens a browser window where the user
+signs in to Certara Admin (CAD). Either run it for them or ask them to run it in
+RStudio, wait for them to finish the browser sign-in, then re-run the license
+check.
+
+```{r, eval = FALSE}
+Certara.RsNLME::obtain_NLMELicense(InstallDir = installdir, verbose = TRUE)
+```
+
+Users without a license can request a trial from
+`certara.licensing@certara.com`.
+
+### Step 7: Write the client configuration
+
+Use `write_mcp_config()` at user scope (the server is then available in every
+project). Use the call for the client from step 1:
+
+```{r, eval = FALSE}
+Certara.R::write_mcp_config(client = "cursor",         scope = "user", run = TRUE)
+Certara.R::write_mcp_config(client = "claude-code",    scope = "user", run = TRUE)
+Certara.R::write_mcp_config(client = "claude-desktop", scope = "user", run = TRUE)
+Certara.R::write_mcp_config(client = "codex",          scope = "user", run = TRUE)
+```
+
+**Claude Desktop: confirm the config file first.** The file Claude Desktop reads
+depends on how it was installed:
+
+* Installed by the user from Anthropic's website:
+  `%APPDATA%\Claude\claude_desktop_config.json`
+  (`C:\Users\<you>\AppData\Roaming\Claude\claude_desktop_config.json`).
+* Installed from the Microsoft Store or by IT: a packaged folder whose name has
+  random characters after `Claude`, such as
+  `%LOCALAPPDATA%\Packages\Claude_<suffix>\LocalCache\Roaming\Claude\claude_desktop_config.json`.
+
+Ask the user to open **File > Settings > Desktop app**, click **Manage** next to
+**Extensions**, then click **Edit config** (under *Local MCP servers*), and tell
+you the path of the file
+that opens. Compare it with the path `write_mcp_config()` reports. If they
+differ, the file **Edit config** opens is the one Claude Desktop reads: back it
+up and merge the same `certara-r` entry (`command`, `args`, `type`) into it.
+
+### Step 8: Claude Desktop on Windows only -- add the `env` block
+
+Claude Desktop starts MCP servers with a stripped-down environment, and
+`write_mcp_config()` does **not** write an `env` block. Without these variables
+MCP-launched fits fail with `Compile/Link Failed` (see
+[Claude Desktop on Windows: required environment variables](#claude-desktop-on-windows-required-environment-variables)
+for why each variable is needed).
+
+Run this in R on the user's machine to print the real values. Fill in
+`extra_vars` with any custom library variable kept in step 3:
+
+```{r, eval = FALSE}
+extra_vars <- character()  # e.g. c("R_LIBS") if kept in step 3
+
+env_or <- function(var, default) {
+  value <- Sys.getenv(var)
+  if (nzchar(value)) value else default
+}
+first_dir <- function(...) {
+  dirs <- sub("[\\\\/]+$", "", c(...))
+  dirs <- dirs[nzchar(dirs) & dir.exists(dirs)]
+  if (length(dirs)) paste0(normalizePath(dirs[1], winslash = "\\"), "\\") else ""
+}
+
+env <- list(
+  ComSpec = env_or("ComSpec", file.path(env_or("SystemRoot", "C:\\WINDOWS"),
+                                        "system32", "cmd.exe", fsep = "\\")),
+  INSTALLDIR = sub("\\\\$", "", first_dir(
+    Sys.getenv("INSTALLDIR"), "C:/Program Files/Certara/NLME_Engine"
+  )),
+  NLMEGCCDir64 = first_dir(
+    Sys.getenv("NLMEGCCDir64"), "C:/Program Files/Certara/mingw64",
+    "C:/PHSTMinGW64"
+  ),
+  PhoenixMSMPIDir = first_dir(
+    Sys.getenv("PhoenixMSMPIDir"), "C:/Program Files/Certara/MPI",
+    "C:/Program Files (x86)/Certara/MPI"
+  ),
+  TMP = env_or("TMP", env_or("TEMP", tempdir())),
+  NUMBER_OF_PROCESSORS = env_or("NUMBER_OF_PROCESSORS",
+                                as.character(parallel::detectCores())),
+  PATHEXT = env_or("PATHEXT",
+                   ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC")
+)
+for (v in extra_vars) env[[v]] <- Sys.getenv(v)
+env <- env[nzchar(unlist(env))]
+
+cat(jsonlite::toJSON(list(env = env), auto_unbox = TRUE, pretty = TRUE))
+```
+
+Any expected variable missing from the output means the corresponding component
+was not found (step 5); resolve that first. Then, after backing up the config
+file confirmed in step 7, merge the block into the `certara-r` entry and check
+the result:
+
+```{r, eval = FALSE}
+cfg_path <- "<config file confirmed in step 7>"
+file.copy(cfg_path, paste0(cfg_path, ".bak-", format(Sys.time(), "%Y%m%d-%H%M%S")))
+
+cfg <- jsonlite::read_json(cfg_path, simplifyVector = FALSE)
+stopifnot(!is.null(cfg$mcpServers[["certara-r"]]))
+cfg$mcpServers[["certara-r"]]$env <- env
+jsonlite::write_json(cfg, cfg_path, auto_unbox = TRUE, pretty = TRUE, null = "null")
+
+str(jsonlite::read_json(cfg_path)$mcpServers[["certara-r"]]$env)
+```
+
+The finished entry looks like the example in
+[Claude Desktop on Windows: required environment variables](#claude-desktop-on-windows-required-environment-variables).
+
+> **Warning.** Re-running `write_mcp_config(client = "claude-desktop")` replaces
+> the whole `certara-r` entry and **deletes the `env` block**. Repeat this step
+> after any re-run.
+
+Other clients normally inherit the full environment from the terminal or IDE and
+do not need an `env` block. Add one only if a custom library variable from step 3
+is not visible to the MCP server, or if fits fail as described above.
+
+### Step 9: Restart the client
+
+* **Claude Desktop:** fully quit (right-click the system-tray icon and choose
+  **Quit**; closing the window is not enough), reopen it, and start a new
+  **Code** session anchored in a folder (step 2).
+* **Cursor:** open **Settings > Tools & MCPs** and enable or refresh `certara-r`.
+* **Claude Code / Codex:** start a new session.
+
+The user has to do this, and for Claude Desktop, Claude Code, and Codex the
+current chat session ends. Before the restart, summarize progress so far and tell the user what to say when they are
+back (for example, *"continue the certara-r MCP setup at step 10"*).
+
+### Step 10: Verify the connection
+
+1. Call `certara_mcp_capabilities` and `certara_session_status`, and list a few
+   Certara tools (`mcp__certara-r__*` in Claude, `user-certara-r` in Cursor).
+2. Optionally run the `env-check` job from the
+   [environment variables section](#claude-desktop-on-windows-required-environment-variables)
+   to confirm `ComSpec`, `INSTALLDIR`, `NLMEGCCDir64`, and `PhoenixMSMPIDir`
+   reach the fit processes.
+3. If the server does not connect:
+    * run `Certara.R::list_certara_mcp_configs()` to see which config files hold
+      a `certara-r` entry;
+    * read the client's MCP logs (for Claude Desktop, the `logs` folder next to
+      the config file, e.g. `%APPDATA%\Claude\logs`);
+    * check the usual causes: a missing `env` variable, the entry written to a
+      file the client does not read (step 7), or the MCP server's R seeing
+      different `.libPaths()` than the user's interactive R (step 3).
+
+### Step 11: Final report
+
+Give the user a short checklist of what passed, what you changed (including the
+paths of any backup files), and anything they still need to do by hand.
+
 ## Quick start {.tabset .tabset-fade .tabset-pills}
 
 Already have `Certara.R` installed? Configure your assistant with a single call,
@@ -136,8 +428,14 @@ What each client writes:
   through the `claude` CLI. A `certara-mcp-usage.md` guidance doc is imported via
   `CLAUDE.md`.
 * **Claude Desktop** -- merged into `claude_desktop_config.json` (user scope
-  only; on Windows the MSIX-virtualized path Desktop actually reads). Fully quit
-  and relaunch Desktop after a config change. On Windows, also see
+  only). On Windows the file's location depends on how Desktop was installed:
+  `%APPDATA%\Claude\` for a self-install, or a `Claude_<suffix>` package folder
+  under `%LOCALAPPDATA%\Packages\` for Microsoft Store/IT installs. Confirm the
+  real path with **File > Settings > Desktop app > Extensions (Manage) > Edit
+  config**.
+  Fully quit and relaunch Desktop after a config change. `write_mcp_config()`
+  does not write an `env` block, and re-running it replaces the entry, deleting
+  any `env` block you added. On Windows, also see
   [Claude Desktop on Windows: required environment variables](#claude-desktop-on-windows-required-environment-variables)
   -- MCP-launched fits need a few variables added to the `env` block.
 * **Codex** -- a managed block in `~/.codex/config.toml` (the only way to set
@@ -242,10 +540,15 @@ cannot find `TDL5.exe`/engine libraries or falls back to an incompatible gcc
 Notes:
 
 * The `command` and `args` are the ones `write_mcp_config("claude-desktop")`
-  already wrote -- you are only **adding** the `env` block. Edit the exact file
-  the call reported (on Windows this may be the MSIX-virtualized path, not the
-  one Desktop's "Edit Config" button opens; see the Claude Desktop bullet under
-  *Configure a client* above).
+  already wrote -- you are only **adding** the `env` block. Edit the file Claude
+  Desktop actually reads: open **File > Settings > Desktop app > Extensions
+  (Manage) > Edit config** to see its path (Microsoft Store/IT installs use a
+  `Claude_<suffix>` package folder rather than `%APPDATA%\Claude`). If it differs
+  from the path `write_mcp_config()` reported, use the **Edit config** file.
+* `write_mcp_config()` does not write this block, and re-running it replaces the
+  whole `certara-r` entry, so the `env` block must be added again afterwards.
+  [Step 8 of the agent checklist](#step-8-claude-desktop-on-windows-only-add-the-env-block)
+  has an R snippet that prints this machine's values and merges them in.
 * Replace `<you>` and `<your core count>` with your values.
 * `ComSpec` is the one that actually unblocks `Compile/Link Failed`; the gcc
   compatibility warning is a red herring, but set `NLMEGCCDir64` too so the
@@ -479,6 +782,14 @@ to see what is actually wired, then work through the common cases:
   [Claude Desktop on Windows: required environment variables](#claude-desktop-on-windows-required-environment-variables).
   The same case is summarized in the [RsNLME troubleshooting
   guide](https://certara.github.io/R-RsNLME/articles/troubleshooting.html#claude-desktop-on-windows-extra-environment-variables).
+* **Claude Desktop: PowerShell "cannot be executed" / "not authorized" errors**
+  when a fit starts -- the **Code** session is not anchored to a folder. Start a
+  new Code session with a folder on your machine selected (for example your
+  project folder) and run the fit again.
+* **Claude Desktop: config edits have no effect** -- the entry was written to a
+  file Desktop does not read. Check the path shown by **File > Settings >
+  Desktop app > Extensions (Manage) > Edit config** (Microsoft Store/IT installs use a
+  `Claude_<suffix>` folder) and merge the `certara-r` entry there.
 * **Agent behavior feels "old"** -- the installed package predates the current
   MCP knowledge base / rules. Install the current release and re-run
   `write_mcp_config(client = "cursor", scope = "project")` so the Cursor rule is
